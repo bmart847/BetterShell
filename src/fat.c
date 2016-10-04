@@ -7,8 +7,7 @@
 
 #include <stdio.h>
 
-// 13 is NOT the correct number -- you fix it!
-#define BYTES_TO_READ_IN_BOOT_SECTOR 13
+#define BYTES_TO_READ_IN_BOOT_SECTOR 12
 
 /******************************************************************************
  * You must set these global variables:
