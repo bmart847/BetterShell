@@ -9,5 +9,5 @@
 
 char *get_line();
 char **parseInput(char *input);
-int cmdLaunch(char **commands);
-int cmdExecute(char **commands);
+int cmdLaunch(char **input);
+int cmdExecute(char **input);

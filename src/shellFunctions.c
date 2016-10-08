@@ -2,7 +2,7 @@
 
 
 /* Obtains input from the user */
-char *get_line(){
+char *get_line() {
 	/* Initialize Variables */
 	char *input = NULL;
 	ssize_t bufsize = 0;
@@ -17,7 +17,7 @@ char *get_line(){
 }
 
 /* Parses the user input */
-char **parseInput(char *input){
+char **parseInput(char *input) {
 	/* Initialize Variables */
 	int pos = 0;
 	char **letters = malloc(128);
@@ -37,4 +37,33 @@ char **parseInput(char *input){
 
 	/* Return array of char arrays */
 	return letters;
+}
+
+/* Forks a process for the given command */
+int cmdLaunch(char **input) {
+	/* Initialize Variables */
+	pid_t pid, wpid;
+	int stat;
+
+	/* Fork Process */
+	pid = fork();
+
+	/* Error Handling */
+	if(pid == 0) {
+		if(execvp(input[0], input) == -1) {
+			perror("Error_Launching_Process");
+		}
+		return 1;
+	} else if (pid < 0) {
+		perror("Error_Launching_Process");
+		return 2;
+	} else {
+
+	}
+
+	return 0;
+}
+
+int cmdExecute(char **input) {
+	
 }
