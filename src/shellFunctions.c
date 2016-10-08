@@ -1,6 +1,3 @@
-#include "shellFunctions.h"
-
-
 /* Obtains input from the user */
 char *get_line() {
 	/* Initialize Variables */
@@ -58,6 +55,10 @@ int cmdLaunch(char **input) {
 		perror("Error_Launching_Process");
 		return 2;
 	} else {
+		/* Wait for child process to complete */
+		do {
+			wpid = waitpid(pid, &stat, WUNTRACED);
+		} while (!WIFEXITED(stat) && !(WIFSIGNALED(stat));
 
 	}
 

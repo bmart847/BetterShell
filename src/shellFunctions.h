@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "shellFunctions.c"
 
 char *get_line();
 char **parseInput(char *input);
