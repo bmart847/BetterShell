@@ -13,5 +13,5 @@ int main(int argc, char *argv[]) {
 		status = cmdExecute(cmd);
 		free(input);
 		free(cmd);
-	} while (status);
+	} while (status == 0);
 }

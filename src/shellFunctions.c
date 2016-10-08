@@ -21,7 +21,7 @@ char **parseInput(char *input) {
 	char *letter;
 
 	/* Traverse Input */
-	letter = strtok(line, " \t\r\n\a");
+	letter = strtok(input, " \t\r\n\a");
 
 	while(letter != NULL) {
 		letters[pos] = letter;
@@ -58,7 +58,7 @@ int cmdLaunch(char **input) {
 		/* Wait for child process to complete */
 		do {
 			wpid = waitpid(pid, &stat, WUNTRACED);
-		} while (!WIFEXITED(stat) && !(WIFSIGNALED(stat));
+		} while (!WIFEXITED(stat) && !WIFSIGNALED(stat));
 
 	}
 
@@ -70,32 +70,36 @@ int cmdExecute(char **input) {
 	/* Initialize Variables */
 	char *leadCmd = input[0];	
 
+	/* Determine command and take action */
 	if(leadCmd == NULL) {
 		return 0;
 	} else if (strcmp(leadCmd, "cat") == 0) {
-		printf("Command not yet implemented");
+		printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "cd") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "df") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "ls") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "mkdir") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "pbs") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "pfe") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "pwd") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "rm") == 0) {
-                printf("Command not yet implemented");	
+                printf("Command not yet implemented\n");	
 	} else if (strcmp(leadCmd, "rmdir") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "touch") == 0) {
-                printf("Command not yet implemented");
+                printf("Command not yet implemented\n");
+	} else if (strcmp(leadCmd, "exit") == 0) {
+		printf("Quitting\n");
+		return 1;
 	} else {
-		printf("Command not recognized");
+		printf("Command not recognized\n");
 	}
 	return 0;
 }
