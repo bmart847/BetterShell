@@ -64,6 +64,37 @@ int cmdLaunch(char **input) {
 	return 0;
 }
 
+/* Determines the command and performs neccessary actiions */
 int cmdExecute(char **input) {
-	
+	/* Initialize Variables */
+	char *leadCmd = input[0];	
+
+	if(leadCmd == NULL) {
+		return 0;
+	} else if (strcmp(leadCmd, "cat") == 0) {
+		printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "cd") == 0) {
+                printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "df") == 0) {
+                printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "ls") == 0) {
+                printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "mkdir") == 0) {
+                printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "pbs") == 0) {
+                printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "pfe") == 0) {
+                printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "pwd") == 0) {
+                printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "rm") == 0) {
+                printf("Command not yet implemented");	
+	} else if (strcmp(leadCmd, "rmdir") == 0) {
+                printf("Command not yet implemented");
+	} else if (strcmp(leadCmd, "touch") == 0) {
+                printf("Command not yet implemented");
+	} else {
+		printf("Command not recognized");
+	}
+	return 0;
 }
