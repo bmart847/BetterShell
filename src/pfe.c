@@ -1,23 +1,28 @@
-#include "fatSupport.h"
-#include "fatSupport.c"
+#include <fatSupport.c>
 
-bool checkRange(int x, int y){
+int checkRange(int x, int y){
 	if(x>y){
 		printf("Error: x > y\n");
-		return false;
+		return 1;
 	} else if(x<2){
-		printf{"Error: x < 2\n");
-		return false;
+		printf("Error: x < 2\n");
+		return 1;
 	} else {
-		return true;
+		return 0;
 	}
 
 }
 
 char* readFAT12Table(int fatTable){
-	read_sector(0,
+	unsigned char* fat;
 
+	fat = malloc(2 * (BYTES_PER_SECTOR * sizeof(unsigned char)));
 
+	int i, br = 0;
+	for(i=1; i<3; i++){
+		br = br + readSector(i, fat[i*BYTES_PER_SECTOR]);
+	}
+	return fat;
 }
 
 
@@ -37,12 +42,12 @@ int main(int argc, char*argv[]){
                 y = atoi(argv[2]);
         }
 
-	if(checkRange(x, y) == false) { printf("checkRange Failed"); }
+	if(checkRange(x, y) == 1) { printf("checkRange Failed"); }
 	else {
-
-		printf("Range ok");
-		
+		printf("Range ok");	
 	}
+
+	readFAT12Table(1);
 
 	return(0);
 }
