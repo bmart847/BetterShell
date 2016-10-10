@@ -79,6 +79,8 @@ int cmdExecute(char **input) {
                 printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "df") == 0) {
                 printf("Command not yet implemented\n");
+        } else if (strcmp(leadCmd, "help") == 0) {
+                printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "ls") == 0) {
                 printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "mkdir") == 0) {
