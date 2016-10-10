@@ -49,7 +49,7 @@ int main()
    //      FILE_SYSTEM_ID         BYTES_PER_SECTOR
 
    // Use this for an image of a floppy drive
-   FILE_SYSTEM_ID = fopen("floppy1", "r+");
+   FILE_SYSTEM_ID = fopen("../test/floppy1", "r+");
 
    if (FILE_SYSTEM_ID == NULL)
    {
