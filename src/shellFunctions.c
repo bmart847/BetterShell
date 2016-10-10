@@ -88,7 +88,7 @@ int cmdExecute(char **input) {
 	} else if (strcmp(leadCmd, "pbs") == 0) {
                 printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "pfe") == 0) {
-		pfe(input[1], input[2]);
+		pfe(atoi(input[1]), atoi(input[2]));
                 printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "pwd") == 0) {
                 printf("Command not yet implemented\n");

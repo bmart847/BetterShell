@@ -14,17 +14,17 @@ int checkRange(int x, int y){
 unsigned char* readFAT12Table(int fatTable){
 	unsigned char* fat;
 
-	fat = malloc(9 * (BYTES_PER_SECTOR * sizeof(unsigned char)));
+	fat = (unsigned char*) malloc(9 * (BYTES_PER_SECTOR * sizeof(unsigned char)));
 
 	int i, br = 0;
 	if(fatTable == 1) {
 		for(i=1; i<10; i++){
-			br = br + read_sector(i, fat[i*BYTES_PER_SECTOR]);
+			br = br + read_sector(i, &fat[i*BYTES_PER_SECTOR]);
 		}
 		return fat;
 	} else if(fatTable == 2) {
 		for(i=10; i<20; i++){
-			br = br + read_sector(i, fat[i*BYTES_PER_SECTOR]);
+			br = br + read_sector(i, &fat[(i-10)*BYTES_PER_SECTOR]);
                 }
 		return fat;
 	} else {
@@ -54,14 +54,14 @@ int pfe(int arg1, int arg2){
 	*/
 
 	unsigned char* fat1, fat2;
-	if(checkRange(arg1, arg2) == 1) { printf("checkRange Failed"); }
+	if(checkRange(arg1, arg2) == 1) { printf("checkRange Failed\n"); }
 	else {
-		printf("Range ok");	
+		printf("Range ok\n");	
 	}
 
 	fat1 = readFAT12Table(1);
-	fat2 = readFAT12Table(2);
-
+/*	fat2 = readFAT12Table(2);
+*/
 	printf("Read both FAT Tables\n");
 
 	return(0);
