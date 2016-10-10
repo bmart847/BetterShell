@@ -88,8 +88,11 @@ int cmdExecute(char **input) {
 	} else if (strcmp(leadCmd, "pbs") == 0) {
                 printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "pfe") == 0) {
-		pfe(atoi(input[1]), atoi(input[2]));
-                printf("Command not yet implemented\n");
+		if(input[1] != NULL && input[2] != NULL && input[3] == NULL) {
+			pfe(atoi(input[1]), atoi(input[2]));
+		} else {
+			printf("Invalid parameters.\n");
+		}
 	} else if (strcmp(leadCmd, "pwd") == 0) {
                 printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "rm") == 0) {
