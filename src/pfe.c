@@ -19,11 +19,11 @@ unsigned char* readFAT12Table(int fatTable){
 	int i, br = 0;
 	if(fatTable == 1) {
 		for(i=1; i<10; i++){
-			br = br + read_sector(i, &fat[i*BYTES_PER_SECTOR]);
+			br = br + read_sector(i, &fat[(i-1)*BYTES_PER_SECTOR]);
 		}
 		return fat;
 	} else if(fatTable == 2) {
-		for(i=10; i<20; i++){
+		for(i=10; i<19; i++){
 			br = br + read_sector(i, &fat[(i-10)*BYTES_PER_SECTOR]);
                 }
 		return fat;
@@ -35,24 +35,6 @@ unsigned char* readFAT12Table(int fatTable){
 
 
 int pfe(int arg1, int arg2){
-	/*
-	int x, y;
-
-        if(argc < 3){
-                printf("Too few arguments.\n");
-                return(1);
-        } else if (argc > 3){
-                printf("Too many arguments.\n");
-                return(1);
-        }
-
-        else {
-        * Read arguments *
-                x = atoi(argv[1]);
-                y = atoi(argv[2]);
-        }
-	*/
-
 	unsigned char* fat1, fat2;
 	if(checkRange(arg1, arg2) == 1) { printf("checkRange Failed\n"); }
 	else {
@@ -60,8 +42,8 @@ int pfe(int arg1, int arg2){
 	}
 
 	fat1 = readFAT12Table(1);
-/*	fat2 = readFAT12Table(2);
-*/
+	fat2 = readFAT12Table(2);
+
 	printf("Read both FAT Tables\n");
 
 	return(0);
