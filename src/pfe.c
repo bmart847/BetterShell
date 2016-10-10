@@ -35,16 +35,15 @@ unsigned char* readFAT12Table(int fatTable) {
 
 
 int pfe(int arg1, int arg2){
-	unsigned char *fat1, *fat2;
+	unsigned char *fat1 = readFAT12Table(1), *fat2 = readFAT12Table(2);
+	int i;
+
 	if(checkRange(arg1, arg2) == 1) { printf("checkRange Failed\n"); }
+
 	else {
-		printf("Range ok\n");	
+        	for(i=(arg1+1); i <= arg2; i++) {
+                	printf("Fat Entry %i: %x\n", i, get_fat_entry(i, fat1));
+        	}	
 	}
-
-	fat1 = readFAT12Table(1);
-	fat2 = readFAT12Table(2);
-
-	printf("Read both FAT Tables\n");
-
 	return(0);
 }
