@@ -106,7 +106,7 @@ int write_sector(int sector_number, unsigned char* buffer)
  * Return: the value at the specified entry of the given FAT
  ****************************************************************************/
 
-int get_fat_entry(int fat_entry_number, unsigned char* fat) 
+unsigned int get_fat_entry(int fat_entry_number, unsigned char* fat) 
 {
    int offset;
    int uv, wx, yz;
