@@ -1,5 +1,3 @@
-#include <fatSupport.c>
-
 int checkRange(int x, int y){
 	if(x>y){
 		printf("Error: x > y\n");
@@ -13,20 +11,31 @@ int checkRange(int x, int y){
 
 }
 
-char* readFAT12Table(int fatTable){
+unsigned char* readFAT12Table(int fatTable){
 	unsigned char* fat;
 
-	fat = malloc(2 * (BYTES_PER_SECTOR * sizeof(unsigned char)));
+	fat = malloc(9 * (BYTES_PER_SECTOR * sizeof(unsigned char)));
 
 	int i, br = 0;
-	for(i=1; i<3; i++){
-		br = br + readSector(i, fat[i*BYTES_PER_SECTOR]);
+	if(fatTable == 1) {
+		for(i=1; i<10; i++){
+			br = br + read_sector(i, fat[i*BYTES_PER_SECTOR]);
+		}
+		return fat;
+	} else if(fatTable == 2) {
+		for(i=10; i<20; i++){
+			br = br + read_sector(i, fat[i*BYTES_PER_SECTOR]);
+                }
+		return fat;
+	} else {
+		free(fat);
+		return NULL;
 	}
-	return fat;
 }
 
 
-int main(int argc, char*argv[]){
+int pfe(int arg1, int arg2){
+	/*
 	int x, y;
 
         if(argc < 3){
@@ -36,18 +45,24 @@ int main(int argc, char*argv[]){
                 printf("Too many arguments.\n");
                 return(1);
         }
+
         else {
-        /* Read arguments */
+        * Read arguments *
                 x = atoi(argv[1]);
                 y = atoi(argv[2]);
         }
+	*/
 
-	if(checkRange(x, y) == 1) { printf("checkRange Failed"); }
+	unsigned char* fat1, fat2;
+	if(checkRange(arg1, arg2) == 1) { printf("checkRange Failed"); }
 	else {
 		printf("Range ok");	
 	}
 
-	readFAT12Table(1);
+	fat1 = readFAT12Table(1);
+	fat2 = readFAT12Table(2);
+
+	printf("Read both FAT Tables\n");
 
 	return(0);
 }
