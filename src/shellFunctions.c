@@ -90,6 +90,8 @@ int cmdExecute(char **input) {
 	} else if (strcmp(leadCmd, "pfe") == 0) {
 		if(input[1] != NULL && input[2] != NULL && input[3] == NULL) {
 			pfe(atoi(input[1]), atoi(input[2]));
+		} else if((strcmp((char*)input[1], "--help") == 0) && input[2] == NULL) {
+			pfe_help();
 		} else {
 			printf("Invalid parameters.\n");
 		}

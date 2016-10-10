@@ -57,3 +57,8 @@ int pfe(int arg1, int arg2){
 
 	return(0);
 }
+
+int pfe_help() {
+	printf("Help for pfe command will go here.\n");
+	return(0);
+}
