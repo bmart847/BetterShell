@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 	int mostSignificantBits, leastSignificantBits, bytesPerSector, status;
 
 	/* File to open, later allow it to be specified */
-	FILE_SYSTEM_ID = fopen("../test/floppy1", "r+");
+	FILE_SYSTEM_ID = fopen("../test/floppy2", "r+");
 	BYTES_PER_SECTOR = SECTOR_SIZE; 
 
 	/* Open file */
