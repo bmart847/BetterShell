@@ -1,19 +1,8 @@
 #include "shellFunctions.h"
 #include "fatSupport.h"
-#include "pfe.c"
+#include "pfe.h"
 
 #define SECTOR_SIZE 512
-
-/*
-FILE* FILE_SYSTEM_ID;
-int BYTES_PER_SECTOR;
-
-extern int read_sector(int sector_number, unsigned char* buffer);
-extern int write_sector(int sector_number, unsigned char* buffer);
-
-extern unsigned int  get_fat_entry(int fat_entry_number, unsigned char* fat);
-extern void set_fat_entry(int fat_entry_number, int value, unsigned char* fat);
-*/
 
 /* Main Function (Currently Just Runs Shell) */
 int main(int argc, char *argv[]) {

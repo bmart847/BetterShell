@@ -9,7 +9,7 @@
 #include "shellFunctions.h"
 #include "fatSupport.h"
 
-#define BYTES_TO_READ_IN_BOOT_SECTOR 12
+#define BYTES_TO_READ_IN_BOOT_SECTOR 512
 
 /******************************************************************************
  * You must set these global variables:
@@ -67,13 +67,12 @@ int main()
    if (read_sector(0, boot) == -1)
       printf("Something has gone wrong -- could not read the boot sector\n");
 
- 
    // 12 (not 11) because little endian
    mostSignificantBits  = ( ( (int) boot[12] ) << 8 ) & 0x0000ff00;
    leastSignificantBits =   ( (int) boot[11] )        & 0x000000ff;
    bytesPerSector = mostSignificantBits | leastSignificantBits;
-	
-   printf("%d\n", bytesPerSector);
+
+   printf("%d\n", bytesPerSector); 
 
    return 0;
 }

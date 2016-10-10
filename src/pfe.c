@@ -11,7 +11,7 @@ int checkRange(int x, int y){
 
 }
 
-unsigned char* readFAT12Table(int fatTable){
+unsigned char* readFAT12Table(int fatTable) {
 	unsigned char* fat;
 
 	fat = (unsigned char*) malloc(9 * (BYTES_PER_SECTOR * sizeof(unsigned char)));
@@ -35,7 +35,7 @@ unsigned char* readFAT12Table(int fatTable){
 
 
 int pfe(int arg1, int arg2){
-	unsigned char* fat1, fat2;
+	unsigned char *fat1, *fat2;
 	if(checkRange(arg1, arg2) == 1) { printf("checkRange Failed\n"); }
 	else {
 		printf("Range ok\n");	
