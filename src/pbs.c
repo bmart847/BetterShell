@@ -2,10 +2,7 @@
 
 /* Prints the FAT12 Boot Sector Information from file, arg1 */
 int pbs(char* arg1) {
-	// Initialize boot sector struct
-	bootSectorData = new bootSector;
-	
-	bootSectorData.filename = arg1;
+	bootSectorData.filename = arg1 + '/0';
 	readBootSector();
 	printBootSector();
 }
@@ -20,7 +17,7 @@ int readBootSector() {
     int one,two,three,four;
 	
 	// Open the FAT file system to be read.
-	FILE_SYSTEM_ID = fopen((String)bootSectorData.filename);
+	FILE_SYSTEM_ID = fopen(bootSectorData.filename);
 	
 	bootSectorData.bytesPerSector = BYTES_TO_READ_IN_BOOT_SECTOR; // Set to default
 	

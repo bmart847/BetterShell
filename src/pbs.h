@@ -1,3 +1,5 @@
+#define BYTES_TO_READ_IN_BOOT_SECTOR 62
+
 struct bootSector {
 	int bytesPerSector;
 	int sectorsPerCluster;
@@ -24,7 +26,4 @@ int pbs_help(); /* Print help for Print Boot Sector */
 
 FILE* FILE_SYSTEM_ID;
 
-#define BYTES_TO_READ_IN_BOOT_SECTOR 62
-
-#include <string.h>
 #include "pbs.c"
