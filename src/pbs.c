@@ -2,13 +2,17 @@
 
 /* Prints the FAT12 Boot Sector Information from file, arg1 */
 int pbs(char* arg1) {
-	FILE_SYSTEM_ID = (String)arg1;
+	// Initialize boot sector struct
+	bootSectorData = new bootSector;
+	
+	bootSectorData.filename = arg1;
 	readBootSector();
 	printBootSector();
 }
 
 /* Read the data in the boot sector to the bootSectorData struct */
 int readBootSector() {
+		
 	unsigned char* bootIndex;
 	unsigned int volumeID;
 	
@@ -16,7 +20,7 @@ int readBootSector() {
     int one,two,three,four;
 	
 	// Open the FAT file system to be read.
-	FILE_SYSTEM_ID = fopen(stuff->filename, "r+");
+	FILE_SYSTEM_ID = fopen((String)bootSectorData.filename);
 	
 	bootSectorData.bytesPerSector = BYTES_TO_READ_IN_BOOT_SECTOR; // Set to default
 	
@@ -95,7 +99,7 @@ int readBootSector() {
     fclose(FILE_SYSTEM_ID);
 }
 
-/* Print the data in boostSectorData struct */
+/* Print the data in bootSectorData struct */
 int printBootSector() {
 	printf("Bytes per sector = %d\n"
             "Sectors per cluster = %d\n"
