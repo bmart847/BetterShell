@@ -2,7 +2,7 @@
 
 /* Prints the FAT12 Boot Sector Information from file, arg1 */
 int pbs() {
-	printf("pbs() called.\n")
+	printf("pbs() called.\n");
 	if(readBootSector() == 0) {
 		printBootSector();
 	} else {
@@ -12,7 +12,7 @@ int pbs() {
 
 /* Read the data in the boot sector to the bootSectorData struct */
 int readBootSector() {
-	printf("readBootSector() called.\n")
+	printf("readBootSector() called.\n");
 	unsigned char* bootIndex;
 	unsigned int volumeID;
 	
