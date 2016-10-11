@@ -1,8 +1,8 @@
 /* PBS Command Functions */
 
 /* Prints the FAT12 Boot Sector Information from file, arg1 */
-int pbs(int arg1) {
-	FILE_SYSTEM_ID = arg1;
+int pbs(char* arg1) {
+	FILE_SYSTEM_ID = (String)arg1;
 	readBootSector();
 	printBootSector();
 }
@@ -80,12 +80,13 @@ int readBootSector() {
     volumeID = one | two | three | four;
 
 	// Set Volume Label
-    for(int i = 0; i < 11; i++){
+	int i;
+    for(i = 0; i < 11; i++){
         bootSectorData.volumeLabel[i] = bootIndex[43+i];
     }
 	bootSectorDatavolumeLabel[12] = '\0';
 
-    for(int i = 0; i < 8; i++){
+    for(i = 0; i < 8; i++){
         bootSectorData.fileSystemType[i] = bootIndex[54+i];
     }
     bootSectorData.fileSystemType[9] = '\0';

@@ -10,13 +10,13 @@ struct bootSector {
 	int numHeads;
 	int bootSignature;
 	int volumeID;
-	char[] volumeLabel;
-	char[] fileSystemType;
+	char* volumeLabel;
+	char* fileSystemType;
 };
 
 bootSector bootSectorData;
 
-int pbs(int arg1); /* Reads the boot sector information for file, arg1, and prints the results */
+int pbs(char* arg1); /* Reads the boot sector information for file, arg1, and prints the results */
 int readBootSector(); /* Read the data in the boot sector to the bootSectorData struct */
 int printBootSector(); /* Print the data in boostSectorData struct */
 int pbs_help(); /* Print help for Print Boot Sector */
