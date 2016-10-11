@@ -85,7 +85,7 @@ int readBootSector() {
     for(i = 0; i < 11; i++){
         bootSectorData.volumeLabel[i] = bootIndex[43+i];
     }
-	bootSectorDatavolumeLabel[12] = '\0';
+	bootSectorData.volumeLabel[12] = '\0';
 
     for(i = 0; i < 8; i++){
         bootSectorData.fileSystemType[i] = bootIndex[54+i];

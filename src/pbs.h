@@ -1,9 +1,7 @@
 #define BYTES_TO_READ_IN_BOOT_SECTOR 62
 
-/* Forward declare a type "bootSector" to be a struct. */
-typedef struct bootSector boostSector;
-/* Declare the struct with integer members x, y */
-struct bootSector {
+/* Create new structure bootSector to hold data */
+typedef struct bootSector {
 	int bytesPerSector;
 	int sectorsPerCluster;
 	int numFATs;
@@ -18,9 +16,9 @@ struct bootSector {
 	char* volumeLabel;
 	char* fileSystemType;
 	char* filename;
-};
+}bootSector;
 
-bootSector bootSectorData;
+bootSector bootSectorData = {0,0,0,0,0,0,0,0,0,0,'','',''};
 
 int pbs(char* arg1); /* Reads the boot sector information for file, arg1, and prints the results */
 int readBootSector(); /* Read the data in the boot sector to the bootSectorData struct */
