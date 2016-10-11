@@ -1,10 +1,12 @@
 /* PBS Command Functions */
 
 /* Prints the FAT12 Boot Sector Information from file, arg1 */
-int pbs(char* arg1) {
-	bootSectorData.filename = arg1 + '/0';
-	readBootSector();
-	printBootSector();
+int pbs() {
+	if(readBootSector() == 0) {
+		printBootSector();
+	} else {
+		printf("Error: Unable to read boot sector.\n");
+	}
 }
 
 /* Read the data in the boot sector to the bootSectorData struct */
@@ -15,9 +17,6 @@ int readBootSector() {
 	
 	int mostSignificantBits, leastSignificantBits;
     int one,two,three,four;
-	
-	// Open the FAT file system to be read.
-	FILE_SYSTEM_ID = fopen(bootSectorData.filename);
 	
 	bootSectorData.bytesPerSector = BYTES_TO_READ_IN_BOOT_SECTOR; // Set to default
 	
@@ -94,6 +93,8 @@ int readBootSector() {
 	
 	free(bootIndex);
     fclose(FILE_SYSTEM_ID);
+	
+	return(0);
 }
 
 /* Print the data in bootSectorData struct */
@@ -113,7 +114,7 @@ int printBootSector() {
             "File system type = %s\n",
             bootSectorData.bytesPerSector,
             bootSectorData.sectorsPerCluster,
-            bootSectorData.numFats,
+            bootSectorData.numFATs,
             bootSectorData.numReservedSectors,
             bootSectorData.numRootEntries,
             bootSectorData.totalSectorCount,

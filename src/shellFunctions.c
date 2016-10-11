@@ -89,7 +89,7 @@ int cmdExecute(char **input) {
         if(strcmp((char*)input[1], "--help") == 0) {
 			pbs_help();
 		} else {
-			printBootSector();
+			pbs();
 		}
 	} else if (strcmp(leadCmd, "pfe") == 0) {
 		if(input[1] != NULL && input[2] != NULL && input[3] == NULL) {
