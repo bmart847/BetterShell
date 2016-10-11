@@ -6,8 +6,10 @@
  *****************************************************************************/
 
 #include <stdio.h>
+#include "shellFunctions.h"
+#include "fatSupport.h"
 
-#define BYTES_TO_READ_IN_BOOT_SECTOR 12
+#define BYTES_TO_READ_IN_BOOT_SECTOR 512
 
 /******************************************************************************
  * You must set these global variables:
@@ -25,11 +27,11 @@
 FILE* FILE_SYSTEM_ID;
 int BYTES_PER_SECTOR;
 
-extern int read_sector(int sector_number, char* buffer);
-extern int write_sector(int sector_number, char* buffer);
+extern int read_sector(int sector_number, unsigned char* buffer);
+extern int write_sector(int sector_number, unsigned char* buffer);
 
-extern int  get_fat_entry(int fat_entry_number, char* fat);
-extern void set_fat_entry(int fat_entry_number, int value, char* fat);
+extern unsigned int  get_fat_entry(int fat_entry_number, unsigned char* fat);
+extern void set_fat_entry(int fat_entry_number, int value, unsigned char* fat);
 
 /******************************************************************************
  * main: an example of reading an item in the boot sector
@@ -47,7 +49,7 @@ int main()
    //      FILE_SYSTEM_ID         BYTES_PER_SECTOR
 
    // Use this for an image of a floppy drive
-   FILE_SYSTEM_ID = fopen("floppy1", "r+");
+   FILE_SYSTEM_ID = fopen("../test/floppy1", "r+");
 
    if (FILE_SYSTEM_ID == NULL)
    {
@@ -65,13 +67,12 @@ int main()
    if (read_sector(0, boot) == -1)
       printf("Something has gone wrong -- could not read the boot sector\n");
 
- 
    // 12 (not 11) because little endian
    mostSignificantBits  = ( ( (int) boot[12] ) << 8 ) & 0x0000ff00;
    leastSignificantBits =   ( (int) boot[11] )        & 0x000000ff;
    bytesPerSector = mostSignificantBits | leastSignificantBits;
-	
-   printf("%d\n", bytesPerSector);
+
+   printf("%d\n", bytesPerSector); 
 
    return 0;
 }
