@@ -101,8 +101,6 @@ int readBootSector() {
 		}
 	}
 	bootSectorData.fileSystemType[9] = '\0';
-	
-	free(bootIndex);
 		
 	return(0);
 }

@@ -86,10 +86,10 @@ int cmdExecute(char **input) {
 	} else if (strcmp(leadCmd, "mkdir") == 0) {
                 printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "pbs") == 0) {
-        if(strcmp((char*)input[1], "--help") == 0) {
-			pbs_help();
-		} else {
+		if(input[1] == NULL) {
 			pbs();
+		} else if(strcmp((char*)input[1], "--help") == 0) {
+			pbs_help();
 		}
 	} else if (strcmp(leadCmd, "pfe") == 0) {
 		if(input[1] != NULL && input[2] != NULL && input[3] == NULL) {

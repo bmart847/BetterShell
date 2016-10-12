@@ -13,8 +13,8 @@ typedef struct bootSector {
 	int numHeads;
 	int bootSignature;
 	int volumeID;
-	char[11] volumeLabel;
-	char[8] fileSystemType;
+	char volumeLabel[11];
+	char fileSystemType[8];
 }bootSector;
 
 bootSector bootSectorData = {0,0,0,0,0,0,0,0,0,0,0,'\0','\0','\0'};
