@@ -83,12 +83,22 @@ int readBootSector() {
 	// Set Volume Label
 	int i;
 	for(i = 0; i < 11; i++){
-		bootSectorData.volumeLabel[i] = bootIndex[43+i];
+		if (bootIndex[43+i] != '/0')
+			bootSectorData.volumeLabel[i] = bootIndex[43+i];
+		else {
+			bootSectorData.volumeLabel[i] = '/0';
+			break;
+		}
 	}
 	bootSectorData.volumeLabel[12] = '\0';
 
 	for(i = 0; i < 8; i++){
-		bootSectorData.fileSystemType[i] = bootIndex[54+i];
+		if (bootIndex[43+i] != '/0')
+			bootSectorData.fileSystemType[i] = bootIndex[54+i];
+		else {
+			bootSectorData.fileSystemType[i] = '/0';
+			break;
+		}
 	}
 	bootSectorData.fileSystemType[9] = '\0';
 	
