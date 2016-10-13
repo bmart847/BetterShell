@@ -19,7 +19,7 @@ int readBootSector() {
 	int mostSignificantBits, leastSignificantBits;
 	int one,two,three,four;
 	
-	bootSectorData.bytesPerSector = BYTES_TO_READ_IN_BOOT_SECTOR; // Set to default
+	bootSectorData.bytesPerSector = BYTES_PER_SECTOR; // Set to default
 	
 	// Then reset it to the value in the boot sector
 
@@ -90,7 +90,7 @@ int readBootSector() {
 			break;
 		}
 	}
-	bootSectorData.volumeLabel[12] = '\0';
+	bootSectorData.volumeLabel[11] = '\0';
 
 	for(i = 0; i < 8; i++){
 		if (bootIndex[43+i] != '/0')
@@ -100,7 +100,7 @@ int readBootSector() {
 			break;
 		}
 	}
-	bootSectorData.fileSystemType[9] = '\0';
+	bootSectorData.fileSystemType[8] = '\0';
 		
 	return(0);
 }
