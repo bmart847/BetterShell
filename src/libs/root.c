@@ -31,3 +31,7 @@ void exitDir() {
 		i--;
 	} while(WORKING_DIRECTORY[i] != '/');
 }
+
+void pwd() {
+	printf("%s", WORKING_DIRECTORY);
+}
