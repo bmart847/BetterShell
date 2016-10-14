@@ -12,3 +12,22 @@ unsigned char* readRootSectors() {
 
 	return root;
 }
+
+void enterDir(char* dirName) {
+	/* Add new directory name to working directory string */
+	strcat(WORKING_DIRECTORY, dirName);
+	strcat(WORKING_DIRECTORY, "/");
+}
+
+void exitDir() {
+	/* Remove characters from working directory until */
+	int i, j;
+	for(i=0; WORKING_DIRECTORY[i] != '\0';i++);
+
+	i--;
+
+	do {
+		WORKING_DIRECTORY[i] = '\0';
+		i--;
+	} while(WORKING_DIRECTORY[i] != '/');
+}
