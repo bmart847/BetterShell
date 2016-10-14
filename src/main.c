@@ -1,6 +1,7 @@
 #include "shellFunctions.h"
 #include "fatSupport.h"
 #include "pfe.h"
+#include "pbs.h"
 
 #define SECTOR_SIZE 512
 
