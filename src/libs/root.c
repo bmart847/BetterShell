@@ -12,5 +12,3 @@ unsigned char* readRootSectors() {
 
 	return root;
 }
-
-
