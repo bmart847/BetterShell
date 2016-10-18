@@ -1,10 +1,9 @@
 char WORKING_DIRECTORY[200] = "/\0";
 
-#include "libs/root.h"
 #include "shellFunctions.h"
 #include "fatSupport.h"
 #include "pfe.h"
-#include "libs/root.c"
+#include "pbs.h"
 
 #define SECTOR_SIZE 512
 
