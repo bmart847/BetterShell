@@ -13,10 +13,11 @@ unsigned char* readRootSectors() {
 	return root;
 }
 
-void enterDir(char* dirName) {
+void enterDir(char *dirName) {
 	/* Add new directory name to working directory string */
 	strcat(WORKING_DIRECTORY, dirName);
 	strcat(WORKING_DIRECTORY, "/");
+	return;
 }
 
 void exitDir() {
@@ -30,8 +31,10 @@ void exitDir() {
 		WORKING_DIRECTORY[i] = '\0';
 		i--;
 	} while(WORKING_DIRECTORY[i] != '/');
+	return;
 }
 
 void pwd() {
 	printf("%s", WORKING_DIRECTORY);
+	return;
 }
