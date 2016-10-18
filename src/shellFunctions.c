@@ -76,7 +76,9 @@ int cmdExecute(char **input) {
 	} else if (strcmp(leadCmd, "cat") == 0) {
 		printf("Command not yet implemented\n");
 	} else if (strcmp(leadCmd, "cd") == 0) {
-                printf("Command not yet implemented\n");
+		char *newDir = input[1];
+		enterDir(newDir);
+                printf("%s\n", WORKING_DIRECTORY);
 	} else if (strcmp(leadCmd, "df") == 0) {
                 printf("Command not yet implemented\n");
         } else if (strcmp(leadCmd, "help") == 0) {
@@ -100,7 +102,7 @@ int cmdExecute(char **input) {
 			printf("Invalid parameters.\n");
 		}
 	} else if (strcmp(leadCmd, "pwd") == 0) {
-                printf("Command not yet implemented\n");
+                printf("%s\n", WORKING_DIRECTORY);
 	} else if (strcmp(leadCmd, "rm") == 0) {
                 printf("Command not yet implemented\n");	
 	} else if (strcmp(leadCmd, "rmdir") == 0) {

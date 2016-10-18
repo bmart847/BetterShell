@@ -1,3 +1,5 @@
+char WORKING_DIRECTORY[200] = "/\0";
+
 #include "shellFunctions.h"
 #include "fatSupport.h"
 #include "pfe.h"
