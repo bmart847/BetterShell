@@ -1,3 +1,5 @@
+#include "root.h"
+
 unsigned char* readRootSectors() {
 	/* Declare Variables */
  	unsigned char* root;

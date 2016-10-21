@@ -1,3 +1,5 @@
+#include "shellFunctions.h"
+
 /* Obtains input from the user */
 char *get_line() {
 	/* Initialize Variables */

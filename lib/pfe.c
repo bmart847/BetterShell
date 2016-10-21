@@ -1,3 +1,5 @@
+#include "pfe.h"
+
 /* PFE Command Functions */
 
 int checkRange(int x, int y) {	/* Verifies that the provided integers are acceptable */
