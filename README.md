@@ -3,4 +3,5 @@ Bryan Martin &amp; Joe Listro
 
 Build Info:
 
-Currently, to build, just enter the src folder and run "gcc main.c"
+To build, enter the BetterShell folder and type "make"
+Then, to run it, type "./BetterShell"

@@ -1,3 +1,5 @@
+#include "pbs.h"
+
 /* PBS Command Functions */
 
 /* Prints the FAT12 Boot Sector Information from file, arg1 */

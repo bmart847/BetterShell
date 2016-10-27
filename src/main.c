@@ -1,13 +1,15 @@
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 char WORKING_DIRECTORY[200] = "/\0";
 
-#include "libs/root.h"
-#include "shellFunctions.h"
-#include "fatSupport.h"
-#include "pfe.h"
-#include "pbs.h"
-#include "libs/root.c"
-
-#define SECTOR_SIZE 512
+FILE* FILE_SYSTEM_ID;
+int BYTES_PER_SECTOR = 512; 
 
 /* Main Function (Currently Just Runs Shell) */
 int main(int argc, char *argv[]) {
@@ -18,8 +20,7 @@ int main(int argc, char *argv[]) {
 	int mostSignificantBits, leastSignificantBits, bytesPerSector, status;
 
 	/* File to open, later allow it to be specified */
-	FILE_SYSTEM_ID = fopen("../test/floppy2", "r+");
-	BYTES_PER_SECTOR = SECTOR_SIZE; 
+	FILE_SYSTEM_ID = fopen("test/floppy2", "r+");
 
 	/* Open file */
 	if (FILE_SYSTEM_ID == NULL) {

@@ -1,3 +1,5 @@
+#include "fatSupport.h"
+
 /******************************************************************************
  * Supporting functions for the FAT project:
  *
