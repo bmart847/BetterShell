@@ -18,5 +18,6 @@ unsigned char* readRootSectors();
 void enterDir(char *dirName);
 void exitDir();
 void pwd();
+int existingDirectory(string* directoryName);
 
 #endif
