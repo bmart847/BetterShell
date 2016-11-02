@@ -64,8 +64,8 @@ void pwd() {
 }
 
 int existingDirectory(string* directoryName) {
-	unsigned int directoryDepth = 0;
-	/* Tokens: strtok() modifies the string, directoryName must be duplicated */
+	unsigned int dirDepth = 0;
+	unsigned short firstLogicalCluster;
 	char* pathName = (char*) malloc(strlen(directoryName) + 1);
 	strcpy(pathName, directoryName); 
 	/* Get token */
@@ -74,8 +74,8 @@ int existingDirectory(string* directoryName) {
 	/* Check each directory in the directoryName exists */
 	while(token != NULL) {
 		
-		
 	}
-
+	
+	/* Directory path does not exist */
 	return 1;
 }
