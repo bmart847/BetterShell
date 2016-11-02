@@ -63,6 +63,9 @@ void pwd() {
 	return;
 }
 
+/********************************************************************************
+ * Check directoryName recursively by directory if the path exists
+ *******************************************************************************/
 int existingDirectory(string* directoryName) {
 	char* pathName = (char*) malloc(strlen(directoryName) + 1);
 	strcpy(pathName, directoryName); 
@@ -75,13 +78,11 @@ int existingDirectory(string* directoryName) {
 			/* Unable to find the specified directory */
 			return 1;
 		} 
+		
+		token = strtok(NULL, "/");
 			
 	}
 	
 	/* Directory path does exist */
 	return 0;
-}
-
-int searchForDir(const char* dirName) {
-	
 }
