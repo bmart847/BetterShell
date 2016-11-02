@@ -25,7 +25,7 @@ void enterDir(char *dirName) {
 			strcat(WORKING_DIRECTORY, "/");
 		} else {
 			/* dirName does not exist as an absolute path from root */
-			perror("The directory does not exists as an absolute path!");
+			printf("The directory does not exists as an absolute path.");
 		}
 	} else {  /* dirName is a relative path. */
 		/* Does dirName exist inside the working directory? */
@@ -38,7 +38,7 @@ void enterDir(char *dirName) {
 			strcat(WORKING_DIRECTORY, "/");
 		} else {			
 			/* dirName does not exist as an relative path from current working directory */
-			perror("The directory does not exists as an relative path!");
+			printf("The directory does not exists as an relative path.");
 		}
 	}
 	return;
@@ -64,8 +64,6 @@ void pwd() {
 }
 
 int existingDirectory(string* directoryName) {
-	unsigned int dirDepth = 0;
-	unsigned short firstLogicalCluster;
 	char* pathName = (char*) malloc(strlen(directoryName) + 1);
 	strcpy(pathName, directoryName); 
 	/* Get token */
@@ -73,9 +71,17 @@ int existingDirectory(string* directoryName) {
 	token = strtok(pathName, "/");
 	/* Check each directory in the directoryName exists */
 	while(token != NULL) {
-		
+		if(searchForDir(token) != 0) {
+			/* Unable to find the specified directory */
+			return 1;
+		} 
+			
 	}
 	
-	/* Directory path does not exist */
-	return 1;
+	/* Directory path does exist */
+	return 0;
+}
+
+int searchForDir(const char* dirName) {
+	
 }
