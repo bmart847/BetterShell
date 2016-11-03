@@ -8,8 +8,8 @@
 
 /* Function Prototypes Here */
 
-#ifndef ROOT_H
-#define ROOT_H
+#ifndef FAT_H
+#define FAT_H
 
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;

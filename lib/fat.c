@@ -1,4 +1,4 @@
-#include "root.h"
+#include "fat.h"
 
 unsigned char* readRootSectors() {
 	/* Declare Variables */
@@ -68,21 +68,22 @@ void pwd() {
  *******************************************************************************/
 int existingDirectory(string* directoryName) {
 	char* pathName = (char*) malloc(strlen(directoryName) + 1);
-	strcpy(pathName, directoryName); 
-	/* Get token */
-	char* token;
-	token = strtok(pathName, "/");
+	strcpy(pathName, directoryName);
+    
+	/* Get deliminator token */
+	char* delim;
+	delim = strtok(pathName, "/");
 	/* Check each directory in the directoryName exists */
-	while(token != NULL) {
-		if(searchForDir(token) != 0) {
-			/* Unable to find the specified directory */
-			return 1;
-		} 
+	while(delim != NULL) {
+		 
 		
-		token = strtok(NULL, "/");
-			
+		delim = strtok(NULL, "/");
 	}
 	
 	/* Directory path does exist */
 	return 0;
+}
+
+int searchForDir(short currentFLC, char* dirName) {
+    
 }
