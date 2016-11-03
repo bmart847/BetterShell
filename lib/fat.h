@@ -35,6 +35,6 @@ void pwd();
 void enterDir(char *dirName);
 int existingDirectory(workingDir dir, char* path);
 int searchForDir(short* curFLC, char * target);
-
+char *getEntryName(dirEntry directory);
 
 #endif
