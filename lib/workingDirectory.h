@@ -11,7 +11,6 @@ typedef struct {
 	unsigned int wdDepth;
 	unsigned int wdSize;
 	unsigned int wdOffset;
-	unsigned short wdFLC;
 } workingDir;
 
 void initWorkingDir();

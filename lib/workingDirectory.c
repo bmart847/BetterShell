@@ -14,7 +14,6 @@ void initWorkingDir() {
 	init->wdPath[1] = '\0';
 	init->wdSize = 1;
 	init->wdOffset = 1;
-	init->wdFLC = 0;
 	shmdt(init);
 }
 
