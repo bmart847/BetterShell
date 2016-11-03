@@ -31,15 +31,14 @@ void enterDir(char *dirName) {
 
 		if (strcmp(dirName, "/\0") == 0){
 			/* Move to Root */
-			init = 
+			init = newWD;
 		}else if (existingDirectory(newWD, dirName) == 0) {
-			/* Does dirName as an absolute path exist? */
-
-			/* Reset init to newWorkingDir */
+			/* dirName as an absolute path exists
+			 * Reset init to newWorkingDir */
             init = newWD;
 		} else {
 			/* dirName does not exist as an absolute path from root */
-			printf("The directory does not exists as an absolute path.");
+			printf("The directory does not exist.");
 		}
         
 	} else {  /* dirName is a relative path. */
@@ -48,10 +47,10 @@ void enterDir(char *dirName) {
 		/* Does dirName exist inside the working directory? */
 		if (existingDirectory(newWD, dirName) == 0) {
 			/* Add new directory name to working directory string */
-            init->dirAdd(dirName);
+            init = newWD;
 		} else {			
 			/* dirName does not exist as an relative path from current working directory */
-			printf("The directory does not exists as an relative path.");
+			printf("The directory does not exist.");
 		}
 	}
 	return;
