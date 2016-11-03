@@ -24,10 +24,10 @@ void enterDir(char *dirName) {
 		
 	} else if (dirName[0] == '/') {
 		/* Check if dirName is an absolute path, stars with '/' */
-		newWD.setDir(dirName);
-		newWD.setDepth(1);
-		newWD.setFLC(0);
-		newWD.setOffset(1);
+		newWD.dirSet(dirName);
+		newWD.depthSet(1);
+		newWD.FLCset(0);
+		newWD.offsetSet(1);
 
 		if (strcmp(dirName, "/\0") == 0){
 			/* Move to Root */
@@ -42,7 +42,7 @@ void enterDir(char *dirName) {
 		}
         
 	} else {  /* dirName is a relative path. */
-        dir += strlen(newWD.pathName);
+        dir += strlen(newWD->pathName);
         
 		/* Does dirName exist inside the working directory? */
 		if (existingDirectory(newWD, dirName) == 0) {
@@ -91,7 +91,9 @@ int existingDirectory(workingDir dir, char* path) {
     
 	/* Check each directory in the directoryName exists */
 	while(delim != NULL) {
-        if (searchForFolder(firstLogicalCluster, delim) == -1);
+		if (searchForFolder(firstLogicalCluster, delim) == -1) {
+
+		}
 		
 		delim = strtok(NULL, "/");
 	}
