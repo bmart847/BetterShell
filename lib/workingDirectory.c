@@ -88,36 +88,3 @@ char* dirGet() {
 	shmdt(access);
 	return tmp;
 }
-
-// Stub
-int main(){
-	workingDir* test;
-	initWorkingDir();
-	test = shmat(shm_id, 0, SHM_RDONLY);
-	printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
-	shmdt(test);
-
-	dirAdd("New");
-	dirAdd("Folder");
-	dirAdd("Path");
-
-	test = shmat(shm_id, 0, SHM_RDONLY);
-        printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
-	shmdt(test);
-
-	dirRemove();
-	dirRemove();
-
-        test = shmat(shm_id, 0, SHM_RDONLY);
-        printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
-        shmdt(test);
-
-	dirSet("/setting/this/dir");
-
-        test = shmat(shm_id, 0, SHM_RDONLY);
-        printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
-        shmdt(test);
-
-	printf("Test PWD: %s\n", dirGet());
-	return;
-}
