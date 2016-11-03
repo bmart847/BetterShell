@@ -19,5 +19,7 @@ void enterDir(char *dirName);
 void exitDir();
 void pwd();
 int existingDirectory(string* directoryName);
+int searchForFile(short currentFLC, char * target);
+int searchHarderForFile(short currentFLC, char ** dirs, int index, int depth);
 
 #endif

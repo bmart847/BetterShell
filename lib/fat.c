@@ -16,26 +16,31 @@ unsigned char* readRootSectors() {
 }
 
 void enterDir(char *dirName) {
+    workingDir newWD = init;
+    char* dir = newWD.wd;
 	/* Check if dirName is an absolute path, stars with '/' */
 	if (dirName[0] == '/') {
-		/* Does dirName as an absolute path exist? */
-		if(existingDirectory(dirName) == 0) {
-			/* Reset WORKING_DIRECTORY to dirName */
-			strcpy(WORKING_DIRECTORY, dirName);
-			strcat(WORKING_DIRECTORY, "/");
+        newWD.setDir(dirName);
+        newWD.setDepth(1);
+        newWD.setFLC(0);
+        newWD.setOffset(1);
+		
+        /* Does dirName as an absolute path exist? */
+		if(existingDirectory(newWD, dirName) == 0) {
+			/* Reset init to newWorkingDir */
+            init = newWD;
 		} else {
 			/* dirName does not exist as an absolute path from root */
 			printf("The directory does not exists as an absolute path.");
 		}
+        
 	} else {  /* dirName is a relative path. */
+        dir += strlen(newWD.pathName);
+        
 		/* Does dirName exist inside the working directory? */
-		string newDirectory = WORKING_DIRECTORY;
-		strcat(newDirectory, '/');
-		strcat(newDirectory, dirName);
-		if (existingDirectory(newDirectory) == 0) {		
+		if (existingDirectory(newWD, dirName) == 0) {
 			/* Add new directory name to working directory string */
-			strcat(WORKING_DIRECTORY, dirName);
-			strcat(WORKING_DIRECTORY, "/");
+            init->dirAdd(dirName);
 		} else {			
 			/* dirName does not exist as an relative path from current working directory */
 			printf("The directory does not exists as an relative path.");
@@ -66,16 +71,20 @@ void pwd() {
 /********************************************************************************
  * Check directoryName recursively by directory if the path exists
  *******************************************************************************/
-int existingDirectory(string* directoryName) {
-	char* pathName = (char*) malloc(strlen(directoryName) + 1);
-	strcpy(pathName, directoryName);
+int existingDirectory(WorkingDirectory dir, char* path) {
+    char* pathName = (char*) malloc(strlen(path) + 1);
+	strcpy(pathName, path);
+    
+    unsigned short firstLogicalCluster = dir->FLC;
+    unsigned int offsetInWD = dir->offsetInPathName;
     
 	/* Get deliminator token */
 	char* delim;
 	delim = strtok(pathName, "/");
+    
 	/* Check each directory in the directoryName exists */
 	while(delim != NULL) {
-		 
+        searchForFolder(firstLogicalCluster, delim);
 		
 		delim = strtok(NULL, "/");
 	}
@@ -84,6 +93,17 @@ int existingDirectory(string* directoryName) {
 	return 0;
 }
 
-int searchForDir(short currentFLC, char* dirName) {
+int searchForFolder(short currentFLC, char* dirName) {
+    unsigned char * sector;
+    char ** dirs;
+    int     depth;
+    int index = 0;
     
+    if(dirName[0] == '/' && strlen(dirName) == 1)
+        return 0;
+}
+
+int searchHarderForFolder(short currentFLC, char ** dirs, int index, int depth) {
+    
+    return 0;
 }
