@@ -28,6 +28,18 @@ void dirAdd(char* new) {
 	change->wdSize = change->wdSize + newSize;
 }
 
+void dirRemove() {
+	workingDir* change = shmat(shm_id, 0, 0);
+	int index = change->wdSize - 1, removeSize = 0;
+	change->wdPath[index] = '\0';
+	while(change->wdPath[index] != '/') {
+		change->wdPath[index] = '\0';
+		removeSize++;
+		index--;
+	}
+	change->wdSize = change->wdSize - removeSize;
+}
+
 // Stub
 int main(){
 	workingDir* test;
@@ -37,10 +49,18 @@ int main(){
 	shmdt(test);
 
 	dirAdd("New");
+	dirAdd("Folder");
+	dirAdd("Path");
 
 	test = shmat(shm_id, 0, SHM_RDONLY);
         printf("%s - %i\n", test->wdPath, test->wdSize);
 	shmdt(test);
 
+	dirRemove();
+	dirRemove();
+
+        test = shmat(shm_id, 0, SHM_RDONLY);
+        printf("%s - %i\n", test->wdPath, test->wdSize);
+        shmdt(test);
 	return;
 }

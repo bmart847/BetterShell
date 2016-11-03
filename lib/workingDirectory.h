@@ -8,7 +8,7 @@ int shm_id;
 
 typedef struct {
 	char wdPath[200];
-	unsigned int wdSize
+	unsigned int wdSize;
 } workingDir;
 
 void initWorkingDir();
