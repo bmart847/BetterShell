@@ -14,12 +14,26 @@
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
 
+typedef struct
+{
+	char           name[8];
+	char           extension[3];
+	unsigned char  attributes;
+	unsigned char  reserved[2];
+	unsigned short creationTime;
+	unsigned short creationDate;
+	unsigned short lastAccessDate;
+	unsigned char  ignored[2];
+	unsigned short lastWriteTime;
+	unsigned short lastWriteDate;
+	unsigned short firstLogicalCluster;
+	unsigned int   fileSize;
+} dirEntry;
+
 unsigned char* readRootSectors();
 void enterDir(char *dirName);
 void exitDir();
 void pwd();
-int existingDirectory(string* directoryName);
-int searchForFile(short currentFLC, char * target);
-int searchHarderForFile(short currentFLC, char ** dirs, int index, int depth);
-
+int existingDirectory(workingDir dir, char* path);
+int searchForDir(short currentFLC, char * target);
 #endif

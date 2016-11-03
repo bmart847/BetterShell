@@ -18,6 +18,7 @@ unsigned char* readRootSectors() {
 void enterDir(char *dirName) {
     workingDir newWD = init;
     char* dir = newWD.wd;
+
 	if (strcmp(dirName, "..") == 0) {
 		/* Move Up Directory */
 
@@ -75,9 +76,7 @@ void pwd() {
 	return;
 }
 
-/********************************************************************************
- * Check directoryName recursively by directory if the path exists
- *******************************************************************************/
+/* Check directoryName recursively by directory if the path exists */
 int existingDirectory(workingDir dir, char* path) {
     char* pathName = (char*) malloc(strlen(path) + 1);
 	strcpy(pathName, path);
@@ -92,15 +91,18 @@ int existingDirectory(workingDir dir, char* path) {
 	/* Check each directory in the directoryName exists */
 	while(delim != NULL) {
 		if (searchForFolder(firstLogicalCluster, delim) == -1) {
-
+			/* Directory does not exist */
+			return -1;
 		}
 		
+		/* Get next directory name */
 		delim = strtok(NULL, "/");
 	}
 	
 	/* Directory path does exist */
 	return 0;
 }
+
 
 int searchForDir(short curFLC, char* dirName) {
 	
