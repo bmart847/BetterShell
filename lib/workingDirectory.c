@@ -77,12 +77,15 @@ void dirSet(char* newPath) {
         shmdt(change);
 }
 
-char* getWorkingDirectory() {
+char* dirGet() {
 	workingDir* access = shmat(shm_id, 0, SHM_RDONLY);
-	char *tmp = malloc(200 * sizeof(char));
-	const char* src = &(access->wdPath);
+	int i;
+	char* tmp = malloc(access->wdSize * sizeof(char*));
+
+	for(i = 0; i < access->wdSize; i++) {
+		tmp[i] = access->wdPath[i];
+	}
 	shmdt(access);
-	memcpy(tmp, src, 200*sizeof(char*));
 	return tmp;
 }
 
@@ -115,6 +118,6 @@ int main(){
         printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
         shmdt(test);
 
-	printf("Test PWD: %s", getWorkingDirectory());
+	printf("Test PWD: %s\n", dirGet());
 	return;
 }

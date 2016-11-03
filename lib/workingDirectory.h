@@ -17,4 +17,4 @@ void initWorkingDir();
 void dirAdd(char*);
 void dirRemove();
 void dirSet(char*);
-char* getWorkingDirectory();
+char* dirGet();
