@@ -18,6 +18,7 @@ void initWorkingDir() {
 	shmdt(init);
 }
 
+// Adds directory 'new' to the end of the working directory
 void dirAdd(char* new) {
 	workingDir* change;
 	unsigned int newSize = 0, i;
@@ -36,7 +37,7 @@ void dirAdd(char* new) {
 	change->wdSize = change->wdSize + newSize;
 	shmdt(change);
 }
-
+// Removes one directory from the end of the working directory (for 'cd ..')
 void dirRemove() {
 	workingDir* change = shmat(shm_id, 0, 0);
 	int index = change->wdSize - 1, removeSize = 1;
