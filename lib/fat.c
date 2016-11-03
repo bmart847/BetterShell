@@ -1,7 +1,7 @@
 #include "fat.h"
 
 void pwd() {
-	init->pwd();
+	printf("%s", init.dirGet());
 	return;
 }
 

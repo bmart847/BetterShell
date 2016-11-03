@@ -13,7 +13,8 @@
 
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
-extern bootSector bootSectorData
+extern bootSector bootSectorData;
+extern workingDir init;
 
 typedef struct
 {
@@ -34,7 +35,7 @@ typedef struct
 void pwd();
 void enterDir(char *dirName);
 int existingDirectory(workingDir dir, char* path);
-int searchForDir(short* curFLC, char * target);
+int searchForDir(short* curFLC, char* target);
 char *getEntryName(dirEntry directory);
 
 #endif
