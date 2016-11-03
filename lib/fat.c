@@ -20,13 +20,18 @@ void enterDir(char *dirName) {
     char* dir = newWD.wd;
 	/* Check if dirName is an absolute path, stars with '/' */
 	if (dirName[0] == '/') {
-        newWD.setDir(dirName);
-        newWD.setDepth(1);
-        newWD.setFLC(0);
-        newWD.setOffset(1);
-		
-        /* Does dirName as an absolute path exist? */
-		if(existingDirectory(newWD, dirName) == 0) {
+		newWD.setDir(dirName);
+		newWD.setDepth(1);
+		newWD.setFLC(0);
+		newWD.setOffset(1);
+
+		if (strcmp(dirName, "..") == 0) {
+			/* Move Up Directory */
+		} else if (strcmp(dirName, "/") == 0){
+			/* Move to Root */
+		}else if (existingDirectory(newWD, dirName) == 0) {
+			/* Does dirName as an absolute path exist? */
+
 			/* Reset init to newWorkingDir */
             init = newWD;
 		} else {
@@ -71,7 +76,7 @@ void pwd() {
 /********************************************************************************
  * Check directoryName recursively by directory if the path exists
  *******************************************************************************/
-int existingDirectory(WorkingDirectory dir, char* path) {
+int existingDirectory(workingDir dir, char* path) {
     char* pathName = (char*) malloc(strlen(path) + 1);
 	strcpy(pathName, path);
     
@@ -84,7 +89,7 @@ int existingDirectory(WorkingDirectory dir, char* path) {
     
 	/* Check each directory in the directoryName exists */
 	while(delim != NULL) {
-        searchForFolder(firstLogicalCluster, delim);
+        if (searchForFolder(firstLogicalCluster, delim) == -1);
 		
 		delim = strtok(NULL, "/");
 	}
@@ -93,17 +98,20 @@ int existingDirectory(WorkingDirectory dir, char* path) {
 	return 0;
 }
 
-int searchForFolder(short currentFLC, char* dirName) {
-    unsigned char * sector;
-    char ** dirs;
-    int     depth;
-    int index = 0;
-    
-    if(dirName[0] == '/' && strlen(dirName) == 1)
-        return 0;
+int searchForDir(short curFLC, char* dirName) {
+	
+	int index;
+	/* Loop through directory searching for dirName */
+	for (index = 0; index < 20; index++)
+	{
+		if ((unsigned char)directoryEntry[k].name[0] == 0xE5) {
+			/* The directory entry is currently unused (free) */
+		} else if ((unsigned char) directoryEntry[k].name[0] == 0x00) {
+			/* The directory is currently unusued, as are all the remaining entries in this directory */
+			break;
+		} else {
+			
+		}
+	}
 }
 
-int searchHarderForFolder(short currentFLC, char ** dirs, int index, int depth) {
-    
-    return 0;
-}
