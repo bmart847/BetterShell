@@ -49,6 +49,12 @@ void dirRemove() {
 	}
 	change->wdPath[index] = '\0';
 	change->wdSize = change->wdSize - removeSize;
+
+        change->wdOffset = change->wdSize;
+        do {
+            	change->wdOffset--;
+        } while(change->wdPath[change->wdOffset-2] != '/');
+
 	shmdt(change);
 }
 
