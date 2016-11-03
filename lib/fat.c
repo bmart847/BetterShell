@@ -18,17 +18,20 @@ unsigned char* readRootSectors() {
 void enterDir(char *dirName) {
     workingDir newWD = init;
     char* dir = newWD.wd;
-	/* Check if dirName is an absolute path, stars with '/' */
-	if (dirName[0] == '/') {
+	if (strcmp(dirName, "..") == 0) {
+		/* Move Up Directory */
+
+		
+	} else if (dirName[0] == '/') {
+		/* Check if dirName is an absolute path, stars with '/' */
 		newWD.setDir(dirName);
 		newWD.setDepth(1);
 		newWD.setFLC(0);
 		newWD.setOffset(1);
 
-		if (strcmp(dirName, "..") == 0) {
-			/* Move Up Directory */
-		} else if (strcmp(dirName, "/") == 0){
+		if (strcmp(dirName, "/\0") == 0){
 			/* Move to Root */
+			init = 
 		}else if (existingDirectory(newWD, dirName) == 0) {
 			/* Does dirName as an absolute path exist? */
 
