@@ -18,8 +18,8 @@ fatSupport.o : lib/fatSupport.h lib/fatSupport.c
 workingDirectory.o : lib/workingDirectory.h lib/workingDirectory.c
 	$(CC) -c lib/workingDirectory.h lib/workingDirectory.c
 
-root.o : lib/root.h lib/root.c
-	$(CC) -c lib/root.h lib/root.c
+root.o : lib/fat.h lib/fat.c
+	$(CC) -c lib/fat.h lib/fat.c
 
 pfe.o : lib/pfe.h lib/pfe.c
 	$(CC) -c lib/pfe.h lib/pfe.c
