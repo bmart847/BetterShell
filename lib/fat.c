@@ -1,18 +1,8 @@
 #include "fat.h"
 
-unsigned char* readRootSectors() {
-	/* Declare Variables */
- 	unsigned char* root;
-	int i, br;
-
-	/* Allocate Space */
-	root = (unsigned char*) malloc(14 * (BYTES_PER_SECTOR * sizeof(unsigned char)));
-
-	for(i=19;i<33;i++) {
-		br = br + read_sector(i, &root[(i-19)*BYTES_PER_SECTOR]);
-	}
-
-	return root;
+void pwd() {
+	init->pwd();
+	return;
 }
 
 void enterDir(char *dirName) {
@@ -21,19 +11,15 @@ void enterDir(char *dirName) {
 
 	if (strcmp(dirName, "..") == 0) {
 		/* Move Up Directory */
-
-		
+		newWD->dirRemove();
+		init = newWD;
 	} else if (dirName[0] == '/') {
 		/* Check if dirName is an absolute path, stars with '/' */
 		newWD.dirSet(dirName);
-		newWD.depthSet(1);
-		newWD.FLCset(0);
-		newWD.offsetSet(1);
-
 		if (strcmp(dirName, "/\0") == 0){
 			/* Move to Root */
 			init = newWD;
-		}else if (existingDirectory(newWD, dirName) == 0) {
+		}else if (existingDirectory(newWD) == 0) {
 			/* dirName as an absolute path exists
 			 * Reset init to newWorkingDir */
             init = newWD;
@@ -46,7 +32,7 @@ void enterDir(char *dirName) {
         dir += strlen(newWD->pathName);
         
 		/* Does dirName exist inside the working directory? */
-		if (existingDirectory(newWD, dirName) == 0) {
+		if (existingDirectory(newWD) == 0) {
 			/* Add new directory name to working directory string */
             init = newWD;
 		} else {			
@@ -57,29 +43,11 @@ void enterDir(char *dirName) {
 	return;
 }
 
-void exitDir() {
-	/* Remove characters from working directory until */
-	int i, j;
-	for(i=0; WORKING_DIRECTORY[i] != '\0';i++);
-
-	i--;
-
-	do {
-		WORKING_DIRECTORY[i] = '\0';
-		i--;
-	} while(WORKING_DIRECTORY[i] != '/');
-	return;
-}
-
-void pwd() {
-	printf("%s", WORKING_DIRECTORY);
-	return;
-}
-
 /* Check directoryName recursively by directory if the path exists */
 int existingDirectory(workingDir dir, char* path) {
     char* pathName = (char*) malloc(strlen(path) + 1);
 	strcpy(pathName, path);
+	string newPath;
     
     unsigned short firstLogicalCluster = dir->FLC;
     unsigned int offsetInWD = dir->offsetInPathName;
@@ -87,16 +55,18 @@ int existingDirectory(workingDir dir, char* path) {
 	/* Get deliminator token */
 	char* delim;
 	delim = strtok(pathName, "/");
-    
+	newPath = delim;
 	/* Check each directory in the directoryName exists */
 	while(delim != NULL) {
-		if (searchForFolder(firstLogicalCluster, delim) == -1) {
+		if (searchForFolder(firstLogicalCluster, newPath) == -1) {
 			/* Directory does not exist */
 			return -1;
 		}
 		
 		/* Get next directory name */
 		delim = strtok(NULL, "/");
+		strcat(newPath, "/");
+		strcat(newPath, delim);
 	}
 	
 	/* Directory path does exist */
@@ -104,8 +74,9 @@ int existingDirectory(workingDir dir, char* path) {
 }
 
 
-int searchForDir(short curFLC, char* dirName) {
+int searchForDir(short* curFLC, char* dirName) {
 	
+
 	int index;
 	/* Loop through directory searching for dirName */
 	for (index = 0; index < 20; index++)
@@ -120,4 +91,3 @@ int searchForDir(short curFLC, char* dirName) {
 		}
 	}
 }
-
