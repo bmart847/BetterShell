@@ -13,6 +13,7 @@
 
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
+extern bootSector bootSectorData
 
 typedef struct
 {
@@ -30,10 +31,10 @@ typedef struct
 	unsigned int   fileSize;
 } dirEntry;
 
-unsigned char* readRootSectors();
-void enterDir(char *dirName);
-void exitDir();
 void pwd();
+void enterDir(char *dirName);
 int existingDirectory(workingDir dir, char* path);
-int searchForDir(short currentFLC, char * target);
+int searchForDir(short* curFLC, char * target);
+
+
 #endif
