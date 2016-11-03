@@ -55,13 +55,15 @@ void dirRemove() {
 // Sets the working directory to the given string
 void dirSet(char* newPath) {
         workingDir* change = shmat(shm_id, 0, 0);
-        unsigned int newSize = 0;
+        unsigned int newSize = 0, oldSize = change->wdSize, i;
+
+	memset(&(change->wdPath), '\0', sizeof(change->wdPath));
 
 	change->wdDepth = 0;
         for(newSize = 0; newPath[newSize] != '\0'; newSize++) {
-		if(newPath[newSize] == '/' && newPath[newSize] != '\0') {
+		if(newPath[newSize] == '/') {
 			change->wdDepth++;
-			change->wdOffset = newSize + 1;
+			change->wdOffset = newSize + 2;
 		}
 	}
 
