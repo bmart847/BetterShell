@@ -1,0 +1,234 @@
+\documentclass[12pt,letterpaper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{ifpdf}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage{mla}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+
+\begin{document}
+
+\title{BetterShell Software Design Document}
+\date{3 October 2016}
+\author{Bryan Martin, Joseph Listro}
+
+\maketitle
+\vspace{-15mm}
+
+\begin{center}
+{\large
+
+	\vspace{20mm}
+	\includegraphics[scale=2]{champlain1}
+	
+	Champlain College
+}
+\end{center}
+
+\newpage
+\tableofcontents
+
+\newpage
+\section{Introduction}
+This software design document will be an overview of the design choices that our team has made in preparation of implementing a shell for use with a FAT12 file system.
+
+\section{How the shell works}
+
+The shell runs user commands.  When run, it will display a prompt and wait for the user to input a command.  When the user has finished their input and pressed enter, the shell will fork off a child process to perform the operations required by the user's command. After the command has been completed, the shell will display any appropriate error messages or output from the process and then display the initial prompt again.
+
+\section{Shell Functions}
+
+\subsection{Concatenate}
+The concatenate command prints the contents of x to the i/o buffer.  If x is a directory or does not exist, then the command will display an error.
+\subsubsection{Usage}
+\begin{verbatim}
+$ cat \em{x}
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+int cat();
+int cat(char* target);
+\end{verbatim}
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Check that the function was handed exactly one argument.
+\item Open the file.
+\item Print the contents of the file to the i/o buffer.
+\item Print newline character.
+\item Function terminates.
+\end{enumerate}
+
+\subsection{Change Directory}
+The change directory command will change the shell's working directory to x. If there is not argument specified, then the cd command changes the working directory to the home directory.
+\subsubsection{Usage}
+\begin{verbatim}
+$ cd x
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+int cd();
+ind cd(char *targetDir);
+\end{verbatim}
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Check the number of arguments specified in the function called.
+\item If there is no argument specified, change the working directory to the home directory.
+\item If there is one argument specified, change the working directory to the specified argument.
+\item Function terminates.
+\end{enumerate}
+
+\subsection{Disk Free}
+The disk free command will print the number of free logical blocks. Any arguments given to it will be ignored.
+\subsubsection{Usage}
+\begin{verbatim}
+$ df
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+int df();
+\end{verbatim}
+Both relative and absolute file names can be provided to this function, a parameter beginning in "/" will be assumed to be absolute, and a parameter beginning with anything else will be assumed to be relative.
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Print value of free blocks from variable.
+\end{enumerate}
+
+\subsection{List}
+The list function will perform three different functions depending on the specified argument. If the argument is the name of a file, then the list function will print the name of the file, the file extension, file type, FLC, and file size. If the name of a directory is the specified argument, then the function will list the names of all the files and sub-directories that are contained in the specified directory in addition to the current and parent directory. Alternatively, if the argument provided is a blank space, then the function will list each entry in the current directory, as well as the current and parent directories, with the file extension for each entry and it's file size in bytes, FLC, and file type. Lastly, if there are two or more arguments, the list function will return an error message.
+\subsubsection{Usage}
+\begin{verbatim}
+$ ls x
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+int ls();
+int ls(char *target);
+\end{verbatim}
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Check there are less than two arguments.
+\item Check if the specified argument is a file.
+\item If it is, print the name of the file, the file extension, the file size, FLC, and file type.
+\item Check if the specified argument is a file directory.
+\item If it is, enter the directory and cycle through each entry, printing the file name for each entry.
+\item Check if the specified argument is a blank space.
+\item If it is, enter the directory and cycle through each entry, including the current and parent directory, printing the file name, file extension, FLC, file size, and file type for each entry.
+\item Function terminates.
+\end{enumerate}
+
+\subsection{Make Directory}
+The make directory command creates a new directory inside the current (working) directory.
+\subsubsection{Usage}
+\begin{verbatim}
+$ mkdir x
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+int mkdir();
+int mkdir(char* newDir);
+\end{verbatim}
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Check that exactly one argument has been specified.
+\item Create a new directory inside the current one.
+\item The working directory remains the same.
+\item Function terminates.
+\end{enumerate}
+
+\subsection{Print Working Directory}
+This function prints the working directory to the I/O buffer.
+\subsubsection{Usage}
+\begin{verbatim}
+$ pwd
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+int pwd();
+\end{verbatim}
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Ignore any specified arguments.
+\item Print the path of the current working directory to the I/O buffer.
+\item Function terminates.
+\end{enumerate}
+
+\subsection{Remove}
+The remove command will delete a file from the file system.
+\subsubsection{Usage}
+\begin{verbatim}
+$ rm x
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+int rm();
+int rm(char *filename);
+\end{verbatim}
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Check that exactly one argument has been specified and it is a file name that exists in the working directory.
+\item Remove the entry.
+\item Optimize the memory usage of the parent directory.
+\item Free the data sectors of the target file.
+\item Update appropriate data structures.
+\item Terminate function.
+\end{enumerate}
+
+\subsection{Remove Directory}
+The remove command will delete a directory from the file system.
+\subsubsection{Usage}
+\begin{verbatim}
+$ rmdir x
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+int rmdir();
+int rmdir(char *dirname);
+\end{verbatim}
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Check that exactly one argument has been specified and it is a directory that exists inside the working directory.
+\item Remove the entry
+\item Optimize the memory usage of the parent directory.
+\item Free the data sectors of the target file.
+\item Update appropriate data structures.
+\item Recursively follow steps 1-6 for all child directories.
+\item Terminate function.
+\end{enumerate}
+
+\subsection{Touch}
+The touch function will create a new file, or alert the user that a file by that name already exists. Both relative and absolute file names can be provided to this function, a parameter beginning in "/" will be assumed to be absolute, and a parameter beginning with anything else will be assumed to be relative.
+\subsubsection{Usage}
+\begin{verbatim}
+$ touch \em{x}
+\end{verbatim}
+\subsubsection{Function Prototype}
+\begin{verbatim}
+$ int touch();
+int touch(char* filename);
+\end{verbatim}
+\subsubsection{Function Execution}
+\begin{enumerate}
+\item Check argument for a leading "/" (indicates an absolute path)
+\item In the FAT, find the directory that contains the file being targeted.
+\item Search the directory for files that match the file name given.
+\item If not found, add it too the FAT.
+\item If found, print that the file already exists.
+\item Write to file if necessary.
+\end{enumerate}
+
+\section{Conclusion}
+As changes are made to the BetterShell projects, this document will be kept up-to-date, making this an evergreen document.
+
+\end{document}

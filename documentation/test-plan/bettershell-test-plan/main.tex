@@ -1,0 +1,140 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{setspace}
+\doublespacing
+
+\begin{document}
+
+\title{BetterShell Test Plan}
+\date{3 October 2016}
+\author{Bryan Martin, Joseph Listro}
+
+\maketitle
+
+\vspace{-15mm}
+
+\begin{center}
+{
+	\vspace{20mm}
+	\includegraphics[scale=2]{champlain1}
+    
+    Champlain College
+}
+\end{center}
+
+\pagebreak
+\tableofcontents
+%--INTRODUCTION--%
+\section{Introduction}
+This document outlines a test plan to be used for testing the BetterShell program.
+
+\section{Test Items}
+All functions that will be built for the BetterShell are to be tested individually and together.  
+
+\subsection{Features to be tested}
+\subsubsection{Concatenate}
+\textbf{Condition:} testfile.txt does not exist in working directory \\
+\textbf{Input: }  \texttt{\$ cat testfile.txt}\\
+\textbf{Correct output:} \texttt{testfile.txt does not exist} | \textbf{Incorrect Output:} \texttt{\emph{x}}\\
+\\
+\textbf{Condition:} testfile.txt does exist in working directory \\
+\textbf{Input: }  \texttt{\$ cat testfile.txt}\\
+\textbf{Correct output:} \texttt{\emph{x}} | \textbf{Incorrect Output:}  \texttt{testfile.txt does not exist}
+
+\subsubsection{Change Directory}
+\textbf{Condition:} subdir is not a subdirectory of working directory \\
+\textbf{Input:} \texttt{\$ cd subdir}\\
+\textbf{Incorrect Output:} \texttt{subdir \$ }\\
+\textbf{Correct Output:} \texttt{Directory named subdir does not exist}\\
+\\
+\textbf{Condition:} subdir is not a subdirectory of working directory \\
+\textbf{Input:} \texttt{\$ cd subdir}\\
+\textbf{Incorrect Output:} \texttt{Directory named subdir does not exist.}\\ 
+\textbf{Correct Output:} \texttt{subdir \$ }\\
+
+\subsubsection{Disk Free}
+\textbf{Condition: } None \\
+\textbf{Input:}  \texttt{df} \\
+\textbf{Correct Output:} Any Integer \textless= total size | \textbf{Incorrect Output:} Anything else\\
+
+\subsubsection{List}
+\textbf{Condition:} Normal function execution.
+\textbf{Input:} \texttt{\$ ls}\\
+\textbf{Output:}\\
+\texttt{Name\qquad \qquad \quad Type\qquad File Size\qquad FLC\\
+SUBDIR\qquad \qquad DIR \qquad 0\qquad \qquad \qquad 7\\
+FILE.TXT\qquad \quad Text \qquad 750   \qquad \qquad 1}\\\\
+\textbf{Condition:}  file.txt exists in the working directory\\
+\textbf{Input:} \texttt{\$ ls file.txt}\\
+\textbf{Incorrect Output:} \texttt{}\\
+\textbf{Correct Output:}\\ 
+\texttt{File Name\quad Extension\quad File Type\quad FLC\quad File Size \\file\qquad \qquad    txt\qquad \qquad text\qquad \quad  1\qquad \qquad 750}\\
+\\
+\textbf{Condition:} file.txt does not exist in the working directory \\
+\textbf{Input:} \texttt{\$ ls file.txt }\\
+\textbf{Incorrect Output:}\\ 
+\texttt{File Name\quad Extension\quad File Type\quad FLC\quad File Size \\rand\qquad \qquad    txt\qquad \qquad text\qquad \quad  6\qquad \qquad 1525.}\\
+\textbf{Correct Output:} \texttt{file.txt does not exist.}\\
+
+\subsubsection{Make Directory}
+\textbf{Condition:}  Current working directory does not contain \emph{newDir} \\
+\textbf{Input:} \texttt{\$ mkdir newDir}\\
+\textbf{Correct Output:} \texttt{Created Directory newDir} | \textbf{Incorrect Output:} Anything else\\
+\\
+\textbf{Condition:}  Current working directory contains \emph{newDir} \\
+\textbf{Input:} \texttt{\$ mkdir newDir}\\
+\textbf{Correct Output:} \texttt{newDir Already Exists.} | \textbf{Incorrect Output:} Anything else\\
+\\
+\textbf{Condition:}  Directory exists at /test/abs/file \\
+\textbf{Input:} \texttt{\$ mkdir /test/abs/file}\\
+\textbf{Correct Output:} \texttt{/test/abs/file Already Exists}\\
+\textbf{Incorrect Output:} Anything else\\
+\\
+\textbf{Condition:}  No directory exists at /test/abs/file \\
+\textbf{Input:} \texttt{\$ mkdir /test/abs/file}\\
+\textbf{Correct Output:} \texttt{Created directory /test/abs/file}\\
+\textbf{Incorrect Output:} Anything else\\
+
+\subsubsection{Print Working Directory}
+\textbf{Condition: } Current Working directory is \emph{ParentDir} \\
+\textbf{Input:}  \texttt{\$ pwd} \\
+\textbf{Correct Output:} \texttt{ParentDir} | \textbf{Incorrect Output:} Anything else
+
+\subsubsection{Remove}
+\textbf{Condition: } \emph{x} does not exist\\
+\textbf{Input:}  \texttt{\$ rm x} \\
+\textbf{Correct Output:} \texttt{x does not exist in the working directory}\\ \textbf{Incorrect Output:} Any other output.\\
+\\
+\textbf{Condition: } \emph{x} does exist\\
+\textbf{Input:}  \texttt{\$ rm x} \\
+\textbf{Correct Output:} Nothing\\
+\textbf{Incorrect Output:} \texttt{x does not exist in the working directory}\\
+
+\subsubsection{Remove Directory}
+\textbf{Condition:}  Current working directory does contains \emph{newDir} \\
+\textbf{Input:} \texttt{\$ rmdir newDir}\\
+\textbf{Correct Output:} \texttt{Deleted Directory newDir} | \textbf{Incorrect Output:} Anything else\\
+\\
+\textbf{Condition:}  Current working directory does not contain \emph{newDir} \\
+\textbf{Input:} \texttt{\$ rmdir newDir}\\
+\textbf{Correct Output:} \texttt{No Directory newDir} | \textbf{Incorrect Output:} Anything else\\
+\\
+\textbf{Condition:}  Current working directory contains \emph{testfile.txt} \\
+\textbf{Input:} \texttt{\$ rmdir testfile.txt}\\
+\textbf{Correct Output:} \texttt{testfile.txt is a file. Use rm.}\\ \textbf{Incorrect Output:} Anything else\\
+
+
+\subsubsection{Touch}
+\textbf{Condition:} \emph{x} already exists in the working directory.\\
+\textbf{Input:} \texttt{\$ touch x}\\
+\textbf{Correct Output:} \texttt{x already exists in the working directory}\\
+\textbf{Incorrect Output:} Any other output.\\
+\\
+\textbf{Condition:} \emph{x} does not exist in the working directory.\\
+\textbf{Input:} \texttt{\$ touch x}\\
+\textbf{Correct Output:} No output. |
+\textbf{Incorrect Output:} Any output.
+
+\end{document}
