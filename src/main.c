@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 	int mostSignificantBits, leastSignificantBits, bytesPerSector, status;
 
 	/* File to open, later allow it to be specified */
-	FILE_SYSTEM_ID = fopen("test/floppy2", "r+");
+	FILE_SYSTEM_ID = fopen("test/floppy3", "r+");
 
 	/* Open file */
 	if (FILE_SYSTEM_ID == NULL) {
@@ -33,6 +33,9 @@ int main(int argc, char *argv[]) {
 	if(read_sector(0,boot) == -1) {
 		printf("Error reading the boot sector.\n");
 	}
+
+	/* Initialize Shared Memory Space for Current Working Directory */
+	initWorkingDir();
 
 	/* Main Shell Logic */
 	do {
