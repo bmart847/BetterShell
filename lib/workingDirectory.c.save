@@ -13,11 +13,12 @@ void initWorkingDir() {
 	init->wdPath[0] = '/';
 	init->wdPath[1] = '\0';
 	init->wdSize = 1;
+	init->wdDepth = 0;
 	init->wdOffset = 1;
+	init->wdFLC = 0;
 	shmdt(init);
 }
 
-// Adds directory 'new' to the end of the working directory
 void dirAdd(char* new) {
 	workingDir* change;
 	unsigned int newSize = 0, i;
@@ -34,9 +35,10 @@ void dirAdd(char* new) {
 	strcat(change->wdPath, new);
 	change->wdOffset = change->wdSize + 2;
 	change->wdSize = change->wdSize + newSize;
+	change->wdDepth++;
 	shmdt(change);
 }
-// Removes one directory from the end of the working directory (for 'cd ..')
+
 void dirRemove() {
 	workingDir* change = shmat(shm_id, 0, 0);
 	int index = change->wdSize - 1, removeSize = 1;
@@ -48,42 +50,7 @@ void dirRemove() {
 	}
 	change->wdPath[index] = '\0';
 	change->wdSize = change->wdSize - removeSize;
-
-        change->wdOffset = change->wdSize;
-        do {
-            	change->wdOffset--;
-        } while(change->wdPath[change->wdOffset-2] != '/');
-
 	shmdt(change);
-}
-
-// Sets the working directory to the given string
-void dirSet(char* newPath) {
-        workingDir* change = shmat(shm_id, 0, 0);
-        unsigned int newSize = 0, oldSize = change->wdSize, i;
-
-	memset(&(change->wdPath), '\0', sizeof(change->wdPath));
-
-	change->wdDepth = 0;
-        for(newSize = 0; newPath[newSize] != '\0'; newSize++) {
-		if(newPath[newSize] == '/') {
-			change->wdDepth++;
-			change->wdOffset = newSize + 2;
-		}
-	}
-
-        strcat(change->wdPath, newPath);
-        change->wdSize = newSize;
-        shmdt(change);
-}
-
-char* getWorkingDirectory() {
-	workingDir* access = shmat(shm_id, 0, SHM_RDONLY);
-	char *tmp = malloc(200 * sizeof(char));
-	const char* src = &(access->wdPath);
-	shmdt(access);
-	memcpy(tmp, src, 200*sizeof(char*));
-	return tmp;
 }
 
 // Stub
@@ -108,13 +75,5 @@ int main(){
         test = shmat(shm_id, 0, SHM_RDONLY);
         printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
         shmdt(test);
-
-	dirSet("/setting/this/dir");
-
-        test = shmat(shm_id, 0, SHM_RDONLY);
-        printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
-        shmdt(test);
-
-	printf("Test PWD: %s", getWorkingDirectory());
 	return;
 }
