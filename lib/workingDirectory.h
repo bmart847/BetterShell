@@ -8,6 +8,7 @@ int shm_id;
 
 typedef struct {
 	char wdPath[200];
+	unsigned int wdDepth;
 	unsigned int wdSize;
 	unsigned int wdOffset;
 	unsigned short wdFLC;

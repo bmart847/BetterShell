@@ -32,7 +32,7 @@ void dirAdd(char* new) {
 	}
 
 	strcat(change->wdPath, new);
-	change->wdOffset = change->wdSize;
+	change->wdOffset = change->wdSize + 2;
 	change->wdSize = change->wdSize + newSize;
 	shmdt(change);
 }
@@ -51,12 +51,23 @@ void dirRemove() {
 	shmdt(change);
 }
 
+void dirSet(char* newPath) {
+        workingDir* change = shmat(shm_id, 0, 0);
+        unsigned int newSize = 0;
+
+        for(newSize = 0; newPath[newSize] != '\0'; newSize++) {}
+
+        strcat(change->wdPath, newPath);
+        change->wdSize = newSize;
+        shmdt(change);
+}
+
 // Stub
 int main(){
 	workingDir* test;
 	initWorkingDir();
 	test = shmat(shm_id, 0, SHM_RDONLY);
-	printf("%s - %i\n", test->wdPath, test->wdSize);
+	printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
 	shmdt(test);
 
 	dirAdd("New");
@@ -64,14 +75,21 @@ int main(){
 	dirAdd("Path");
 
 	test = shmat(shm_id, 0, SHM_RDONLY);
-        printf("%s - %i\n", test->wdPath, test->wdSize);
+        printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
 	shmdt(test);
 
 	dirRemove();
 	dirRemove();
 
         test = shmat(shm_id, 0, SHM_RDONLY);
-        printf("%s - %i\n", test->wdPath, test->wdSize);
+        printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
         shmdt(test);
+
+	dirSet("/setting/this/dir");
+
+        test = shmat(shm_id, 0, SHM_RDONLY);
+        printf("%s - %i - %i\n", test->wdPath, test->wdSize, test->wdOffset);
+        shmdt(test);
+
 	return;
 }
