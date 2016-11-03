@@ -10,15 +10,22 @@ void initWorkingDir() {
 	}
 	printf("Shared memory initialized!\n");
 	init = shmat(shm_id, 0, 0);
-	init->wd[0] = '/';
-	init->wd[1] = '\0';
+	init->wdPath[0] = '/';
+	init->wdPath[1] = '\0';
+	init->wdSize = 1;
 }
 
 void dirAdd(char* new) {
 	workingDir* change;
+	unsigned int newSize = 1, i;
+
+	for(i = 0; new[i] != '\0'; i++){}
+	newSize = newSize + i;
+
 	change = shmat(shm_id, 0, 0);
-	strcat(change->wd, new);	
-	strcat(change->wd, "/\0");
+	strcat(change->wdPath, new);
+	strcat(change->wdPath, "/\0");
+	change->wdSize = change->wdSize + newSize;
 }
 
 // Stub
@@ -26,13 +33,13 @@ int main(){
 	workingDir* test;
 	initWorkingDir();
 	test = shmat(shm_id, 0, SHM_RDONLY);
-	printf("%s\n", test->wd);
+	printf("%s - %i\n", test->wdPath, test->wdSize);
 	shmdt(test);
 
 	dirAdd("New");
 
 	test = shmat(shm_id, 0, SHM_RDONLY);
-        printf("%s\n", test->wd);
+        printf("%s - %i\n", test->wdPath, test->wdSize);
 	shmdt(test);
 
 	return;
