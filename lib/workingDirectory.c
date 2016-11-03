@@ -10,13 +10,30 @@ void initWorkingDir() {
 	}
 	printf("Shared memory initialized!\n");
 	init = shmat(shm_id, 0, 0);
-	init->wd = "/";
+	init->wd[0] = '/';
+	init->wd[1] = '\0';
+}
+
+void dirAdd(char* new) {
+	workingDir* change;
+	change = shmat(shm_id, 0, 0);
+	strcat(change->wd, new);	
+	strcat(change->wd, "/\0");
 }
 
 // Stub
 int main(){
+	workingDir* test;
 	initWorkingDir();
-	workingDir *test = shmat(shm_id, 0, SHM_RDONLY);
+	test = shmat(shm_id, 0, SHM_RDONLY);
 	printf("%s\n", test->wd);
+	shmdt(test);
+
+	dirAdd("New");
+
+	test = shmat(shm_id, 0, SHM_RDONLY);
+        printf("%s\n", test->wd);
+	shmdt(test);
+
 	return;
 }
