@@ -6,16 +6,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-/* Function Prototypes Here */
-
-#ifndef FAT_H
-#define FAT_H
-
-extern char* WORKING_DIRECTORY;
-extern int BYTES_PER_SECTOR;
-extern bootSector bootSectorData;
-extern workingDir init;
-
 typedef struct
 {
 	char           name[8];
@@ -32,10 +22,32 @@ typedef struct
 	unsigned int   fileSize;
 } dirEntry;
 
+typedef struct
+{
+	char Filename[9];
+	char Type[4];
+	char Attributes;
+	char CreationTime[2];
+	char CreationDate[2];
+	char LastAccessDate[2];
+
+	char LastWriteTime[2];
+	char LastWriteDate[2];
+	short FirstLogicalCluster;
+	int FileSize;
+} fileEntry;
+
+
+#ifndef FAT_H
+#define FAT_H
+
+extern char* WORKING_DIRECTORY;
+extern int BYTES_PER_SECTOR;
+
 void pwd();
 void enterDir(char *dirName);
-int existingDirectory(workingDir dir, char* path);
-int searchForDir(short* curFLC, char* target);
-char *getEntryName(dirEntry directory);
-
+short existingDirectory(char* path);
+short searchForDir(short curFLC, char* target);
+char* getEntryName(dirEntry directory);
+void listDirectory();
 #endif
