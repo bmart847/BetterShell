@@ -8,6 +8,7 @@ int shm_id;
 
 typedef struct _sharedmemory {
 	char wdPath[200];
+	unsigned int wdSize;
 	short FLC;
 	char filename[45];
 
