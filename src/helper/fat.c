@@ -1,7 +1,8 @@
 #include "fat.h"
 
 /* Check directoryName recursively by directory if the path exists */
-short existingDirectory(char* path) {
+short existingDirectory(char* path)
+{
 	char* pathName;
 	unsigned short firstLogicalCluster = 0;
 	
@@ -46,7 +47,7 @@ short searchForDir(short curFLC, char* dirName)
 	else
 	{
 		/* Cluster is located at physical address rootRealCluster + curFLC + ((numRootEntries * sizeof(dirEntry)) / BYTES_PER_SECTOR) - 2 */
-		realCluster = returnDirectoryPhysicalOffset();
+		//realCluster = returnDirectoryPhysicalOffset();
 	}
 	read_sector(realCluster, (unsigned char*) newWorkingDirectory);
 	/* Search directory at curFLC for dirName */
