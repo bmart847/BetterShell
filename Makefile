@@ -6,79 +6,79 @@ OBJS = bin/cat.o bin/cd.o bin/df.o bin/ls.o bin/mkdir.o bin/pbs.o bin/pfe.o bin/
 
 all: $(EXE)
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/fatSupport.o: src/helper/fatSupport.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/fat.o: src/helper/fat.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/workingDirectory.o: src/helper/fatSupport.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/cat.o: src/cmd/cat.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/cd.o: src/cmd/cd.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/df.o: src/cmd/df.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/ls.o: src/cmd/ls.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/mkdir.o: src/cmd/mkdir.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/pbs.o: src/cmd/pbs.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/pfe.o: src/cmd/pfe.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/pwd.o: src/cmd/pwd.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/rm.o: src/cmd/rm.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/rmdir.o: src/cmd/rmdir.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/touch.o: src/cmd/touch.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/cat.o: src/cmd/cat.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/betterShell.o: src/helper/shellFunctions.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/main.o: src/main.c
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 bin/BetterShell: bin/betterShell.o bin/main.o
 	@make validate-build
-	$(CC) -o $@ $(CC_OPTIONS) -c $^
+	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
 run:
 	@make all
