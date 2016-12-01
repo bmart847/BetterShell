@@ -21,10 +21,16 @@
 int shm_id;
 
 typedef struct _sharedmemory {
+	// Current Working Directory
 	char wdPath[200];
 	unsigned int wdSize;
+
+	// Filename of FAT block file
+	char fName[45];
+	unsigned int fSize;
+
+	// First Logical Cluster
 	short FLC;
-	char filename[45];
 } sharedMemory;
 
 #ifndef SHARED_H
