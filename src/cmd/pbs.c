@@ -24,7 +24,7 @@
 
 FILE* FILE_SYSTEM_ID;
 
-int (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	printf("pbs has been called.\n");
 	unsigned char* bootIndex;
 
@@ -33,7 +33,7 @@ int (int argc, char *argv[]) {
 	int bytesPerSector;
 	int sectorsPerCluster;
 	int numReservedSectors;
-	int numFATS;
+	int numFATs;
 	int numRootEntries;
 	int totalSectorCount;
 	int sectorsPerFAT;
