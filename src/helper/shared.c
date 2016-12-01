@@ -1,5 +1,7 @@
 #include "shared.h"
 
+const key_t SHM_KEY = 1234;
+
 // Adds directory 'new' to the end of the working directory
 void dirAdd(char* new) {
         sharedMemory* change;
