@@ -55,9 +55,7 @@ typedef struct
 #define FAT_H
 
 extern char* WORKING_DIRECTORY;
-extern int BYTES_PER_SECTOR;
 
-void pwd();
 void enterDir(char *dirName);
 short existingDirectory(char* path);
 short searchForDir(short curFLC, char* target);

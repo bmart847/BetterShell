@@ -1,11 +1,4 @@
 #include "fat.h"
-//#include "shared.h"
-
-void pwd()
-{
-	printf("%s\n", dirGet());
-	return;
-}
 
 void enterDir(char *dirName)
 {

@@ -24,8 +24,7 @@ int pwd_help();
 
 int main(int argc, char *argv[])
 {
-	// Just a stub
-	printf("pwd has been called\n");
+	printf("%s\n", dirGet());
 	return 0;
 }
 
