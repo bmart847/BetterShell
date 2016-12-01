@@ -15,12 +15,12 @@ CC_OPTIONS = -std=c99 -D _SVID_SOURCE
 
 
 EXE = BetterShell
-OBJS = fatSupport.o fat.o shared.o
+OBJS = fatSupport.o fat.o shared.o shellFunctions.o
 SHARE = src/helper/fatSupport.* src/helper/fat.* src/helper/shared.*
 
-$(EXE): $(OBJS) src/main.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+$(EXE): src/main.c $(OBJS)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
 fatSupport.o: src/helper/fatSupport.h src/helper/fatSupport.c
 #	@make validate-build
@@ -32,6 +32,9 @@ fat.o: src/helper/fat.h src/helper/fat.c
 
 shared.o: src/helper/shared.h src/helper/shared.c
 #	@make validate-build
+	$(CC) -g $(CC_OPTIONS) -c $^
+
+shellFunctions.o: src/helper/shellFunctions.h src/helper/shellFunctions.c
 	$(CC) -g $(CC_OPTIONS) -c $^
 
 bin/cat: src/cmd/cat.c $(SHARE)
@@ -82,7 +85,7 @@ run:
 	@make all
 
 clean:
-	rm -f *.o *~ bin/*.o bin/*~ src/*~ src/cmd/*~ src/helper/*~
+	rm -f *.o *~ bin/*.o bin/*~ src/*~ src/cmd/*~ src/helper/*~ src/helper/*.gch
 
 validate-build:
 	if ! [ -d "./bin" ]; then mkdir -p "./bin"; fi

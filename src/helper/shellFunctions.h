@@ -28,7 +28,7 @@
 void initWorkingDir();
 char *get_line();
 char **parseInput(char *input);
-int cmdLaunch(char **input);
+int cmdLaunch(char *input);
 int cmdExecute(char **input);
 
 extern char* WORKING_DIRECTORY;

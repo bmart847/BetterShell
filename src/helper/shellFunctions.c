@@ -1,4 +1,7 @@
 #include "shellFunctions.h"
+#include "shared.h"
+#include <unistd.h>
+#include <strings.h>
 
 // Initializes the shared memory space used to store the working directory
 void initWorkingDir() {
@@ -55,17 +58,17 @@ char **parseInput(char *input) {
 }
 
 /* Forks a process for the given command */
-int cmdLaunch(char **input) {
+int cmdLaunch(char *input) {
 	/* Initialize Variables */
 	pid_t pid, wpid;
 	int stat;
-
+	
 	/* Fork Process */
 	pid = fork();
 
-	/* Error Handling */
+	/* Error Handlings */
 	if(pid == 0) {
-		if(execvp(input[0], input) == -1) {
+		if(execvp(input, NULL) == -1) {
 			perror("Error_Launching_Process");
 		}
 		return 1;
@@ -86,47 +89,35 @@ int cmdLaunch(char **input) {
 /* Determines the command and performs neccessary actiions */
 int cmdExecute(char **input) {
 	/* Initialize Variables */
-	char *leadCmd = input[0];	
+	char *leadCmd = input[0];
 
 	/* Determine command and take action */
 	if(leadCmd == NULL) {
 		return 0;
 	} else if (strcmp(leadCmd, "cat") == 0) {
-		printf("Command not yet implemented\n");
+		cmdLaunch("bin/cat");
 	} else if (strcmp(leadCmd, "cd") == 0) {
-		char *newDir = input[1];
-		enterDir(newDir);
-                printf("%s\n", WORKING_DIRECTORY);
+		cmdLaunch("bin/cd");
 	} else if (strcmp(leadCmd, "df") == 0) {
-                printf("Command not yet implemented\n");
-        } else if (strcmp(leadCmd, "help") == 0) {
-                printf("Command not yet implemented\n");
+		cmdLaunch("bin/df");
+	} else if (strcmp(leadCmd, "help") == 0) {
+        printf("To-Do\n");
 	} else if (strcmp(leadCmd, "ls") == 0) {
-                printf("Command not yet implemented\n");
+		cmdLaunch("bin/ls");
 	} else if (strcmp(leadCmd, "mkdir") == 0) {
-                printf("Command not yet implemented\n");
+		cmdLaunch("bin/mkdir");
 	} else if (strcmp(leadCmd, "pbs") == 0) {
-		if(input[1] == NULL) {
-			pbs();
-		} else if(strcmp((char*)input[1], "--help") == 0) {
-			pbs_help();
-		}
+		cmdLaunch("bin/pbs");
 	} else if (strcmp(leadCmd, "pfe") == 0) {
-		if(input[1] != NULL && input[2] != NULL && input[3] == NULL) {
-			pfe(atoi(input[1]), atoi(input[2]));
-		} else if((strcmp((char*)input[1], "--help") == 0) && input[2] == NULL) {
-			pfe_help();
-		} else {
-			printf("Invalid parameters.\n");
-		}
+		cmdLaunch("bin/pfe");cmdLaunch("bin/pwd");
 	} else if (strcmp(leadCmd, "pwd") == 0) {
-                printf("%s\n", WORKING_DIRECTORY);
+        cmdLaunch("bin/pwd");
 	} else if (strcmp(leadCmd, "rm") == 0) {
-                printf("Command not yet implemented\n");	
+        cmdLaunch("bin/rm");
 	} else if (strcmp(leadCmd, "rmdir") == 0) {
-                printf("Command not yet implemented\n");
+        cmdLaunch("bin/rmdir");
 	} else if (strcmp(leadCmd, "touch") == 0) {
-                printf("Command not yet implemented\n");
+        cmdLaunch("bin/touch");
 	} else if (strcmp(leadCmd, "exit") == 0) {
 		printf("Quitting\n");
 		return 1;
