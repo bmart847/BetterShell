@@ -95,7 +95,7 @@ run:
 	@make all
 
 clean:
-	rm -f $(EXE) $(OBJS)
+	rm -f *.o *~ bin/*.o bin/*~
 
 validate-build:
 	if ! [ -d "./bin" ]; then mkdir -p "./bin"; fi
