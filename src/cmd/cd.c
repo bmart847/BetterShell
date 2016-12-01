@@ -34,14 +34,11 @@ int main(int argc, char *argv[])
 		dirSet("/");
 		filenameSet("");
 		flcSet(0);
-		
-		// Set sharedMemory (working directory) to root
-		dirRe(&root);
 	}
 	else if (argc == 2)
 	{
 		// CD to the given path name
-		enterDirectory(dirGet(), argv[1])
+		dirAdd(argv[1]);
 	}
 	else
 	{

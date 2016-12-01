@@ -42,7 +42,7 @@ short searchForDir(short curFLC, char* dirName)
 	if (curFLC == 0)
 	{
 		/* Root Directory size = numReservedSectors + (sectorsPerFAT * numFATs) */
-		realCluster = returnRootPhysicalOffset();
+		//realCluster = 9 * (read_;
 	}
 	else
 	{
@@ -91,7 +91,6 @@ short searchForDir(short curFLC, char* dirName)
 	free(fileName);
 	free(newWorkingDirectory);
 	return -1;
-}
 }
 
 /* Create a String from the filename of a dirEntry element */
