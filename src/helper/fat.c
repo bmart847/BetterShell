@@ -4,10 +4,11 @@
 short existingDirectory(char* path) {
 	char* pathName;
 	unsigned short firstLogicalCluster = 0;
+	
+	// Duplicate path because it will get modified
+	pathName = path; 
 
-//	pathName = path; // Duplicate because strtok() will modify
-
-					 /* Get deliminator token */
+	/* Get deliminator token */
 	char* delim;
 	delim = strtok(pathName, "/");
 	/* Check each directory in the directoryName exists */
@@ -32,56 +33,64 @@ short existingDirectory(char* path) {
 short searchForDir(short curFLC, char* dirName)
 {
 	/* Read Logical Cluster */
-	unsigned char* data = (unsigned char*)malloc(BYTES_PER_SECTOR);
+	dirEntry* newWorkingDirectory = (dirEntry*) malloc(512 * 9 * sizeof(dirEntry));
 	char* fileName;
 
 	unsigned int realCluster;
-	if ((short)curFLC == 0)
+	printf("Current FLC : %i\n", curFLC);
+	if (curFLC == 0)
 	{
 		/* Root Directory size = numReservedSectors + (sectorsPerFAT * numFATs) */
-		//realCluster = returnRootPhysicalOffset();
+		realCluster = returnRootPhysicalOffset();
 	}
 	else
 	{
 		/* Cluster is located at physical address rootRealCluster + curFLC + ((numRootEntries * sizeof(dirEntry)) / BYTES_PER_SECTOR) - 2 */
-		//realCluster = returnDirectoryPhysicalOffset() + curFLC;
+		realCluster = returnDirectoryPhysicalOffset();
 	}
-
-	read_sector(realCluster, data);
-	dirEntry* directory = data;
-
+	read_sector(realCluster, (unsigned char*) newWorkingDirectory);
 	/* Search directory at curFLC for dirName */
 	int index;
 	for (index = 0; index < 20; index++)
 	{
-		if ((unsigned char)directory[index].name[0] == 0xE5)
+		if ((unsigned char) newWorkingDirectory[index].name[0] == 0xE5)
 		{
 			/* The directory entry is currently unused (free) */
 		}
-		else if ((unsigned char)directory[index].name[0] == 0x00)
+		else if ((unsigned char) newWorkingDirectory[index].name[0] == 0x00)
 		{
-			/* The directory is currently unusued, as are all the remaining entries in this directory */
+			/* The directory is currently unused, as are all the remaining entries in this directory */
+			break;
+		}
+		else if ((unsigned char) newWorkingDirectory[index].name[0] == 0xFF7)
+		{
+			/* BAD CLUSTER */
+			printf("Bad Cluster.\n");
+			break;
 		}
 		else
 		{
-			if (directory[index].attributes == 0x10)
+			printf("New directory entry found. NAME: %s\n", newWorkingDirectory[index].name);
+			if (newWorkingDirectory[index].attributes == 0x10)
 			{
-				/* Found a subdirectory */
-				fileName = getEntryName(directory[index]);
+				/* Found a sub-directory */
+				fileName = getEntryName(newWorkingDirectory[index]);
 				/* Is this entry dirName? Should be case sensitive? */
 				if (strcmp(fileName, dirName) == 0)
 				{
 					/* Advance curFLC */
-					curFLC = directory[index].firstLogicalCluster;
-					free(data);
+					curFLC = newWorkingDirectory[index].firstLogicalCluster;
+					free(newWorkingDirectory);
 					return curFLC;
 				}
 			}
 		}
 	}
 
-	free(data);
+	free(fileName);
+	free(newWorkingDirectory);
 	return -1;
+}
 }
 
 /* Create a String from the filename of a dirEntry element */
