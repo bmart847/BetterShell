@@ -1,51 +1,60 @@
 #include "fat.h"
 
-void enterDir(char *dirName)
+void enterDir(char* workingDir, char* targetDir)
 {
-	char* pathName;
-
-	if (dirName == NULL)
+	if (targetDir == NULL)
 	{
 		printf("CD must be handed an argument./n");
+		cd_help();
 		return;
 	}
-	else if (strcmp(dirName, "..") == 0)
+	else if (strcmp(workingDir, "..") == 0)
 	{
 		/* Move Up Directory */
 		dirRemove();
+		return;
 	}
-	else if (dirName[0] == '/')
+	else if (targetDir[0] == '/')
 	{
-		/* Check if dirName is an absolute path, stars with '/' */
-		if (strcmp(dirName, "/\0") == 0)
+		/* Check if target directory is an absolute path, stars with '/' */
+		if (strcmp(targetDir, "/\0") == 0)
 		{
 			/* Move to Root */
-			dirSet(dirName);
+			dirSet(targetDir);
+			flcSet(0);
+			filenameSet("");
+			return;
 		}
-		else if (existingDirectory(dirName) == 0)
+		else if (existingDirectory(targetDir) != -1)
 		{
-			/* dirName as an absolute path exists */
-			dirSet(dirName);
+			/* The target directory as an absolute path exists */
+			dirSet(targetDir);
+			flcSet(existingDirectory(targetDir));
+			filenameSet("");
+			return;
 		}
 		else
 		{
-			/* dirName does not exist as an absolute path from root */
+			/* The target directory does not exist as an absolute path from root */
 			printf("The directory does not exist.");
 		}
 
 	}
 	else
 	{
-		/* dirName is a relative path. */
+		/* The target directory is a relative path. */
+		char* pathName = malloc(sizeof(dirGet()) + sizeof("/") + sizeof(targetDir));
 		pathName = dirGet();
 		strcat(pathName, "/");
-		strcat(pathName, dirName);
+		strcat(pathName, targetDir);
 
-		/* Does dirName exist inside the working directory? */
-		if (existingDirectory(pathName) == 0)
+		/* Does target directory exist inside the working directory? */
+		if (existingDirectory(pathName) != -1)
 		{
 			/* Add new directory name to working directory string */
-			dirAdd(dirName);
+			dirAdd(targetDirectory);
+			flcset(existingDirectory(pathName));
+			filenameSet("");
 		}
 		else
 		{
@@ -60,10 +69,11 @@ void enterDir(char *dirName)
 short existingDirectory(char* path) {
 	char* pathName;
 	unsigned short firstLogicalCluster = 0;
+	
+	// Duplicate path because it will get modified
+	pathName = path; 
 
-//	pathName = path; // Duplicate because strtok() will modify
-
-					 /* Get deliminator token */
+	/* Get deliminator token */
 	char* delim;
 	delim = strtok(pathName, "/");
 	/* Check each directory in the directoryName exists */

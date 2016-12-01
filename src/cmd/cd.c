@@ -31,24 +31,17 @@ int main(int argc, char *argv[])
 	if (argc == 1)
 	{
 		// Change the working directory to root
-		// Create a new sharedMemory instance to use as root
-		sharedMemory root;
-		strcpy(root->wdPath, "/");
-		root->wdSize = 1;
-		// Root will not have a file name
-		root->fName = "";
-		root->fSize = 0;
-		root->FLC = 0;
+		dirSet("/");
+		filenameSet("");
+		flcSet(0);
 		
 		// Set sharedMemory (working directory) to root
-		dirSet(&root);
+		dirRe(&root);
 	}
 	else if (argc == 2)
 	{
 		// CD to the given path name
-		sharedMemory workingDir;
-		workingDir = dirGet();
-		enterDirectory(&workingDir, argv[1])
+		enterDirectory(dirGet(), argv[1])
 	}
 	else
 	{
