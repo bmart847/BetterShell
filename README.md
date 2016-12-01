@@ -7,10 +7,10 @@
 ###	Due Date: 6 December 2016
 
 ###	Description:
-###	   These functions were provided to us, minor modifications have been made.
+		This is the ReadMe file for BetterShell
 
 ###	Certification of Authenticity:
-###		I certify that this assignment is entirely my own work.
+		I certify that this assignment is entirely my own work.
 
 
 ##  Building & Running:
