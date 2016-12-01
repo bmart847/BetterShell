@@ -24,7 +24,6 @@ int cd_help();
 
 int main(int argc, char *argv[])
 {
-	// Just a stub
 	printf("CD has been called\n");
 	
 	// TODO: Add access to shared memory
