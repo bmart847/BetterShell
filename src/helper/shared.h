@@ -39,7 +39,13 @@ typedef struct
 
 void dirAdd(char*);
 void dirRemove();
-void dirSet(char*);
+
+void dirSet(char* newPath);
+void flcSet(short newFLC);
+void filenameSet(char* newPath);
+
 char* dirGet();
+short flcGet();
+char* filenameGet();
 
 #endif

@@ -22,7 +22,7 @@
 char WORKING_DIRECTORY[200] = "/\0";
 
 FILE* FILE_SYSTEM_ID;
-int BYTES_PER_SECTOR = 512; 
+extern int BYTES_PER_SECTOR; 
 
 /* Main Function (Currently Just Runs Shell) */
 int main(int argc, char *argv[]) {

@@ -4,9 +4,9 @@
 	Assignment: Semester Project
 	Date Assigned: 6 September 2016
 	Due Date: 6 December 2016
-	
-	Description:  Functions for manipulation of FAT data
-	
+
+	Description:  Functions for manipulation of FAT da
+
 	Certification of Authenticity:
 	I certify that this assignment is entirely my own work.
 */
@@ -55,6 +55,7 @@ typedef struct
 #define FAT_H
 
 extern char* WORKING_DIRECTORY;
+extern int BYTES_PER_SECTOR;
 
 void enterDir(char *dirName);
 short existingDirectory(char* path);
