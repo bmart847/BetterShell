@@ -28,18 +28,6 @@ $(EXE): src/main.c $(MAIN)
 	@make validate-build
 	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-# fatSupport.o: src/helper/fatSupport.h src/helper/fatSupport.c
-# 	$(CC) -g $(CC_OPTIONS) -c $^
-
-# fat.o: src/helper/fat.h src/helper/fat.c
-#	$(CC) -g $(CC_OPTIONS) -c $^
-
-# shared.o: src/helper/shared.h src/helper/shared.c
-#	$(CC) -g $(CC_OPTIONS) -c $^
-
-#shellFunctions.o: src/helper/shellFunctions.h src/helper/shellFunctions.c
-#	$(CC) -g $(CC_OPTIONS) -c $^
-
 cat: src/cmd/cat.c $(SHARE)
 	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
 
@@ -74,14 +62,14 @@ touch: src/cmd/touch.c $(SHARE)
 	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
 
 all:
-	@make $(EXE)
+	@make BetterShell
 	@make cat
 #	@make cd
 	@make df
 	@make ls
 	@make mkdir
-#	@make pbs
-#	@make pfe
+	@make pbs
+	@make pfe
 	@make pwd
 	@make rm
 	@make rmdir

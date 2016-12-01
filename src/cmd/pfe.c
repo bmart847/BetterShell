@@ -23,15 +23,20 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
-
-extern int read_sector(int sector_number, char* buffer);
-extern unsigned int get_fat_entry(int fat_entry_number, char* fat);
+extern const key_t SHM_KEY;
 
 int checkRange(int x, int y);
-unsinged char* readFAT12Table(int fatTable);
+unsigned char* readFAT12Table(int fatTable);
 int pfe_help();
 
-int (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
+	sharedMemory* share = shmat(shm_id, 0, 0);
+
+	char* filename = share->fName;
+	printf("Is the filename: %s?\n", share->fName);
+
+	/*
 	if(argc == 1 || argc > 4)
 	{
 		pfe_help();
@@ -43,14 +48,16 @@ int (int argc, char *argv[]) {
 	int i;
 
 	/* Conditions */
-	if(checkRange(start, end) == 1) { /* Utilize checkRange function to verify arguments */
-		printf("Invalid parameter values.\n");
+/*	if(checkRange(start, end) == 1) { /* Utilize checkRange function to verify arguments */
+/*		printf("Invalid parameter values.\n");
 	} else { /* If it checks out... */
-        	for(i=(start+1); i <= end; i++) {
+/*        	for(i=(start+1); i <= end; i++) {
                 	printf("Fat Entry %i: %x\n", i, get_fat_entry(i, fat1));
         	}	
 	}
-
+*/
+	
+	shmdt(share);
 	return(0);
 }
 

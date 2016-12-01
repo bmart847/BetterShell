@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// const key_t SHM_KEY = 1234;
 int shm_id;
 
 typedef struct
