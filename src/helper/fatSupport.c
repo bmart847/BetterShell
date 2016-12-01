@@ -20,7 +20,8 @@
  *****************************************************************************/
 
 extern FILE* FILE_SYSTEM_ID;
-extern int BYTES_PER_SECTOR;
+//extern int BYTES_PER_SECTOR;
+int BYTES_PER_SECTOR = 512;
 
 /******************************************************************************
  * read_sector

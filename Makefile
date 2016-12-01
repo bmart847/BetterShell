@@ -15,6 +15,7 @@ CC_OPTIONS = -std=c99 -D _SVID_SOURCE
 
 
 EXE = BetterShell
+# PROGS = bin/cat bin/cd bin/df bin/cat bin/cd bin/df bin/ls bin/mkdir bin/pbs
 OBJS = fatSupport.o fat.o shared.o shellFunctions.o
 SHARE = src/helper/fatSupport.* src/helper/fat.* src/helper/shared.*
 
@@ -37,29 +38,29 @@ shared.o: src/helper/shared.h src/helper/shared.c
 shellFunctions.o: src/helper/shellFunctions.h src/helper/shellFunctions.c
 	$(CC) -g $(CC_OPTIONS) -c $^
 
-bin/cat: src/cmd/cat.c $(SHARE)
+cat: src/cmd/cat.c $(SHARE)
 #	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) $^
+	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
 
-bin/cd: src/cmd/cd.c $(SHARE)
+cd: src/cmd/cd.c $(SHARE)
 #	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) $^
+	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
 
-bin/df: src/cmd/df.c $(SHARE)
+df: src/cmd/df.c $(SHARE)
 #	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) $^
+	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
 
-bin/ls: src/cmd/ls.c $(SHARE)
+ls: src/cmd/ls.c $(SHARE)
 #	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) $^
+	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
 
-bin/mkdir: src/cmd/mkdir.c $(SHARE)
+mkdir: src/cmd/mkdir.c $(SHARE)
 #	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) $^
+	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
 
-bin/pbs: src/cmd/pbs.c $(SHARE)
+pbs: src/cmd/pbs.c $(SHARE)
 #	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) $^
+	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
 
 bin/pfe: src/cmd/pfe.c $(SHARE)
 #	@make validate-build
