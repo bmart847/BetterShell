@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	/* Initialize Shared Memory Space for Current Working Directory */
-	initWorkingDir();
+	initWorkingDir(argv[1]);
 
 	/* Main Shell Logic */
 	do {
