@@ -64,7 +64,7 @@ touch: src/cmd/touch.c $(SHARE)
 all:
 	@make BetterShell
 	@make cat
-#	@make cd
+	@make cd
 	@make df
 	@make ls
 	@make mkdir
