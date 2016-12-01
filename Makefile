@@ -16,7 +16,7 @@ bin/fat.o: src/helper/fat.c
 	@make validate-build
 	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
-bin/workingDirectory.o: src/helper/fatSupport.c
+bin/shared.o: src/helper/shared.c
 	@make validate-build
 	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 

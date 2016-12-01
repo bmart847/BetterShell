@@ -20,7 +20,7 @@
 
 #include "../helper/fatSupport.h"
 #include "../helper/fat.h"
-#include "../helper/workingDirectory.h"
+#include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
 
