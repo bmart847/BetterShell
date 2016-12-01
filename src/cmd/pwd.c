@@ -24,6 +24,7 @@ int pwd_help();
 
 int main(int argc, char *argv[])
 {
+	shm_id = shmget(1234, 250 * sizeof(char*), 0666);
 	printf("%s\n", dirGet());
 	return 0;
 }
