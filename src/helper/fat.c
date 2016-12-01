@@ -5,7 +5,7 @@ void enterDir(char* workingDir, char* targetDir)
 	if (targetDir == NULL)
 	{
 		printf("CD must be handed an argument./n");
-		cd_help();
+		//cd_help();
 		return;
 	}
 	else if (strcmp(workingDir, "..") == 0)
@@ -52,8 +52,8 @@ void enterDir(char* workingDir, char* targetDir)
 		if (existingDirectory(pathName) != -1)
 		{
 			/* Add new directory name to working directory string */
-			dirAdd(targetDirectory);
-			flcset(existingDirectory(pathName));
+			dirAdd(targetDir);
+			flcSet(existingDirectory(pathName));
 			filenameSet("");
 		}
 		else
@@ -107,12 +107,12 @@ short searchForDir(short curFLC, char* dirName)
 	if (curFLC == 0)
 	{
 		/* Root Directory size = numReservedSectors + (sectorsPerFAT * numFATs) */
-		realCluster = returnRootPhysicalOffset();
+		//realCluster = returnRootPhysicalOffset();
 	}
 	else
 	{
 		/* Cluster is located at physical address rootRealCluster + curFLC + ((numRootEntries * sizeof(dirEntry)) / BYTES_PER_SECTOR) - 2 */
-		realCluster = returnDirectoryPhysicalOffset();
+		//realCluster = returnDirectoryPhysicalOffset();
 	}
 	read_sector(realCluster, (unsigned char*) newWorkingDirectory);
 	/* Search directory at curFLC for dirName */
@@ -156,7 +156,6 @@ short searchForDir(short curFLC, char* dirName)
 	free(fileName);
 	free(newWorkingDirectory);
 	return -1;
-}
 }
 
 /* Create a String from the filename of a dirEntry element */
