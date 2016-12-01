@@ -20,9 +20,17 @@
 
 FILE* FILE_SYSTEM_ID;
 
+int rmdir_help();
+
 int main(int argc, char *argv[])
 {
 	// Just a stub
 	printf("rmdir has been called\n");
 	return 0;
+}
+
+int rmdir_help()
+{
+	printf("Help for rmdir command will go here.\n");
+	return(0);
 }

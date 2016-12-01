@@ -20,9 +20,17 @@
 
 FILE* FILE_SYSTEM_ID;
 
+int rm_help();
+
 int main(int argc, char *argv[])
 {
 	// Just a stub
 	printf("rm has been called\n");
 	return 0;
+}
+
+int rm_help()
+{
+	printf("Help for rm command will go here.\n");
+	return(0);
 }

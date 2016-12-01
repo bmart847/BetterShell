@@ -20,9 +20,17 @@
 
 FILE* FILE_SYSTEM_ID;
 
+int mkdir_help();
+
 int main(int argc, char *argv[])
 {
 	// Just a stub
 	printf("mkdir has been called\n");
 	return 0;
+}
+
+int mkdir_help()
+{
+	printf("Help for mkdir command will go here.\n");
+	return(0);
 }
