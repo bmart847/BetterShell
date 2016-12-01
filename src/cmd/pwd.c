@@ -19,12 +19,13 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
+extern const key_t SHM_KEY;
 
 int pwd_help();
 
 int main(int argc, char *argv[])
 {
-	shm_id = shmget(1234, 250 * sizeof(char*), 0666);
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
 	printf("%s\n", dirGet());
 	return 0;
 }

@@ -3,10 +3,14 @@
 #include <unistd.h>
 #include <strings.h>
 
+extern const key_t SHM_KEY;
+
 // Initializes the shared memory space used to store the working directory
-void initWorkingDir() {
+void initWorkingDir(char *filename) {
 	sharedMemory *init;
-	shm_id = shmget(1234, 250 * sizeof(char*), IPC_CREAT | 0666);
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), IPC_CREAT | 0666);
+	unsigned int i;
+
 	if (shm_id < 0) {
 		printf("shmget Error\n");
 		exit(1);
@@ -16,6 +20,13 @@ void initWorkingDir() {
 	init->wdPath[0] = '/';
 	init->wdPath[1] = '\0';
 	init->wdSize = 1;
+
+	for (i = 0; filename[i] != '\0'; i++) {
+		init->fName[i] = filename[i];
+	}
+	init->fSize = i;
+
+	strcat(init->fName, filename);
 	
 	shmdt(init);
 }
@@ -110,7 +121,7 @@ int cmdExecute(char **input) {
 	} else if (strcmp(leadCmd, "pbs") == 0) {
 		cmdLaunch("bin/pbs");
 	} else if (strcmp(leadCmd, "pfe") == 0) {
-		cmdLaunch("bin/pfe");cmdLaunch("bin/pwd");
+		cmdLaunch("bin/pfe");
 	} else if (strcmp(leadCmd, "pwd") == 0) {
         cmdLaunch("bin/pwd");
 	} else if (strcmp(leadCmd, "rm") == 0) {
