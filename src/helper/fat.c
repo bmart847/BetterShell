@@ -1,7 +1,8 @@
 #include "fat.h"
 
 /* Check directoryName recursively by directory if the path exists */
-short existingDirectory(char* path) {
+short existingDirectory(char* path)
+{
 	char* pathName;
 	unsigned short firstLogicalCluster = 0;
 	
@@ -90,7 +91,6 @@ short searchForDir(short curFLC, char* dirName)
 	free(fileName);
 	free(newWorkingDirectory);
 	return -1;
-}
 }
 
 /* Create a String from the filename of a dirEntry element */
