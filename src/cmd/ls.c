@@ -5,7 +5,7 @@
 	Date Assigned: 6 September 2016
 	Due Date: 6 December 2016
 	
-	Description:  lists the entries in the directory or the file/directory entry contents.
+	Description:  Lists the entries in the directory or the file/directory entry contents.
 	
 	Certification of Authenticity:
 	I certify that this assignment is entirely my own work.
