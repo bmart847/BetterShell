@@ -32,9 +32,9 @@ int pfe_help();
 int main(int argc, char *argv[]) {
 	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
 	sharedMemory* share = shmat(shm_id, 0, 0);
-
+	
 	char* filename = share->fName;
-	printf("Is the filename: %s?\n", share->fName);
+	printf("Is the filename: %s?\n", filenameGet());
 
 	/*
 	if(argc == 1 || argc > 4)
