@@ -95,7 +95,7 @@ run:
 	@make all
 
 clean:
-	rm -f *.o *~ bin/*.o bin/*~
+	rm -f *.o *~ bin/*.o bin/*~ src/*~ src/cmd/*~ src/helper/*~
 
 validate-build:
 	if ! [ -d "./bin" ]; then mkdir -p "./bin"; fi
