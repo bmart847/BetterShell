@@ -24,9 +24,8 @@ void initWorkingDir(char *filename) {
 	for (i = 0; filename[i] != '\0'; i++) {
 		init->fName[i] = filename[i];
 	}
+	
 	init->fSize = i;
-
-	strcat(init->fName, filename);
 	
 	shmdt(init);
 }
