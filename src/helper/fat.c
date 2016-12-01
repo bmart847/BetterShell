@@ -1,5 +1,5 @@
 #include "fat.h"
-#include "../lib/workingDirectory.h"
+//#include "shared.h"
 
 void pwd()
 {
@@ -64,12 +64,11 @@ void enterDir(char *dirName)
 }
 
 /* Check directoryName recursively by directory if the path exists */
-short existingDirectory(char* path)
-{
+short existingDirectory(char* path) {
 	char* pathName;
 	unsigned short firstLogicalCluster = 0;
 
-	pathName = path; // Duplicate because strtok() will modify
+//	pathName = path; // Duplicate because strtok() will modify
 
 					 /* Get deliminator token */
 	char* delim;

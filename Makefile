@@ -4,7 +4,7 @@
 #   Date Assigned: 6 September 2016
 #   Due Date: 6 December 2016
 	
-#   Description:  Prints the current working directory.
+#   Description:  Project Makefile
 	
 #   Certification of Authenticity:
 #	   I certify that this assignment is entirely my own work.
@@ -12,84 +12,71 @@
 CC         = gcc
 CC_OPTIONS = -std=c99 -D _SVID_SOURCE
 
-EXE  = bin/cat bin/cd bin/df bin/ls bin/mkdir bin/pbs bin/pfe bin/pwd bin/rm bin/rmdir bin/touch bin/BetterShell
-OBJS = bin/cat.o bin/cd.o bin/df.o bin/ls.o bin/mkdir.o bin/pbs.o bin/pfe.o bin/pwd.o bin/rm.o bin/rmdir.o bin/touch.o bin/fatSupport.o bin/fat.o bin/workingDirectory.o
 
-all: $(EXE)
+
+EXE = BetterShell
+OBJS = fatSupport.o fat.o shared.o
+SHARE = src/helper/fatSupport.* src/helper/fat.* src/helper/shared.*
+
+$(EXE): $(OBJS) src/main.c
 	@make validate-build
 	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
 
-bin/fatSupport.o: src/helper/fatSupport.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+fatSupport.o: src/helper/fatSupport.h src/helper/fatSupport.c
+#	@make validate-build
+	$(CC) -g $(CC_OPTIONS) -c $^
 
-bin/fat.o: src/helper/fat.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+fat.o: src/helper/fat.h src/helper/fat.c
+#	@make validate-build
+	$(CC) -g $(CC_OPTIONS) -c $^
 
-bin/shared.o: src/helper/shared.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+shared.o: src/helper/shared.h src/helper/shared.c
+#	@make validate-build
+	$(CC) -g $(CC_OPTIONS) -c $^
 
-bin/cat.o: src/cmd/cat.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/cat: src/cmd/cat.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/cd.o: src/cmd/cd.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/cd: src/cmd/cd.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/df.o: src/cmd/df.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/df: src/cmd/df.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/ls.o: src/cmd/ls.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/ls: src/cmd/ls.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/mkdir.o: src/cmd/mkdir.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/mkdir: src/cmd/mkdir.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/pbs.o: src/cmd/pbs.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/pbs: src/cmd/pbs.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/pfe.o: src/cmd/pfe.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/pfe: src/cmd/pfe.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/pwd.o: src/cmd/pwd.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/pwd: src/cmd/pwd.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/rm.o: src/cmd/rm.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/rm: src/cmd/rm.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/rmdir.o: src/cmd/rmdir.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/rmdir: src/cmd/rmdir.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
-bin/touch.o: src/cmd/touch.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
-
-bin/cat.o: src/cmd/cat.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
-
-bin/betterShell.o: src/helper/shellFunctions.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
-
-bin/main.o: src/main.c
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
-
-bin/BetterShell: bin/betterShell.o bin/main.o
-	@make validate-build
-	$(CC) -g -o $@ $(CC_OPTIONS) -c $^
+bin/touch: src/cmd/touch.c $(SHARE)
+#	@make validate-build
+	$(CC) -g -o $@ $(CC_OPTIONS) $^
 
 run:
 	@make all
