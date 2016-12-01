@@ -24,7 +24,9 @@
 
 FILE* FILE_SYSTEM_ID;
 
-int (int argc, char *argv[]) {
+int pbs_help();
+
+int main(int argc, char *argv[]) {
 	printf("pbs has been called.\n");
 	unsigned char* bootIndex;
 
@@ -143,4 +145,9 @@ int (int argc, char *argv[]) {
             volumeID,
             volumeLabel,
             fileSystemType);
+}
+
+int pbs_help() {
+	printf("Help for pbs command will go here.\n");
+	return(0);
 }

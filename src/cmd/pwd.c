@@ -20,9 +20,16 @@
 
 FILE* FILE_SYSTEM_ID;
 
+int pwd_help();
+
 int main(int argc, char *argv[])
 {
 	// Just a stub
 	printf("pwd has been called\n");
 	return 0;
+}
+
+int pwd_help() {
+	printf("Help for pwd command will go here.\n");
+	return(0);
 }

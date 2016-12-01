@@ -20,9 +20,16 @@
 
 FILE* FILE_SYSTEM_ID;
 
+int ls_help();
+
 int main(int argc, char *argv[])
 {
 	// Just a stub
 	printf("ls has been called\n");
 	return 0;
+}
+
+int ls_help() {
+	printf("Help for ls command will go here.\n");
+	return(0);
 }

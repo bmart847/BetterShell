@@ -20,9 +20,17 @@
 
 FILE* FILE_SYSTEM_ID;
 
+int touch_help();
+
 int main(int argc, char *argv[])
 {
 	// Just a stub
 	printf("touch has been called\n");
 	return 0;
+}
+
+int touch_help()
+{
+	printf("Help for touch command will go here.\n");
+	return(0);
 }

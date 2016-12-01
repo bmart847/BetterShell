@@ -20,9 +20,16 @@
 
 FILE* FILE_SYSTEM_ID;
 
+int df_help();
+
 int main(int argc, char *argv[])
 {
 	// Just a stub
 	printf("df has been called\n");
 	return 0;
+}
+
+int df_help() {
+	printf("Help for df command will go here.\n");
+	return(0);
 }

@@ -20,6 +20,8 @@
 
 FILE* FILE_SYSTEM_ID;
 
+int cat_help();
+
 int main(int argc, char *argv[])
 {
 	// Just a stub
@@ -27,3 +29,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+int cat_help() {
+	printf("Help for cat command will go here.\n");
+	return(0);
+}
