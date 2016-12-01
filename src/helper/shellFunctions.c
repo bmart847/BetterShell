@@ -3,10 +3,12 @@
 #include <unistd.h>
 #include <strings.h>
 
+extern const key_t SHM_KEY;
+
 // Initializes the shared memory space used to store the working directory
 void initWorkingDir() {
 	sharedMemory *init;
-	shm_id = shmget(1234, 250 * sizeof(char*), IPC_CREAT | 0666);
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), IPC_CREAT | 0666);
 	if (shm_id < 0) {
 		printf("shmget Error\n");
 		exit(1);

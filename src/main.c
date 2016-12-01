@@ -19,8 +19,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-char WORKING_DIRECTORY[200] = "/\0";
-
 FILE* FILE_SYSTEM_ID;
 extern int BYTES_PER_SECTOR; 
 
