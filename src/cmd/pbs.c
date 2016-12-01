@@ -20,7 +20,7 @@
 
 #include "../helper/fatSupport.h"
 #include "../helper/fat.h"
-#include "../helper/workingDirectory.h"
+#include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 	int bytesPerSector;
 	int sectorsPerCluster;
 	int numReservedSectors;
-	int numFATS;
+	int numFATs;
 	int numRootEntries;
 	int totalSectorCount;
 	int sectorsPerFAT;
