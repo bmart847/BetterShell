@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 	int mostSignificantBits, leastSignificantBits, bytesPerSector, status;
 
 	/* File to open, later allow it to be specified */
-	FILE_SYSTEM_ID = fopen("test/floppy3", "r+");
+	FILE_SYSTEM_ID = fopen(argv[1], "r+");
 
 	/* Open file */
 	if (FILE_SYSTEM_ID == NULL) {
@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
 
 	/* Read Boot Sector */
 	boot = (unsigned char*) malloc(BYTES_PER_SECTOR * sizeof(unsigned char));
+	
 	if(read_sector(0,boot) == -1) {
 		printf("Error reading the boot sector.\n");
 	}
