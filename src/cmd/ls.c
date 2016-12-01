@@ -23,7 +23,10 @@ FILE* FILE_SYSTEM_ID;
 int ls_help();
 
 int main(int argc, char *argv[])
-{dirEntry directory;
+{
+	shm_id = shmget(1234, 250 * sizeof(char*), 0666);
+	
+	dirEntry directory;
 	short FLC;;
 	int length = 1;
 	unsigned char* image;
