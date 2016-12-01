@@ -19,7 +19,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-typedef struct _direntry
+typedef struct
 {
 	char           name[8];
 	char           extension[3];
@@ -35,7 +35,7 @@ typedef struct _direntry
 	unsigned int   fileSize;
 } dirEntry;
 
-typedef struct _fileentry
+typedef struct
 {
 	char Filename[9];
 	char Type[4];

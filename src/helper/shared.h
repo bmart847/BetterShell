@@ -20,7 +20,8 @@
 
 int shm_id;
 
-typedef struct _sharedmemory {
+typedef struct
+{
 	// Current Working Directory
 	char wdPath[200];
 	unsigned int wdSize;
