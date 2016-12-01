@@ -27,24 +27,36 @@ int main(int argc, char *argv[])
 	// Just a stub
 	printf("CD has been called\n");
 	
-	if (initWorkingDir() != 0)
-	{
-		return -1;
-	}
+	// TODO: Add access to shared memory
 	
 	if (argc == 1)
 	{
-		// CD to the root directory
+		// Change the working directory to root
+		// Create a new sharedMemory instance to use as root
+		sharedMemory root;
+		strcpy(root->wdPath, "/");
+		root->wdSize = 1;
+		// Root will not have a file name
+		root->fName = "";
+		root->fSize = 0;
+		root->FLC = 0;
+		
+		// Set sharedMemory (working directory) to root
+		dirSet(&root);
 	}
 	else if (argc == 2)
 	{
 		// CD to the given path name
+		sharedMemory workingDir;
+		workingDir = dirGet();
+		enterDirectory(&workingDir, argv[1])
 	}
 	else
 	{
 		// Too many args
 		cd_help();
 	}
+	
 	return 0;
 }
 
