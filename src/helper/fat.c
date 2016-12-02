@@ -47,7 +47,7 @@ short searchForDir(short curFLC, char* dirName)
 	else
 	{
 		/* Cluster is located at physical address rootRealCluster + curFLC + ((numRootEntries * sizeof(dirEntry)) / BYTES_PER_SECTOR) - 2 */
-		//realCluster = returnDirectoryPhysicalOffset();
+		//realCluster = 9 * (sectorsPerFAT * numFATS) + curFLC + ((16 * sizeof(dirEntry)) / 16 -2);
 	}
 	read_sector(realCluster, (unsigned char*) newWorkingDirectory);
 	/* Search directory at curFLC for dirName */
