@@ -19,14 +19,17 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
+extern const key_t SHM_KEY;
 
 int cd_help();
 
 int main(int argc, char *argv[])
 {
-	printf("CD has been called\n");
-	
-	// TODO: Add access to shared memory
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
+	sharedMemory* share = shmat(shm_id, 0, 0);
+
+	char* filename = filenameGet();
+	FILE_SYSTEM_ID = fopen(filename, "r+");
 	
 	if (argc == 1)
 	{
