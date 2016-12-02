@@ -33,38 +33,44 @@ int main(int argc, char *argv[])
 {
 	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
 	sharedMemory* share = shmat(shm_id, 0, 0);
-	
-	char* filename = share->fName;
-	printf("Is the filename: %s?\n", filenameGet());
 
-	/*
+	char* filename = filenameGet();
+	FILE_SYSTEM_ID = fopen(filename, "r+");
+	
 	if(argc == 1 || argc > 4)
 	{
 		pfe_help();
 		exit(1);
 	}
+
 	int start = atoi(argv[1]);
 	int end = atoi(argv[2]);
-	unsigned char *fat1 = readFAT12Table(1), *fat2 = readFAT12Table(2);
+
+	unsigned char *fat1, *fat2;
 	int i;
 
-	/* Conditions 
+	fat1 = readFAT12Table(1);
+	fat2 = readFAT12Table(2);
+
+	/* Conditions */
 	 	if(checkRange(start, end) == 1)
 		{ 
 			/* Utilize checkRange function to verify arguments */
-/*			printf("Invalid parameter values.\n");
+			printf("Invalid parameter values.\n");
 		}
 		else
 		{
 			/* If it checks out... */
-/*        	for(i=(start+1); i <= end; i++)
+        	for(i=(start+1); i <= end; i++)
 			{
                	printf("Fat Entry %i: %x\n", i, get_fat_entry(i, fat1));
         	}	
 	}
-*/
+
 	
 	shmdt(share);
+	free(fat1);
+	free(fat2);
 	return(0);
 }
 
@@ -100,7 +106,7 @@ unsigned char* readFAT12Table(int fatTable)
 	int i, br=0;
 
 	/* Allocate Memory */
-	fat = (unsigned char*) malloc(9 * (62 * sizeof(unsigned char)));
+	fat = (unsigned char*) malloc(9 * (62 * sizeof(unsigned char*)));
 
 	/* Conditions */
 	if(fatTable == 1)

@@ -69,7 +69,7 @@ char **parseInput(char *input) {
 }
 
 /* Forks a process for the given command */
-int cmdLaunch(char *input) {
+int cmdLaunch(char *input, char **args) {
 	/* Initialize Variables */
 	pid_t pid, wpid;
 	int stat;
@@ -79,7 +79,7 @@ int cmdLaunch(char *input) {
 
 	/* Error Handlings */
 	if(pid == 0) {
-		if(execvp(input, NULL) == -1) {
+		if(execvp(input, args) == -1) {
 			perror("Error_Launching_Process");
 		}
 		return 1;
@@ -101,34 +101,35 @@ int cmdLaunch(char *input) {
 int cmdExecute(char **input) {
 	/* Initialize Variables */
 	char *leadCmd = input[0];
+	int index = 1;
 
 	/* Determine command and take action */
 	if(leadCmd == NULL) {
 		return 0;
 	} else if (strcmp(leadCmd, "cat") == 0) {
-		cmdLaunch("bin/cat");
+		cmdLaunch("bin/cat", input);
 	} else if (strcmp(leadCmd, "cd") == 0) {
-		cmdLaunch("bin/cd");
+		cmdLaunch("bin/cd", input);
 	} else if (strcmp(leadCmd, "df") == 0) {
-		cmdLaunch("bin/df");
+		cmdLaunch("bin/df", input);
 	} else if (strcmp(leadCmd, "help") == 0) {
         printf("To-Do\n");
 	} else if (strcmp(leadCmd, "ls") == 0) {
-		cmdLaunch("bin/ls");
+		cmdLaunch("bin/ls", input);
 	} else if (strcmp(leadCmd, "mkdir") == 0) {
-		cmdLaunch("bin/mkdir");
+		cmdLaunch("bin/mkdir", input);
 	} else if (strcmp(leadCmd, "pbs") == 0) {
-		cmdLaunch("bin/pbs");
+		cmdLaunch("bin/pbs", input);
 	} else if (strcmp(leadCmd, "pfe") == 0) {
-		cmdLaunch("bin/pfe");
+		cmdLaunch("bin/pfe", input);
 	} else if (strcmp(leadCmd, "pwd") == 0) {
-        cmdLaunch("bin/pwd");
+        cmdLaunch("bin/pwd", input);
 	} else if (strcmp(leadCmd, "rm") == 0) {
-        cmdLaunch("bin/rm");
+        cmdLaunch("bin/rm", input);
 	} else if (strcmp(leadCmd, "rmdir") == 0) {
-        cmdLaunch("bin/rmdir");
+        cmdLaunch("bin/rmdir", input);
 	} else if (strcmp(leadCmd, "touch") == 0) {
-        cmdLaunch("bin/touch");
+        cmdLaunch("bin/touch", input);
 	} else if (strcmp(leadCmd, "exit") == 0) {
 		printf("Quitting\n");
 		return 1;
