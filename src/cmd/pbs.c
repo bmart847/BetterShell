@@ -11,10 +11,6 @@
 	I certify that this assignment is entirely my own work.
 */
 
-/*
-	TODO: Add access to shared memory.
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -23,11 +19,11 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
-
+extern const key_t SHM_KEY;
 int pbs_help();
 
-int main(int argc, char *argv[]) {
-	printf("pbs has been called.\n");
+int main(int argc, char *argv[])
+{
 	unsigned char* bootIndex;
 
 	int mostSignificantBits;
@@ -45,9 +41,15 @@ int main(int argc, char *argv[]) {
 	int volumeID;
 	unsigned char volumeLabel[12], fileSystemType[9];
 	
-	bytesPerSector = 62; // Set to default. Then reset it to the value in the boot sector
+	bytesPerSector = BYTES_PER_SECTOR; // Set to default. Then reset it to the value in the boot sector
 
 	bootIndex = (unsigned char*) malloc(bytesPerSector * sizeof(unsigned char));
+
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
+	sharedMemory* share = shmat(shm_id, 0, 0);
+
+	char* filename = filenameGet();
+	FILE_SYSTEM_ID = fopen(filename, "r+");
 	
 	if (read_sector(0, bootIndex) == -1)
 		printf("Error: Boot Sector could not be read.\n");
