@@ -27,7 +27,7 @@ void initWorkingDir(char *filename) {
 	
 	init->fSize = i;
 
-	init->FLC = 0;
+	init->FLC = 19;
 	
 	shmdt(init);
 }

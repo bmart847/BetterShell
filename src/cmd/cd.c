@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 		if(strcmp(argv[1], "..") == 0) {
 			dirRemove();
 		} else {
-			//newFLC = existingDirectory(argv[1], share->FLC);
+			newFLC = existingDirectory(argv[1], share->FLC);
 			if(newFLC != -1) {
 				dirAdd(argv[1]);
 				//flcSet(newFLC);

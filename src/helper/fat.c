@@ -38,7 +38,7 @@ short searchForDir(short curFLC, char* dirName)
 	dirEntry* newWorkingDirectory = (dirEntry*) malloc(512 * 9 * sizeof(dirEntry));
 	char* fileName;
 
-	unsigned int realCluster;
+	unsigned int realCluster = curFLC;
 	printf("Current FLC : %i\n", curFLC);
 	if (curFLC == 0)
 	{
@@ -73,11 +73,15 @@ short searchForDir(short curFLC, char* dirName)
 		else
 		{
 			printf("New directory entry found. NAME: %s\n", newWorkingDirectory[index].name);
+			printf("FLC: %hu\n\n", newWorkingDirectory[index].firstLogicalCluster);
 			if (newWorkingDirectory[index].attributes == 0x10)
 			{
 				/* Found a sub-directory */
 				fileName = getEntryName(newWorkingDirectory[index]);
 				/* Is this entry dirName? Should be case sensitive? */
+
+				printf("Comparing: %s <--> %s\n", fileName, dirName);
+				
 				if (strcmp(fileName, dirName) == 0)
 				{
 					/* Advance curFLC */

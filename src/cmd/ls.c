@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 	if (FLC != 0)
 	{
 		unsigned char* fatTable = malloc(9 * 512);
-		for (i = 0; i < 9; i++)
+		for (i = 0; i <= 9; i++)
 		{
 			read_sector(i + 1, &fatTable[i * 512]);
 		}
