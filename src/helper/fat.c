@@ -1,10 +1,10 @@
 #include "fat.h"
 
 /* Check directoryName recursively by directory if the path exists */
-short existingDirectory(char* path)
+short existingDirectory(char* path, unsigned short firstLogicalCluster)
 {
 	char* pathName;
-	unsigned short firstLogicalCluster = 0;
+//	unsigned short firstLogicalCluster;
 	
 	// Duplicate path because it will get modified
 	pathName = path; 
@@ -15,6 +15,7 @@ short existingDirectory(char* path)
 	/* Check each directory in the directoryName exists */
 	while (delim != NULL)
 	{
+		printf("%s\n", delim);
 		firstLogicalCluster = searchForDir(firstLogicalCluster, delim);
 		if (firstLogicalCluster == -1)
 		{

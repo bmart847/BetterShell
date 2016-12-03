@@ -19,26 +19,31 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
+extern const key_t SHM_KEY;
 
 int ls_help();
 
 int main(int argc, char *argv[])
 {
-	shm_id = shmget(1234, 250 * sizeof(char*), 0666);
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
+	sharedMemory* share = shmat(shm_id, 0, 0);
 	
 	dirEntry directory;
-	short FLC;;
+	short FLC;
 	int length = 1;
 	unsigned char* image;
 	char temp[40];
 	int* entries;
 	int i, h, l, j, k, s;
 	
-	int bytesPerSector = 62;
+	int bytesPerSector = BYTES_PER_SECTOR;
 
 	fileEntry* files = (fileEntry*)malloc(length * 16 * sizeof(fileEntry));
 
-	FLC = existingDirectory(dirGet());
+	FLC = existingDirectory(dirGet(), share->FLC);
+
+	printf("%hu\n", FLC);
+	
 	if (FLC == -1)
 	{
 		printf("No such directory found");
@@ -57,6 +62,7 @@ int main(int argc, char *argv[])
 		int currentEntry = FLC;
 		int end = 0;
 		entries[0] = currentEntry + 31;
+		printf("Current Entry: %hu\n", currentEntry);
 
 		while (!end && length <= 10)
 		{

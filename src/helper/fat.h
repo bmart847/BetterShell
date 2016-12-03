@@ -57,7 +57,7 @@ typedef struct
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
 
-short existingDirectory(char* path);
+short existingDirectory(char* path, unsigned short firstLogicalCluster);
 short searchForDir(short curFLC, char* target);
 char* getEntryName(dirEntry directory);
 

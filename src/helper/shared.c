@@ -34,6 +34,12 @@ void dirRemove() {
         change->wdPath[index] = '\0';
         change->wdSize = change->wdSize - removeSize;
 
+		if(change->wdSize == 0) {
+			change->wdPath[0] = '/';
+			change->wdPath[1] = '\0';
+			change->wdSize = 1;
+		}
+
         shmdt(change);
 }
 

@@ -25,28 +25,37 @@ int cd_help();
 
 int main(int argc, char *argv[])
 {
+	short newFLC = 1;
 	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
 	sharedMemory* share = shmat(shm_id, 0, 0);
 
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
-	
+
 	if (argc == 1)
 	{
-		// Change the working directory to root
-		dirSet("/");
-		filenameSet("");
-		flcSet(0);
+		cd_help();
 	}
 	else if (argc == 2)
 	{
 		// CD to the given path name
-		dirAdd(argv[1]);
+		
+		if(strcmp(argv[1], "..") == 0) {
+			dirRemove();
+		} else {
+			//newFLC = existingDirectory(argv[1], share->FLC);
+			if(newFLC != -1) {
+				dirAdd(argv[1]);
+				//flcSet(newFLC);
+			} else {
+				printf("Directory does not exist!\n");
+			}
+		}
 	}
 	else
 	{
 		// Too many args
-		cd_help();
+		printf("Too many arguments.\n");
 	}
 	
 	return 0;
