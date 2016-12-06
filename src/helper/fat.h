@@ -25,34 +25,19 @@
 
 typedef struct
 {
-	char           name[8];
-	char           extension[3];
-	unsigned char  attributes;
-	unsigned char  reserved[2];
-	unsigned short creationTime;
-	unsigned short creationDate;
-	unsigned short lastAccessDate;
-	unsigned char  ignored[2];
-	unsigned short lastWriteTime;
-	unsigned short lastWriteDate;
-	unsigned short firstLogicalCluster;
-	unsigned int   fileSize;
+	char filename[8];
+	char extenstion[3];
+	unsigned char attributes;
+	unsigned char reserved[2];
+	unsigned char creationTime[2];
+	unsigned char creationDate[2];
+	unsigned char lastAccessDate[2];
+	unsigned char fatIgnored[2];
+	unsigned char lastWriteTime[2];
+	unsigned char lastWriteDate[2];
+	unsigned short FirstLogicalCluster;
+	unsigned int FileSize;
 } dirEntry;
-
-typedef struct
-{
-	char Filename[9];
-	char Type[4];
-	char Attributes;
-	char CreationTime[2];
-	char CreationDate[2];
-	char LastAccessDate[2];
-
-	char LastWriteTime[2];
-	char LastWriteDate[2];
-	short FirstLogicalCluster;
-	int FileSize;
-} fileEntry;
 
 
 /* File Attribut Constants */
