@@ -58,72 +58,83 @@ short existingDirectory(char* path)
 			return -1;
 		}
 	}
-
+	
 	/* Directory path does exist */
 	free(dirContents);
 	return firstLogicalCluster;
-}
+} 
 
 /* Does the dirName exist inside the directory beginning at curFLC */
-short searchForDir(short curFLC, char* dirName)
+short existingSubDir(short curFLC, char* dirName)
 {
-	/* Read Logical Cluster */
-	dirEntry* newWorkingDirectory = (dirEntry*) malloc(512 * 9 * sizeof(dirEntry));
-	char* fileName;
-
-	unsigned int realCluster;
 	printf("Current FLC : %i\n", curFLC);
-	if (curFLC == 0)
+	/* Declare Variables */
+	unsigned char* clusterBuffer;
+	int realCluster, fakeCluster;
+	int index, done = 0;
+	
+	while (done == 0)
 	{
-		/* Root Directory size = numReservedSectors + (sectorsPerFAT * numFATs) */
-		//realCluster = 9 * (read_;
-	}
-	else
-	{
-		/* Cluster is located at physical address rootRealCluster + curFLC + ((numRootEntries * sizeof(dirEntry)) / BYTES_PER_SECTOR) - 2 */
-		//realCluster = returnDirectoryPhysicalOffset();
-	}
-	read_sector(realCluster, (unsigned char*) newWorkingDirectory);
-	/* Search directory at curFLC for dirName */
-	int index;
-	for (index = 0; index < 20; index++)
-	{
-		if ((unsigned char) newWorkingDirectory[index].name[0] == 0xE5)
+		/* Allocate more memory */
+		clusterBuffer = malloc(512 * sizeof(char));
+		/* Read the next fat entry */
+		nextCluster = get_fat_entry(curFLC, readFAT12Table(1));
+
+		/* Who da real cluster doe? */
+		if (curFLC == 19)
 		{
-			/* The directory entry is currently unused (free) */
-		}
-		else if ((unsigned char) newWorkingDirectory[index].name[0] == 0x00)
-		{
-			/* The directory is currently unused, as are all the remaining entries in this directory */
-			break;
-		}
-		else if ((unsigned char) newWorkingDirectory[index].name[0] == 0xFF7)
-		{
-			/* BAD CLUSTER */
-			printf("Bad Cluster.\n");
-			break;
+			/* We are in the root directory */
+			realCluster = curFLC;
 		}
 		else
 		{
-			printf("New directory entry found. NAME: %s\n", newWorkingDirectory[index].name);
-			if (newWorkingDirectory[index].attributes == 0x10)
+			/* Set Real Cluster to curFLC + Root_Offset (32) */
+			realCluster = curFLC + 32 - 1;
+		}
+
+		/* Read realCluster's sector */
+		read_sector(realCluster, clusterBuffer);
+
+		/* Cycle through the 16 sectors in each cluster (FAT12 Constant Value) */
+		for (index = 0; index < 16; index++)
+		{
+			dirEntry* entry = read_Entry(clusterBuffer + (index * 32));
+
+			if ((unsigned char) entry.name[0] == (0xE5 || 0x40 || 0x80))
 			{
-				/* Found a sub-directory */
-				fileName = getEntryName(newWorkingDirectory[index]);
-				/* Is this entry dirName? Should be case sensitive? */
-				if (strcmp(fileName, dirName) == 0)
+				/* The directory entry is currently unused (free) */
+			}
+			else if ((unsigned char) entry.name[0] == 0x00)
+			{
+				/* The directory is currently unused, as are all the remaining entries in this directory */
+				free(clusterBuffer);
+				return -1;
+			}
+			else if ((unsigned char) entry.name[0] == 0xFF7)
+			{
+				/* BAD CLUSTER */
+				printf("Bad Cluster.\n");
+				break;
+			}
+			else if (entry.attributes == 0x10)
+			{
+				printf("Found a subdirectory. Name : %s\n", getEntryName(entry));
+				if (strcmp(getEntryName(entry), dirName) == 0)
 				{
-					/* Advance curFLC */
-					curFLC = newWorkingDirectory[index].firstLogicalCluster;
-					free(newWorkingDirectory);
-					return curFLC;
+					printf("Found the correct Subdirectory!\n");
+					free(clusterBuffer);
+					return entry.firstLogicalCluster;
 				}
 			}
 		}
+		
+		if (fakeCluster != (0x00 || 0xFF0)
+		{
+			flc = fakeCluster;
+		}
 	}
 
-	free(fileName);
-	free(newWorkingDirectory);
+	free(clusterBuffer);
 	return -1;
 }
 
