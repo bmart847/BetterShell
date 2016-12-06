@@ -24,7 +24,6 @@ int ls_help();
 
 int main(int argc, char *argv[])
 {
-	printf("LS\n");
 	// TODO: Add second argument to print subdirectory contents 
 	/* Validate Arguments */
 	if (argc > 2)
@@ -55,19 +54,25 @@ int main(int argc, char *argv[])
 	unsigned char* image;
 	char temp[40];
 	int* entries;
-	int i, h, l, j, k, s;
-
+	int i, h, l, j, k, s, done;
+ 
 	/* Get FLC of the current directory */
 	FLC = existingDirectory(dirGet());
+
+	printf("LS : FLC = %d\n", FLC);
+
 	if (FLC == -1)
 	{
 		/* Directory does not exist, how did you get here? */
 		printf("No such directory found.\n");
 		return 0;
 	}
-	else if (FLC != (0 || 19))
+
+	/* If FLC is not the Root Directory, read in the directory at FLC */
+	if (FLC != 19)
 	{
-		/* FLC is *not* the Root Directory */
+		printf("Should not print from Root\n");
+
 		/* Read each of the 9 fat sectors into fatTable */
 		unsigned char* fatTable = malloc(bytesPerSector * sectorsPerCluster);
 		for (i = 0; i < 9; i++)
@@ -78,10 +83,10 @@ int main(int argc, char *argv[])
 		/* Read entries from the directory starting at FLC */
 		entries = (int*) malloc(10 * sizeof(int));
  		short curEntry = FLC;
-		h = 0;
+		done = 0;
 		entries[0] = curEntry + 31;
 
-		while (!h && length <= 10)
+		while (!done && length <= 10)
 		{
 			curEntry = get_fat_entry(curEntry, fatTable);
 			if (curEntry < 0xFF8)
@@ -91,20 +96,54 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				h = 1;
+				done = 1;
 			}
 		}
 
 		free(fatTable);
 	}
 
+	/* Allocate a new fileEntry object array to read in the directory contents */
 	fileEntry* file = (fileEntry*) malloc(length * sizeof(fileEntry));
-	if(FLC != (0 || 19))
+
+	if (FLC == 19)
 	{
-		for (s = 0; s < length; s++)
+		printf("Reading in the root sector\n");
+		/* Read in Root sectors */
+		int rootSectors = 0;
+		int currentSector = 19;
+		int sectorsRead = 0;
+		done = 0;
+
+		while (done != 1)
 		{
-			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char));
-			read_sector(entries[s], image);
+			image = (unsigned char*) malloc(bytesPerSector * sizeof(unsigned char*));
+			read_sector(currentSector, image);
+
+			for (i = 0; i < 16; i++)
+			{
+				if (image[i * 32] == 0x00)
+				{
+					done = 1;
+					break;
+				}
+			}
+
+			currentSector++;
+			sectorsRead++;
+
+			free(image);
+		}
+
+		printf("LS : Sectors Read = %i\n", sectorsRead);
+
+		for (s = 0; s < sectorsRead; s++)
+		{
+			image = (unsigned char*) malloc(bytesPerSector * sizeof(unsigned char*));
+			if (read_sector(s + 19, image) == -1)
+			{
+				printf("oh snap\n");
+			}
 
 			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
 			{
@@ -112,13 +151,12 @@ int main(int argc, char *argv[])
 				{
 					file[i].Filename[j] = image[j + (i - s * 16) * 32];
 				}
-				file[i].Filename[8] = '0';
+				file[i].Filename[8] = '\0';
 
 				for (j = 0; j < 3; j++)
 				{
 					file[i].Type[j] = image[j + 8 + (i - s * 16) * 32];
 				}
-
 				file[i].Type[3] = '\0';
 
 				file[i].Attributes = image[11 + (i - s * 16) * 32];
@@ -147,42 +185,20 @@ int main(int argc, char *argv[])
 				j = (((int)image[29 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				k = ((int)image[28 + (i - s * 16) * 32]) & 0x000000ff;
 				file[i].FileSize = h | l | j | k;
+
+				printf("LS : FileName = %s\n", file[i].Filename);
+
 			}
 			free(image);
 		}
 	}
 	else
 	{
-		/* Read in Root sectors */
-		int rootSectors = 0;
-		int currentSector = 19;
-		int sectorsRead = 0;
-		int done = 0;
-
-		while (done != 1)
+		printf("But How?\n");
+		for (s = 0; s < length; s++)
 		{
-			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char));
-			read_sector(currentSector, image);
-
-			for (i = 0; i < 16; i++)
-			{
-				if (image[i * 32] == 0x00)
-				{
-					done = 1;
-					break;
-				}
-			}
-
-			sectorsRead++;
-			currentSector++;
-
-			free(image);
-		}
-
-		for (s = 0; s < sectorsRead; s++)
-		{
-			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char));
-			read_sector(s + 19, image);
+			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char*));
+			read_sector(entries[s], image);
 
 			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
 			{
@@ -190,12 +206,13 @@ int main(int argc, char *argv[])
 				{
 					file[i].Filename[j] = image[j + (i - s * 16) * 32];
 				}
-				file[i].Filename[8] = '\0';
+				file[i].Filename[8] = '0';
 
 				for (j = 0; j < 3; j++)
 				{
 					file[i].Type[j] = image[j + 8 + (i - s * 16) * 32];
 				}
+
 				file[i].Type[3] = '\0';
 
 				file[i].Attributes = image[11 + (i - s * 16) * 32];
@@ -285,6 +302,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+
 	free(file);
 	
 	return 0;
