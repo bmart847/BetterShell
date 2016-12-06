@@ -50,6 +50,13 @@ typedef struct
 	int FileSize;
 } fileEntry;
 
+#define READ_ONLY_ATTRIBUTE 0x01 
+#define HIDDEN_ATTRIBUTE    0x02
+#define SYSTEM_ATTRIBUTE    0x04
+#define VOLUME_LABEL	    0x08
+#define SUBDIR		    0x10
+#define ARCHIVE		    0x20
+
 
 #ifndef FAT_H
 #define FAT_H
