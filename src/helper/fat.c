@@ -54,11 +54,13 @@ short existingDirectory(char* path)
 		if (firstLogicalCluster == -1)
 		{
 			/* Directory does not exist */
+			free(dirContents);
 			return -1;
 		}
 	}
 
 	/* Directory path does exist */
+	free(dirContents);
 	return firstLogicalCluster;
 }
 
