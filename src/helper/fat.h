@@ -11,6 +11,9 @@
 	I certify that this assignment is entirely my own work.
 */
 
+#ifndef FAT_H
+#define FAT_H
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +21,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "fatSupport.h"
 
 typedef struct
 {
@@ -51,14 +55,22 @@ typedef struct
 } fileEntry;
 
 
-#ifndef FAT_H
-#define FAT_H
+/* File Attribut Constants */
+#define READ_ONLY_ATTRIBUTE 0x01 
+#define HIDDEN_ATTRIBUTE    0x02
+#define SYSTEM_ATTRIBUTE    0x04
+#define VOLUME_LABEL	    0x08
+#define SUBDIR		    0x10
+#define ARCHIVE		    0x20
+
+#define MAX_FILENAME_LENGTH 255
 
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
 
-short existingDirectory(char* path, unsigned short firstLogicalCluster);
-short searchForDir(short curFLC, char* target);
+short existingDirectory(char* path);
+short existingSubDir(short curFLC, char* target);
+
 char* getEntryName(dirEntry directory);
 
 #endif

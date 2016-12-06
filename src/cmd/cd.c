@@ -31,33 +31,43 @@ int main(int argc, char *argv[])
 
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
-
 	if (argc == 1)
 	{
-		cd_help();
+		// Change the working directory to root
+		dirSet("/");
+		flcSet(19);
 	}
 	else if (argc == 2)
 	{
-		// CD to the given path name
-		
-		if(strcmp(argv[1], "..") == 0) {
+		if (strcmp(argv[1], "..") == 0)
+		{
+			/* Move up one directory level */
 			dirRemove();
-		} else {
-			newFLC = existingDirectory(argv[1], share->FLC);
-			if(newFLC != -1) {
-				dirAdd(argv[1]);
-				//flcSet(newFLC);
-			} else {
-				printf("Directory does not exist!\n");
+			int newFLC = existingDirectory(dirGet());
+			flcSet(newFLC);
+		}
+		else
+		{
+			/* CD to the given path name */
+			dirAdd(argv[1]);
+			int newFLC = existingDirectory(dirGet());
+			/* Check that the new directory actually exists before moving into it */
+			if (newFLC != -1)
+			{
+				flcSet(newFLC);
+			}
+			else
+			{
+				dirRemove();
+				printf("The specified directory does not exist\n");
 			}
 		}
 	}
 	else
 	{
 		// Too many args
-		printf("Too many arguments.\n");
+		cd_help();
 	}
-	
 	return 0;
 }
 

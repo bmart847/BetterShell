@@ -17,12 +17,21 @@ MAIN = src/helper/fatSupport.[ch] src/helper/fat.[ch] src/helper/shared.[ch] src
 SHARE = src/helper/fatSupport.[ch] src/helper/fat.[ch] src/helper/shared.[ch]
 
 all:
-	@make $(EXE)
+	@make BetterShell
 	@make cat
 	@make cd
 	@make df
 	@make ls
 	@make mkdir
+	@make pbs
+	@make pfe
+	@make pwd
+	@make rm
+	@make rmdir
+	@make touch
+	@make mkdir
+	@make clean
+
 
 $(EXE): src/main.c $(MAIN)
 	@make validate-build
@@ -60,22 +69,6 @@ rmdir: src/cmd/rmdir.c $(SHARE)
 
 touch: src/cmd/touch.c $(SHARE)
 	$(CC) -g -o bin/$@ $(CC_OPTIONS) $^
-
-all:
-	@make BetterShell
-	@make cat
-	@make cd
-	@make df
-	@make ls
-	@make mkdir
-	@make pbs
-	@make pfe
-	@make pwd
-	@make rm
-	@make rmdir
-	@make touch
-	@make mkdir
-	@make clean
 
 clean:
 	rm -f *.o *~ bin/*.o bin/*~ src/*~ src/cmd/*~ src/helper/*~ src/helper/*.gch

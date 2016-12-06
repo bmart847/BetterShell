@@ -19,12 +19,18 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
+extern const key_t SHM_KEY;
 
 int df_help();
 
 int main(int argc, char *argv[])
 {
-	// Just a stub
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
+	sharedMemory* share = shmat(shm_id, 0, 0);
+
+	char* filename = filenameGet();
+	FILE_SYSTEM_ID = fopen(filename, "r+");
+
 	printf("df has been called\n");
 	return 0;
 }
