@@ -36,19 +36,31 @@ int main(int argc, char *argv[])
 		// Change the working directory to root
 		dirSet("/");
 		filenameSet("");
-		flcSet(0);
+		flcSet(19);
 	}
 	else if (argc == 2)
 	{
 		// CD to the given path name
 		dirAdd(argv[1]);
+		printf("CD : Target = %s\n", dirGet());
+		int newFLC = existingDirectory(dirGet());
+		printf("CD : FLC = %d\n", newFLC);
+		if (newFLC != -1)
+		{
+			flcSet(newFLC);
+		}
+		else
+		{
+			dirRemove();
+			printf("The specified directory does not exist\n");
+		}
 	}
 	else
 	{
 		// Too many args
 		cd_help();
 	}
-	
+	printf("CD.C : new FLC = %d\n", flcGet());
 	return 0;
 }
 
