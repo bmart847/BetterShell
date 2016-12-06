@@ -26,7 +26,7 @@
 typedef struct
 {
 	char filename[8];
-	char extenstion[3];
+	char extension[3];
 	unsigned char attributes;
 	unsigned char reserved[2];
 	unsigned char creationTime[2];
