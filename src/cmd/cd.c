@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
 	{
 		// Change the working directory to root
 		dirSet("/");
-		filenameSet("");
 		flcSet(19);
 	}
 	else if (argc == 2)
