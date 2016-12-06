@@ -11,6 +11,9 @@
 	I certify that this assignment is entirely my own work.
 */
 
+#ifndef FAT_H
+#define FAT_H
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,6 +53,8 @@ typedef struct
 	int FileSize;
 } fileEntry;
 
+
+/* File Attribut Constants */
 #define READ_ONLY_ATTRIBUTE 0x01 
 #define HIDDEN_ATTRIBUTE    0x02
 #define SYSTEM_ATTRIBUTE    0x04
@@ -57,9 +62,7 @@ typedef struct
 #define SUBDIR		    0x10
 #define ARCHIVE		    0x20
 
-
-#ifndef FAT_H
-#define FAT_H
+#define MAX_FILENAME_LENGTH 255;
 
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
