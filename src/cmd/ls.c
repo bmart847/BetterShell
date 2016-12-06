@@ -224,8 +224,6 @@ int main(int argc, char *argv[])
 				k = ((int)image[28 + (i - s * 16) * 32]) & 0x000000ff;
 				file[i].FileSize = h | l | j | k;
 			}
-
-			free(image);
 		}
 	}
 
@@ -284,9 +282,6 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
-
-	free(file);
-	
 	return 0;
 }
 
