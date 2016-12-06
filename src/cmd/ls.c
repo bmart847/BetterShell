@@ -172,9 +172,6 @@ int main(int argc, char *argv[])
 				j = (((int)image[29 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				k = ((int)image[28 + (i - s * 16) * 32]) & 0x000000ff;
 				file[i].FileSize = h | l | j | k;
-
-				printf("LS : FileName = %s\n", file[i].Filename);
-
 			}
 		}
 	}
