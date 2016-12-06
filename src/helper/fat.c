@@ -51,6 +51,7 @@ short existingDirectory(char* path)
 	for (index = 0; index < depth; index++)
 	{
 		firstLogicalCluster = existingSubDir(firstLogicalCluster, dirContents[index]);
+		printf("FAT.C : existingSubDir() returned %i\n", firstLogicalCluster);
 		if (firstLogicalCluster == -1)
 		{
 			/* Directory does not exist */
@@ -84,10 +85,11 @@ short existingSubDir(short curFLC, char* dirName)
 	}
 
 
-	while (done == 0)
+	while (!done)
 	{
 		/* Read the next fat entry */
 		fakeCluster = get_fat_entry(flc, fatTable);
+		printf("FAT.C : fakeCluster = %i\n", fakeCluster);
 
 		/* Who da real cluster doe? */
 		if (flc == 19)
@@ -112,6 +114,7 @@ short existingSubDir(short curFLC, char* dirName)
 			if ((unsigned char) entry->name[0] == (0xE5 || 0x40 || 0x80))
 			{
 				/* The directory entry is currently unused (free) */
+				printf("FAT.C : %s is unused.\n", entry->name);
 			}
 			else if ((unsigned char) entry->name[0] == 0x00)
 			{
@@ -127,17 +130,23 @@ short existingSubDir(short curFLC, char* dirName)
 			}
 			else if (entry->attributes == 0x10)
 			{
-				printf("Found a subdirectory. Name : %s\n", getEntryName(*entry));
-				if (strcmp(getEntryName(*entry), dirName) == 0)
+				char* subDirName = getEntryName(*entry);
+				printf("Found a subdirectory. Name : %s\n", subDirName);
+				printf("Comparing : %s <----> %s\n", subDirName, dirName);
+				if (strcmp(subDirName, dirName) == 0)
 				{
 					printf("Found the correct Subdirectory!\n");
-					free(clusterBuffer);
 					return entry->firstLogicalCluster;
 				}
 			}
+			else
+			{
+				printf("else\n");
+			}
+			free(entry);
 		}
 		
-		if (fakeCluster != (0x00 || 0xFF0))
+		if ((fakeCluster != 0x00) || (fakeCluster != 0xFF0))
 		{
 			flc = fakeCluster;
 		}
