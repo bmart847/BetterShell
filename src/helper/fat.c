@@ -131,7 +131,6 @@ short existingSubDir(short curFLC, char* dirName)
 			else if (entry->attributes == 0x10)
 			{
 				char* subDirName = getEntryName(*entry);
-				printf("Found a subdirectory. Name : %s\n", subDirName);
 				printf("Comparing : %s <----> %s\n", subDirName, dirName);
 				if (strcmp(subDirName, dirName) == 0)
 				{
