@@ -55,11 +55,6 @@ int main(int argc, char *argv[])
 	char temp[40];
 	int* entries;
 	int i, h, l, j, k, s, done;
- 
-	/* Get FLC of the current directory */
-	FLC = existingDirectory(dirGet());
-
-	printf("LS : FLC = %d\n", FLC);
 
 	if (FLC == -1)
 	{
@@ -71,8 +66,6 @@ int main(int argc, char *argv[])
 	/* If FLC is not the Root Directory, read in the directory at FLC */
 	if (FLC != 19)
 	{
-		printf("Should not print from Root\n");
-
 		/* Read each of the 9 fat sectors into fatTable */
 		unsigned char* fatTable = malloc(bytesPerSector * sectorsPerCluster);
 		for (i = 0; i < 9; i++)
@@ -108,7 +101,6 @@ int main(int argc, char *argv[])
 
 	if (FLC == 19)
 	{
-		printf("Reading in the root sector\n");
 		/* Read in Root sectors */
 		int rootSectors = 0;
 		int currentSector = 19;
@@ -135,15 +127,10 @@ int main(int argc, char *argv[])
 			free(image);
 		}
 
-		printf("LS : Sectors Read = %i\n", sectorsRead);
-
 		for (s = 0; s < sectorsRead; s++)
 		{
-			image = (unsigned char*) malloc(bytesPerSector * sizeof(unsigned char*));
-			if (read_sector(s + 19, image) == -1)
-			{
-				printf("oh snap\n");
-			}
+			image = (unsigned char*) malloc(bytesPerSector * sizeof(char*));
+			read_sector(s + 19, image);
 
 			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
 			{
@@ -189,15 +176,13 @@ int main(int argc, char *argv[])
 				printf("LS : FileName = %s\n", file[i].Filename);
 
 			}
-			free(image);
 		}
 	}
 	else
 	{
-		printf("But How?\n");
 		for (s = 0; s < length; s++)
 		{
-			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char*));
+			image = (unsigned char*) malloc(bytesPerSector * sizeof(unsigned char*));
 			read_sector(entries[s], image);
 
 			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
