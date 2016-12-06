@@ -240,7 +240,6 @@ int main(int argc, char *argv[])
 			if ((file[i].attributes & 0x02) == 0 &&
 				(file[i].attributes & 0x04) == 0)
 			{
-				char* type;
 				if (strcmp(file[i].filename, "LARGEDIR") != 0)
 				{
 					if ((file[i].attributes & 0x10) != 0)
@@ -252,8 +251,7 @@ int main(int argc, char *argv[])
 					}
 					else
 					{
-						char* tmp;
-						strcpy(tmp, "");
+						strcpy(temp, "");
 						for (j = 0; j < 8; j++)
 						{
 							if (file[i].filename[j] == ' ')
@@ -266,14 +264,14 @@ int main(int argc, char *argv[])
 						{
 							if (file[i].extension[j] == ' ')
 							{
-								file[i].extension[j] - '\0';
+								file[i].extension[j] = '\0';
 							}
 						}
 
-						strcat(tmp, file[i].filename);
-						strcat(tmp, ".");
-						strcat(tmp, file[i].extension);
-						printf("%12s  %4s   %4d   %3d\n", tmp,
+						strcat(temp, file[i].filename);
+						strcat(temp, ".");
+						strcat(temp, file[i].extension);
+						printf("%12s  %4s   %4d   %3d\n", temp,
 							"FILE",
 							file[i].fileSize,
 							file[i].firstLogicalCluster);

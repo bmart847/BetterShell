@@ -25,6 +25,7 @@ int cd_help();
 
 int main(int argc, char *argv[])
 {
+	printf("CD called.\n");
 	short newFLC = 1;
 	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
 	sharedMemory* share = shmat(shm_id, 0, 0);

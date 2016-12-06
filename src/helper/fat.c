@@ -15,7 +15,7 @@ short existingDirectory(char* path)
 
 	/* Declare Variables */
 	int index;
-	char** dirContents = malloc(MAX_FILENAME_LENGTH * sizeof(char));
+	char** dirContents = malloc(MAX_FILENAME_LENGTH * sizeof(char*));
 	// Let's start at the root
 	unsigned short firstLogicalCluster = 19;
 	// Duplicate path because it will get modified by strtok()
@@ -29,28 +29,29 @@ short existingDirectory(char* path)
 	/* Count the number of directories from Root to pathName */
 	while(delim != NULL)
 	{
-		delim = strtok(NULL, "/");
+		delim = strtok(NULL, '/');
 		depth++;
 	}
 
 	/* Load the path into dirContents array */
 	// Allocate memory in dirContents container array for new input
-	*dirContents = malloc(depth * sizeof(char));
+	*dirContents = malloc(depth * sizeof(char*));
 	// Reset pathName back to path after strtok()
 	strcpy(pathName, path);
-	delim = strtok(pathName, "/");
+	delim = strtok(pathName, '/');
 	index = 0;
 
-	while (delim != NULL && delim[0] != '\n')
+	while (delim != NULL && delim[0] != '\0')
 	{
 		dirContents[index] = strdup(delim);
-		delim = strtok(NULL, "/");
+		delim = strtok(NULL, '/');
 		index++;
 	}
 
 	/* Check if the path exists as a directory */
 	for (index = 0; index < depth; index++)
 	{
+		printf("Searching for : %s\n", dirContents[index]);
 		firstLogicalCluster = existingSubDir(firstLogicalCluster, dirContents[index]);
 
 		if (firstLogicalCluster == -1)
@@ -69,7 +70,8 @@ short existingDirectory(char* path)
 /* Does the dirName exist inside the directory beginning at curFLC */
 short existingSubDir(short curFLC, char* dirName)
 {
-	printf("Current FLC : %i\n", curFLC);
+	printf("existingSubDir() called with arguments, curFLC = %d and dirName = %s\n", curFLC, dirName);
+
 	/* Declare Variables */
 	// clusterBuffer needs memory allocated to hold BytesPerSector (512) char's
 	unsigned char* clusterBuffer = malloc(512 * sizeof(char*));
@@ -87,15 +89,17 @@ short existingSubDir(short curFLC, char* dirName)
 
 	while (!done)
 	{
+		printf("Only once? So where do you break?\n");
+
+
 		/* Read the next fat entry */
 		fakeCluster = get_fat_entry(flc, fatTable);
-		printf("FAT.C : fakeCluster = %i\n", fakeCluster);
 
-		/* Who da real cluster doe? */
-		if (flc == 19)
+		/* Where da real cluster doe? */
+		if (flc == 19 || flc == 0)
 		{
 			/* We are in the root directory */
-			realCluster = flc;
+			realCluster = 19;
 		}
 		else
 		{
@@ -111,18 +115,20 @@ short existingSubDir(short curFLC, char* dirName)
 		{
 			dirEntry* entry = (dirEntry*) (clusterBuffer + (index * 32));
 
-			if ((unsigned char) entry->name[0] == (0xE5 || 0x40 || 0x80))
+			if (entry->filename[0] == (0xE5 || 0x40 || 0x80))
 			{
 				/* The directory entry is currently unused (free) */
-				printf("FAT.C : %s is unused.\n", entry->name);
+				printf("FAT.C : %s is unused.\n", entry->filename);
 			}
-			else if ((unsigned char) entry->name[0] == 0x00)
+			else if (entry->filename[0] == 0x00)
 			{
+				printf("Wrong Directory!\n");
+
 				/* The directory is currently unused, as are all the remaining entries in this directory */
 				free(clusterBuffer);
 				return -1;
 			}
-			else if ((unsigned char) entry->name[0] == 0xFF7)
+			else if (entry->filename[0] == 0xFF7)
 			{
 				/* BAD CLUSTER */
 				printf("Bad Cluster.\n");
@@ -131,22 +137,25 @@ short existingSubDir(short curFLC, char* dirName)
 			else if (entry->attributes == 0x10)
 			{
 				char* subDirName = getEntryName(*entry);
+
+				printf("Comparing : %s <---> %s\n", subDirName, dirName);
+
 				if (strcmp(subDirName, dirName) == 0)
 				{
-					printf("Found the correct Subdirectory!\n");
 					return entry->firstLogicalCluster;
 				}
 			}
-			else
-			{
-				printf("else\n");
-			}
+
 			free(entry);
 		}
 
 		if ((fakeCluster != 0x00) || (fakeCluster != 0xFF0))
 		{
 			flc = fakeCluster;
+		}
+		else
+		{
+			return -1;
 		}
 	}
 
@@ -157,16 +166,16 @@ short existingSubDir(short curFLC, char* dirName)
 /* Create a String from the filename of a dirEntry element */
 char* getEntryName(dirEntry directory)
 {
-	char* fileName;
+	char* fileName = (char*) malloc(11 * sizeof(char));
 	int index;
 
 	for (index = 0; index < 11; index++)
 	{
 		if (index < 8)
 		{
-			if (directory.name[index] == ' ')
+			if (directory.filename[index] == ' ')
 				break;
-			fileName[index] = directory.name[index];
+			fileName[index] = directory.filename[index];
 		}
 		else
 		{
