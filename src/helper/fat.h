@@ -68,7 +68,7 @@ extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
 
 short existingDirectory(char* path);
-short searchForDir(short curFLC, char* target);
+short existingSubDir(short curFLC, char* target);
 char* getEntryName(dirEntry directory);
 
 #endif
