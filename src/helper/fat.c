@@ -1,7 +1,7 @@
 #include "fat.h"
 
 /* Check directoryName recursively by directory if the path exists */
-short existingDirectory(char* path, unsigned short firstLogicalCluster)
+short existingDirectory(char* path)
 {
 	/* Check if path is the root directory */
 	if (path[0] == '/' && strlen(path) == 1)
