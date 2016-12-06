@@ -19,13 +19,36 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
+extern const key_t SHM_KEY;
 
 int touch_help();
 
 int main(int argc, char *argv[])
 {
-	// Just a stub
-	printf("touch has been called\n");
+	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
+	sharedMemory* share = shmat(shm_id, 0, 0);
+
+	char* filename = filenameGet();
+	FILE_SYSTEM_ID = fopen(filename, "r+");
+
+	char filePath[200] = "";
+
+	if(argv[1] == NULL)
+	{
+		touch_help();
+		return 0;
+	}
+	else if(argv[1][0] == '/')
+	{
+		strcat(filePath, argv[1]);
+	}
+	else
+	{
+		strcat(filePath, share->wdPath);
+		strcat(filePath, argv[1]);
+	}
+	
+	printf("Touch will target file -> %s\n", filePath);
 	return 0;
 }
 
