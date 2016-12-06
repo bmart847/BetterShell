@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
+
 	if (argc == 1)
 	{
 		// Change the working directory to root
@@ -43,14 +44,18 @@ int main(int argc, char *argv[])
 		{
 			/* Move up one directory level */
 			dirRemove();
-			int newFLC = existingDirectory(dirGet());
+			newFLC = existingDirectory(dirGet());
 			flcSet(newFLC);
 		}
 		else
 		{
 			/* CD to the given path name */
 			dirAdd(argv[1]);
-			int newFLC = existingDirectory(dirGet());
+
+			newFLC = existingDirectory(dirGet());
+
+			printf("CD : newFLC = %i\n", newFLC);
+
 			/* Check that the new directory actually exists before moving into it */
 			if (newFLC != -1)
 			{
@@ -58,8 +63,9 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				dirRemove();
 				printf("The specified directory does not exist\n");
+				dirRemove();
+				return -1;
 			}
 		}
 	}
@@ -68,6 +74,9 @@ int main(int argc, char *argv[])
 		// Too many args
 		cd_help();
 	}
+
+	printf("Directory : %s\n", dirGet());
+
 	return 0;
 }
 
