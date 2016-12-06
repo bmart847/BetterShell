@@ -39,19 +39,28 @@ int main(int argc, char *argv[])
 	}
 	else if (argc == 2)
 	{
-		// CD to the given path name
-		dirAdd(argv[1]);
-		printf("CD : Target = %s\n", dirGet());
-		int newFLC = existingDirectory(dirGet());
-		printf("CD : FLC = %d\n", newFLC);
-		if (newFLC != -1)
+		if (strcmp(argv[1], "..") == 0)
 		{
+			/* Move up one directory level */
+			dirRemove();
+			int newFLC = existingDirectory(dirGet());
 			flcSet(newFLC);
 		}
 		else
 		{
-			dirRemove();
-			printf("The specified directory does not exist\n");
+			/* CD to the given path name */
+			dirAdd(argv[1]);
+			int newFLC = existingDirectory(dirGet());
+			/* Check that the new directory actually exists before moving into it */
+			if (newFLC != -1)
+			{
+				flcSet(newFLC);
+			}
+			else
+			{
+				dirRemove();
+				printf("The specified directory does not exist\n");
+			}
 		}
 	}
 	else
@@ -59,7 +68,6 @@ int main(int argc, char *argv[])
 		// Too many args
 		cd_help();
 	}
-	printf("CD.C : new FLC = %d\n", flcGet());
 	return 0;
 }
 
