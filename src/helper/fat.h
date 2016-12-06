@@ -35,8 +35,8 @@ typedef struct
 	unsigned char fatIgnored[2];
 	unsigned char lastWriteTime[2];
 	unsigned char lastWriteDate[2];
-	unsigned short FirstLogicalCluster;
-	unsigned int FileSize;
+	unsigned short firstLogicalCluster;
+	unsigned int fileSize;
 } dirEntry;
 
 
