@@ -3,27 +3,59 @@
 /* Check directoryName recursively by directory if the path exists */
 short existingDirectory(char* path)
 {
-	char* pathName;
-	unsigned short firstLogicalCluster = 0;
-	
-	// Duplicate path because it will get modified
-	pathName = path; 
-
-	/* Get deliminator token */
-	char* delim;
-	delim = strtok(pathName, "/");
-	/* Check each directory in the directoryName exists */
-	while (delim != NULL)
+	/* Check if path is the root directory */
+	if (path[0] == '/' && strlen(path) == 1)
 	{
-		firstLogicalCluster = searchForDir(firstLogicalCluster, delim);
+		/* Path is the Root Directory */
+		/* Return the First Logical Cluster of the Root Directory (19) */
+		return 19;
+	}
+
+	/* Path is not the Root Directory, time to dig deeper */
+
+	/* Declare Variables */
+	int index;
+	char** dirContents = malloc(MAX_FILENAME_LENGTH * sizeof(char));
+	// Let's start at the root
+	unsigned short firstLogicalCluster = 19;
+	// Duplicate path because it will get modified by strtok()
+	char* pathName = malloc(MAX_FILENAME_LENGTH * sizeof(char));
+	strcpy(pathName, path); 
+
+	/* Next Step: Figure out the directory's depth from Root */
+	int depth = 0;
+	char* delim = strtok(pathName, "/\n");
+
+	/* Count the number of directories from Root to pathName */
+	while(delim != NULL)
+	{
+		delim = strtok(NULL, "/");
+		depth++;
+	}
+
+	/* Load the path into dirContents array */
+	// Allocate memory in dirContents container array for new input
+	*dirContents = malloc(depth * sizeOf(char));
+	// Reset pathName back to path after strtok()
+	strcpy(pathName, path);
+	delim = strtok(pathName, "/");
+	index = 0;
+	while (delim!= NULL && delim[0] != "\n")
+	{
+		*dirContents[index] = strdup(delim);
+		delim = strtok(NULL, "/");
+		index++;
+	}
+
+	/* Check if the path exists as a directory */
+	for (index = 0; i < depth; i++)
+	{
+		firstLogicalCluster = existingSubDir(firstLogicalCluster, dirContents[index]);
 		if (firstLogicalCluster == -1)
 		{
 			/* Directory does not exist */
 			return -1;
 		}
-
-		/* Get next directory name */
-		delim = strtok(NULL, "/");
 	}
 
 	/* Directory path does exist */
