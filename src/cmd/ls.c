@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
 	}
 
 	/* Declare Variables */
-	int bytesPerSector = BYTES_PER_SECTOR;
 	int sectorsPerCluster = 9;
 	dirEntry directory;
 	short FLC = flcGet();
@@ -56,10 +55,6 @@ int main(int argc, char *argv[])
 	char temp[40];
 	int* entries;
 	int i, h, l, j, k, s, done;
-
-	fileEntry* files = (fileEntry*)malloc(length * 16 * sizeof(fileEntry));
-
-	printf("LS : FLC = %d\n", FLC);
 
 	if (FLC == -1)
 	{
@@ -71,15 +66,14 @@ int main(int argc, char *argv[])
 	/* If FLC is not the Root Directory, read in the directory at FLC */
 	if (FLC != 19)
 	{
-		/* Read each of the 9 fat sectors into fatTable */
-		unsigned char* fatTable = malloc(bytesPerSector * sectorsPerCluster);
-		for (i = 0; i < bytesPerSector; i++)
+		unsigned char* fatTable = malloc(BYTES_PER_SECTOR * sectorsPerCluster);
+		for (i = 0; i < 9; i++)
 		{
-			read_sector(i + 1, &fatTable[i * bytesPerSector]);
+			read_sector(i + 1, &fatTable[i * BYTES_PER_SECTOR]);
 		}
 
 		/* Read entries from the directory starting at FLC */
-		entries = (int*) malloc(10 * sizeof(int));
+		entries = (int*) malloc(10 * sizeof(int*));
  		short curEntry = FLC;
 		done = 0;
 		entries[0] = curEntry + 31;
@@ -87,6 +81,7 @@ int main(int argc, char *argv[])
 		while (!done && length <= 10)
 		{
 			curEntry = get_fat_entry(curEntry, fatTable);
+
 			if (curEntry < 0xFF8)
 			{
 				entries[length] = curEntry + 31;
@@ -114,7 +109,7 @@ int main(int argc, char *argv[])
 
 		while (done != 1)
 		{
-			image = (unsigned char*) malloc(bytesPerSector * sizeof(unsigned char*));
+			image = (unsigned char*) malloc(BYTES_PER_SECTOR * sizeof(unsigned char*));
 			read_sector(currentSector, image);
 
 			for (i = 0; i < 16; i++)
@@ -134,7 +129,7 @@ int main(int argc, char *argv[])
 
 		for (s = 0; s < sectorsRead; s++)
 		{
-			image = (unsigned char*) malloc(bytesPerSector * sizeof(char*));
+			image = (unsigned char*) malloc(BYTES_PER_SECTOR * sizeof(char*));
 			read_sector(s + 19, image);
 
 			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
@@ -184,7 +179,7 @@ int main(int argc, char *argv[])
 	{
 		for (s = 0; s < length; s++)
 		{
-			image = (unsigned char*) malloc(bytesPerSector * sizeof(unsigned char*));
+			image = (unsigned char*) malloc(BYTES_PER_SECTOR * sizeof(unsigned char*));
 			read_sector(entries[s], image);
 
 			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
@@ -233,7 +228,8 @@ int main(int argc, char *argv[])
 	}
 
 	/* Print the list */
-	printf("  NAME        TYPE     SIZE  FLC\n");
+	printf("    NAME       TYPE    SIZE   FLC\n");
+	printf("------------  ------  ------  ---\n");
 
 	for (i = 0; i < length * 16; i++)
 	{
