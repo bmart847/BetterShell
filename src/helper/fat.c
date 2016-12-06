@@ -24,7 +24,7 @@ short existingDirectory(char* path)
 
 	/* Next Step: Figure out the directory's depth from Root */
 	int depth = 0;
-	char* delim = strtok(pathName, "/\n");
+	char* delim = strtok(pathName, '/\0');
 
 	/* Count the number of directories from Root to pathName */
 	while(delim != NULL)
@@ -89,9 +89,6 @@ short existingSubDir(short curFLC, char* dirName)
 
 	while (!done)
 	{
-		printf("Only once? So where do you break?\n");
-
-
 		/* Read the next fat entry */
 		fakeCluster = get_fat_entry(flc, fatTable);
 
@@ -155,6 +152,7 @@ short existingSubDir(short curFLC, char* dirName)
 		}
 		else
 		{
+			printf("Did not find %s in the cluster after FLC = %s.\n", dirName, curFLC);
 			return -1;
 		}
 	}

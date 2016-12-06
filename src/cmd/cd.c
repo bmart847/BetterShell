@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
 			/* CD to the given path name */
 			dirAdd(argv[1]);
 
+			printf("Search directory for : %s\n", dirGet());
 			newFLC = existingDirectory(dirGet());
 
 			printf("CD : newFLC = %i\n", newFLC);
