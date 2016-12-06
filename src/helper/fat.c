@@ -1,7 +1,7 @@
 #include "fat.h"
 
 /* Check directoryName recursively by directory if the path exists */
-short existingDirectory(char* path)
+short existingDirectory(char* path, unsigned short firstLogicalCluster)
 {
 	/* Check if path is the root directory */
 	if (path[0] == '/' && strlen(path) == 1)
@@ -40,6 +40,7 @@ short existingDirectory(char* path)
 	strcpy(pathName, path);
 	delim = strtok(pathName, "/");
 	index = 0;
+
 	while (delim != NULL && delim[0] != '\n')
 	{
 		dirContents[index] = strdup(delim);
@@ -51,7 +52,7 @@ short existingDirectory(char* path)
 	for (index = 0; index < depth; index++)
 	{
 		firstLogicalCluster = existingSubDir(firstLogicalCluster, dirContents[index]);
-		printf("FAT.C : existingSubDir() returned %i\n", firstLogicalCluster);
+
 		if (firstLogicalCluster == -1)
 		{
 			/* Directory does not exist */
@@ -63,7 +64,7 @@ short existingDirectory(char* path)
 	/* Directory path does exist */
 	free(dirContents);
 	return firstLogicalCluster;
-} 
+}
 
 /* Does the dirName exist inside the directory beginning at curFLC */
 short existingSubDir(short curFLC, char* dirName)
@@ -76,14 +77,13 @@ short existingSubDir(short curFLC, char* dirName)
 	int index, done = 0;
 	short flc = curFLC;
 	// fatTable needs to be able to hold the size of the fat table, BytesPerSector * SectorsPerFat (512 * 9)
-	unsigned char* fatTable = malloc(512 * 9); 
+	unsigned char* fatTable = malloc(512 * 9);
 
 	/* Initialize Fat Table */
 	for (index = 0; index < 9; index++)
 	{
 		read_sector(index + 1, &fatTable[512 * index]);
 	}
-
 
 	while (!done)
 	{
@@ -131,7 +131,6 @@ short existingSubDir(short curFLC, char* dirName)
 			else if (entry->attributes == 0x10)
 			{
 				char* subDirName = getEntryName(*entry);
-				printf("Comparing : %s <----> %s\n", subDirName, dirName);
 				if (strcmp(subDirName, dirName) == 0)
 				{
 					printf("Found the correct Subdirectory!\n");
@@ -144,7 +143,7 @@ short existingSubDir(short curFLC, char* dirName)
 			}
 			free(entry);
 		}
-		
+
 		if ((fakeCluster != 0x00) || (fakeCluster != 0xFF0))
 		{
 			flc = fakeCluster;

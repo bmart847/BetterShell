@@ -4,9 +4,9 @@
 	Assignment: Semester Project
 	Date Assigned: 6 September 2016
 	Due Date: 6 December 2016
-	
+
 	Description:  Lists the entries in the directory or the file/directory entry contents.
-	
+
 	Certification of Authenticity:
 	I certify that this assignment is entirely my own work.
 */
@@ -19,6 +19,7 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
+extern const key_t SHM_KEY;
 
 int ls_help();
 
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* Declare Variables */
-	int bytesPerSector = 512;
+	int bytesPerSector = BYTES_PER_SECTOR;
 	int sectorsPerCluster = 9;
 	dirEntry directory;
 	short FLC = flcGet();
@@ -55,6 +56,10 @@ int main(int argc, char *argv[])
 	char temp[40];
 	int* entries;
 	int i, h, l, j, k, s, done;
+
+	fileEntry* files = (fileEntry*)malloc(length * 16 * sizeof(fileEntry));
+
+	printf("LS : FLC = %d\n", FLC);
 
 	if (FLC == -1)
 	{
@@ -68,7 +73,7 @@ int main(int argc, char *argv[])
 	{
 		/* Read each of the 9 fat sectors into fatTable */
 		unsigned char* fatTable = malloc(bytesPerSector * sectorsPerCluster);
-		for (i = 0; i < 9; i++)
+		for (i = 0; i < bytesPerSector; i++)
 		{
 			read_sector(i + 1, &fatTable[i * bytesPerSector]);
 		}
@@ -214,14 +219,14 @@ int main(int argc, char *argv[])
 				file[i].LastWriteDate[0] = image[24 + (i - s * 16) * 32];
 				file[i].LastWriteDate[1] = image[25 + (i - s * 16) * 32];
 
-				h = (((int)image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
-				l = ((int)image[26 + (i - s * 16) * 32]) & 0x000000ff;
+				h = (((int) image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
+				l = ( (int) image[26 + (i - s * 16) * 32])       & 0x000000ff;
 				file[i].FirstLogicalCluster = h | l;
 
-				h = (((int)image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
-				l = (((int)image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
-				j = (((int)image[29 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
-				k = ((int)image[28 + (i - s * 16) * 32]) & 0x000000ff;
+				h = (((int) image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
+				l = (((int) image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
+				j = (((int) image[29 + (i - s * 16) * 32]) << 8)  & 0x0000ff00;
+				k = ( (int) image[28 + (i - s * 16) * 32])        & 0x000000ff;
 				file[i].FileSize = h | l | j | k;
 			}
 		}

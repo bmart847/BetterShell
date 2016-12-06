@@ -25,12 +25,12 @@ int cd_help();
 
 int main(int argc, char *argv[])
 {
+	short newFLC = 1;
 	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
 	sharedMemory* share = shmat(shm_id, 0, 0);
 
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
-	
 	if (argc == 1)
 	{
 		// Change the working directory to root

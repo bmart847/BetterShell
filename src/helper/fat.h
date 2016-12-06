@@ -70,6 +70,7 @@ extern int BYTES_PER_SECTOR;
 
 short existingDirectory(char* path);
 short existingSubDir(short curFLC, char* target);
+
 char* getEntryName(dirEntry directory);
 
 #endif

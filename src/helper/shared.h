@@ -34,6 +34,7 @@ typedef struct
 
 	// First Logical Cluster
 	short FLC;
+	
 } sharedMemory;
 
 #ifndef SHARED_H
