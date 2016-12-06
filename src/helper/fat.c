@@ -35,7 +35,7 @@ short existingDirectory(char* path)
 
 	/* Load the path into dirContents array */
 	// Allocate memory in dirContents container array for new input
-	*dirContents = malloc(depth * sizeOf(char));
+	*dirContents = malloc(depth * sizeof(char));
 	// Reset pathName back to path after strtok()
 	strcpy(pathName, path);
 	delim = strtok(pathName, "/");
@@ -48,7 +48,7 @@ short existingDirectory(char* path)
 	}
 
 	/* Check if the path exists as a directory */
-	for (index = 0; i < depth; i++)
+	for (index = 0; index < depth; index++)
 	{
 		firstLogicalCluster = existingSubDir(firstLogicalCluster, dirContents[index]);
 		if (firstLogicalCluster == -1)
@@ -69,27 +69,36 @@ short existingSubDir(short curFLC, char* dirName)
 {
 	printf("Current FLC : %i\n", curFLC);
 	/* Declare Variables */
-	unsigned char* clusterBuffer;
+	// clusterBuffer needs memory allocated to hold BytesPerSector (512) char's
+	unsigned char* clusterBuffer = malloc(512 * sizeof(char*));
 	int realCluster, fakeCluster;
 	int index, done = 0;
-	
+	short flc = curFLC;
+	// fatTable needs to be able to hold the size of the fat table, BytesPerSector * SectorsPerFat (512 * 9)
+	unsigned char* fatTable = malloc(512 * 9); 
+
+	/* Initialize Fat Table */
+	for (index = 0; index < 9; index++)
+	{
+		read_sector(index + 1, fatTable[512 * index]);
+	}
+
+
 	while (done == 0)
 	{
-		/* Allocate more memory */
-		clusterBuffer = malloc(512 * sizeof(char));
 		/* Read the next fat entry */
-		nextCluster = get_fat_entry(curFLC, readFAT12Table(1));
+		fakeCluster = get_fat_entry(flc, fatTable);
 
 		/* Who da real cluster doe? */
-		if (curFLC == 19)
+		if (flc == 19)
 		{
 			/* We are in the root directory */
-			realCluster = curFLC;
+			realCluster = flc;
 		}
 		else
 		{
 			/* Set Real Cluster to curFLC + Root_Offset (32) */
-			realCluster = curFLC + 32 - 1;
+			realCluster = flc + 32 - 1;
 		}
 
 		/* Read realCluster's sector */
@@ -98,37 +107,37 @@ short existingSubDir(short curFLC, char* dirName)
 		/* Cycle through the 16 sectors in each cluster (FAT12 Constant Value) */
 		for (index = 0; index < 16; index++)
 		{
-			dirEntry* entry = read_Entry(clusterBuffer + (index * 32));
+			dirEntry* entry = clusterBuffer + (index * 32);
 
-			if ((unsigned char) entry.name[0] == (0xE5 || 0x40 || 0x80))
+			if ((unsigned char) entry->name[0] == (0xE5 || 0x40 || 0x80))
 			{
 				/* The directory entry is currently unused (free) */
 			}
-			else if ((unsigned char) entry.name[0] == 0x00)
+			else if ((unsigned char) entry->name[0] == 0x00)
 			{
 				/* The directory is currently unused, as are all the remaining entries in this directory */
 				free(clusterBuffer);
 				return -1;
 			}
-			else if ((unsigned char) entry.name[0] == 0xFF7)
+			else if ((unsigned char) entry->name[0] == 0xFF7)
 			{
 				/* BAD CLUSTER */
 				printf("Bad Cluster.\n");
 				break;
 			}
-			else if (entry.attributes == 0x10)
+			else if (entry->attributes == 0x10)
 			{
-				printf("Found a subdirectory. Name : %s\n", getEntryName(entry));
-				if (strcmp(getEntryName(entry), dirName) == 0)
+				printf("Found a subdirectory. Name : %s\n", getEntryName(*entry));
+				if (strcmp(getEntryName(*entry), dirName) == 0)
 				{
 					printf("Found the correct Subdirectory!\n");
 					free(clusterBuffer);
-					return entry.firstLogicalCluster;
+					return entry->firstLogicalCluster;
 				}
 			}
 		}
 		
-		if (fakeCluster != (0x00 || 0xFF0)
+		if (fakeCluster != (0x00 || 0xFF0))
 		{
 			flc = fakeCluster;
 		}

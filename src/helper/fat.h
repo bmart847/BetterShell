@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "fatSupport.h"
 
 typedef struct
 {
@@ -62,7 +63,7 @@ typedef struct
 #define SUBDIR		    0x10
 #define ARCHIVE		    0x20
 
-#define MAX_FILENAME_LENGTH 255;
+#define MAX_FILENAME_LENGTH 255
 
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
