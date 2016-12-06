@@ -24,56 +24,83 @@ int ls_help();
 
 int main(int argc, char *argv[])
 {
+	printf("LS\n");
+	// TODO: Add second argument to print subdirectory contents 
+	/* Validate Arguments */
+	if (argc > 2)
+	{
+		ls_help();
+	}
+
+	/* Access Shared Memory */
 	shm_id = shmget(1234, 250 * sizeof(char*), 0666);
-	
+	sharedMemory* share = shmat(shm_id, 0, 0);
+
+	char* filename = filenameGet();
+	FILE_SYSTEM_ID = fopen(filename, "r+");
+
+	if (FILE_SYSTEM_ID == NULL)
+	{
+		/* Something went wrong */
+		printf("Something went wrong. Shared memory was unable to be initialized from ls\n");
+		return -1;
+	}
+
+	/* Declare Variables */
+	int bytesPerSector = 512;
+	int sectorsPerCluster = 9;
 	dirEntry directory;
-	short FLC;;
+	short FLC = flcGet();
 	int length = 1;
 	unsigned char* image;
 	char temp[40];
 	int* entries;
 	int i, h, l, j, k, s;
-	
-	int bytesPerSector = 62;
 
-	fileEntry* files = (fileEntry*)malloc(length * 16 * sizeof(fileEntry));
-
+	/* Get FLC of the current directory */
 	FLC = existingDirectory(dirGet());
 	if (FLC == -1)
 	{
-		printf("No such directory found");
-		return;
+		/* Directory does not exist, how did you get here? */
+		printf("No such directory found.\n");
+		return 0;
 	}
-
-	if (FLC != 0)
+	else if (FLC != (0 || 19))
 	{
-		unsigned char* fatTable = malloc(9 * 512);
+		/* FLC is *not* the Root Directory */
+		/* Read each of the 9 fat sectors into fatTable */
+		unsigned char* fatTable = malloc(bytesPerSector * sectorsPerCluster);
 		for (i = 0; i < 9; i++)
 		{
-			read_sector(i + 1, &fatTable[i * 512]);
+			read_sector(i + 1, &fatTable[i * bytesPerSector]);
 		}
 
-		entries = (int*)malloc(10 * sizeof(int));
-		int currentEntry = FLC;
-		int end = 0;
-		entries[0] = currentEntry + 31;
+		/* Read entries from the directory starting at FLC */
+		entries = (int*) malloc(10 * sizeof(int));
+ 		short curEntry = FLC;
+		h = 0;
+		entries[0] = curEntry + 31;
 
-		while (!end && length <= 10)
+		while (!h && length <= 10)
 		{
-			currentEntry = get_fat_entry(currentEntry, image);
-			if (currentEntry < 0xFF8)
+			curEntry = get_fat_entry(curEntry, fatTable);
+			if (curEntry < 0xFF8)
 			{
-				entries[length] = currentEntry + 31;
+				entries[length] = curEntry + 31;
 				length++;
 			}
 			else
 			{
-				end = 1;
+				h = 1;
 			}
 		}
 
 		free(fatTable);
+	}
 
+	fileEntry* file = (fileEntry*) malloc(length * sizeof(fileEntry));
+	if(FLC != (0 || 19))
+	{
 		for (s = 0; s < length; s++)
 		{
 			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char));
@@ -83,43 +110,43 @@ int main(int argc, char *argv[])
 			{
 				for (j = 0; j < 8; j++)
 				{
-					files[i].Filename[j] = image[j + (i - s * 16) * 32];
+					file[i].Filename[j] = image[j + (i - s * 16) * 32];
 				}
-				files[i].Filename[8] = '0';
+				file[i].Filename[8] = '0';
 
 				for (j = 0; j < 3; j++)
 				{
-					files[i].Type[j] = image[j + 8 + (i - s * 16) * 32];
+					file[i].Type[j] = image[j + 8 + (i - s * 16) * 32];
 				}
 
-				files[i].Type[3] = '\0';
+				file[i].Type[3] = '\0';
 
-				files[i].Attributes = image[11 + (i - s * 16) * 32];
+				file[i].Attributes = image[11 + (i - s * 16) * 32];
 
-				files[i].CreationTime[0] = image[14 + (i - s * 16) * 32];
-				files[i].CreationTime[1] = image[15 + (i - s * 16) * 32];
+				file[i].CreationTime[0] = image[14 + (i - s * 16) * 32];
+				file[i].CreationTime[1] = image[15 + (i - s * 16) * 32];
 
-				files[i].CreationDate[0] = image[16 + (i - s * 16) * 32];
-				files[i].CreationDate[1] = image[17 + (i - s * 16) * 32];
+				file[i].CreationDate[0] = image[16 + (i - s * 16) * 32];
+				file[i].CreationDate[1] = image[17 + (i - s * 16) * 32];
 
-				files[i].LastAccessDate[0] = image[18 + (i - s * 16) * 32];
-				files[i].LastAccessDate[1] = image[19 + (i - s * 16) * 32];
+				file[i].LastAccessDate[0] = image[18 + (i - s * 16) * 32];
+				file[i].LastAccessDate[1] = image[19 + (i - s * 16) * 32];
 
-				files[i].LastWriteTime[0] = image[22 + (i - s * 16) * 32];
-				files[i].LastWriteTime[1] = image[23 + (i - s * 16) * 32];
+				file[i].LastWriteTime[0] = image[22 + (i - s * 16) * 32];
+				file[i].LastWriteTime[1] = image[23 + (i - s * 16) * 32];
 
-				files[i].LastWriteDate[0] = image[24 + (i - s * 16) * 32];
-				files[i].LastWriteDate[1] = image[25 + (i - s * 16) * 32];
+				file[i].LastWriteDate[0] = image[24 + (i - s * 16) * 32];
+				file[i].LastWriteDate[1] = image[25 + (i - s * 16) * 32];
 
 				h = (((int)image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				l = ((int)image[26 + (i - s * 16) * 32]) & 0x000000ff;
-				files[i].FirstLogicalCluster = h | l;
+				file[i].FirstLogicalCluster = h | l;
 
 				h = (((int)image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
 				l = (((int)image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
 				j = (((int)image[29 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				k = ((int)image[28 + (i - s * 16) * 32]) & 0x000000ff;
-				files[i].FileSize = h | l | j | k;
+				file[i].FileSize = h | l | j | k;
 			}
 			free(image);
 		}
@@ -161,42 +188,42 @@ int main(int argc, char *argv[])
 			{
 				for (j = 0; j < 8; j++)
 				{
-					files[i].Filename[j] = image[j + (i - s * 16) * 32];
+					file[i].Filename[j] = image[j + (i - s * 16) * 32];
 				}
-				files[i].Filename[8] = '\0';
+				file[i].Filename[8] = '\0';
 
 				for (j = 0; j < 3; j++)
 				{
-					files[i].Type[j] = image[j + 8 + (i - s * 16) * 32];
+					file[i].Type[j] = image[j + 8 + (i - s * 16) * 32];
 				}
-				files[i].Type[3] = '\0';
+				file[i].Type[3] = '\0';
 
-				files[i].Attributes = image[11 + (i - s * 16) * 32];
+				file[i].Attributes = image[11 + (i - s * 16) * 32];
 
-				files[i].CreationTime[0] = image[14 + (i - s * 16) * 32];
-				files[i].CreationTime[1] = image[15 + (i - s * 16) * 32];
+				file[i].CreationTime[0] = image[14 + (i - s * 16) * 32];
+				file[i].CreationTime[1] = image[15 + (i - s * 16) * 32];
 
-				files[i].CreationDate[0] = image[16 + (i - s * 16) * 32];
-				files[i].CreationDate[1] = image[17 + (i - s * 16) * 32];
+				file[i].CreationDate[0] = image[16 + (i - s * 16) * 32];
+				file[i].CreationDate[1] = image[17 + (i - s * 16) * 32];
 
-				files[i].LastAccessDate[0] = image[18 + (i - s * 16) * 32];
-				files[i].LastAccessDate[1] = image[19 + (i - s * 16) * 32];
+				file[i].LastAccessDate[0] = image[18 + (i - s * 16) * 32];
+				file[i].LastAccessDate[1] = image[19 + (i - s * 16) * 32];
 
-				files[i].LastWriteTime[0] = image[22 + (i - s * 16) * 32];
-				files[i].LastWriteTime[1] = image[23 + (i - s * 16) * 32];
+				file[i].LastWriteTime[0] = image[22 + (i - s * 16) * 32];
+				file[i].LastWriteTime[1] = image[23 + (i - s * 16) * 32];
 
-				files[i].LastWriteDate[0] = image[24 + (i - s * 16) * 32];
-				files[i].LastWriteDate[1] = image[25 + (i - s * 16) * 32];
+				file[i].LastWriteDate[0] = image[24 + (i - s * 16) * 32];
+				file[i].LastWriteDate[1] = image[25 + (i - s * 16) * 32];
 
 				h = (((int)image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				l = ((int)image[26 + (i - s * 16) * 32]) & 0x000000ff;
-				files[i].FirstLogicalCluster = h | l;
+				file[i].FirstLogicalCluster = h | l;
 
 				h = (((int)image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
 				l = (((int)image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
 				j = (((int)image[29 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				k = ((int)image[28 + (i - s * 16) * 32]) & 0x000000ff;
-				files[i].FileSize = h | l | j | k;
+				file[i].FileSize = h | l | j | k;
 			}
 
 			free(image);
@@ -208,23 +235,23 @@ int main(int argc, char *argv[])
 
 	for (i = 0; i < length * 16; i++)
 	{
-		if (files[i].Filename[0] != '\xe5' &&
-			files[i].Filename[0] != '\x0f' &&
-			files[i].Filename[0] != -27 &&
-			files[i].Filename[0] != 0)
+		if (file[i].Filename[0] != '\xe5' &&
+			file[i].Filename[0] != '\x0f' &&
+			file[i].Filename[0] != -27 &&
+			file[i].Filename[0] != 0)
 		{
-			if ((files[i].Attributes & 0x02) == 0 &&
-				(files[i].Attributes & 0x04) == 0)
+			if ((file[i].Attributes & 0x02) == 0 &&
+				(file[i].Attributes & 0x04) == 0)
 			{
 				char* type;
-				if (strcmp(files[i].Filename, "LARGEDIR") != 0)
+				if (strcmp(file[i].Filename, "LARGEDIR") != 0)
 				{
-					if ((files[i].Attributes & 0x10) != 0)
+					if ((file[i].Attributes & 0x10) != 0)
 					{
-						printf("%12s  %4s   %5d   %3d\n", files[i].Filename,
+						printf("%12s  %4s   %5d   %3d\n", file[i].Filename,
 							"DIR",
-							files[i].FileSize,
-							files[i].FirstLogicalCluster);
+							file[i].FileSize,
+							file[i].FirstLogicalCluster);
 					}
 					else
 					{
@@ -232,33 +259,33 @@ int main(int argc, char *argv[])
 						strcpy(tmp, "");
 						for (j = 0; j < 8; j++)
 						{
-							if (files[i].Filename[j] == ' ')
+							if (file[i].Filename[j] == ' ')
 							{
-								files[i].Filename[j] = '\0';
+								file[i].Filename[j] = '\0';
 							}
 						}
 
 						for (j = 0; j < 3; j++)
 						{
-							if (files[i].Type[j] == ' ')
+							if (file[i].Type[j] == ' ')
 							{
-								files[i].Type[j] - '\0';
+								file[i].Type[j] - '\0';
 							}
 						}
 
-						strcat(tmp, files[i].Filename);
+						strcat(tmp, file[i].Filename);
 						strcat(tmp, ".");
-						strcat(tmp, files[i].Type);
+						strcat(tmp, file[i].Type);
 						printf("%12s  %4s   %4d   %3d\n", tmp,
 							"FILE",
-							files[i].FileSize,
-							files[i].FirstLogicalCluster);
+							file[i].FileSize,
+							file[i].FirstLogicalCluster);
 					}
 				}
 			}
 		}
 	}
-	free(files);
+	free(file);
 	
 	return 0;
 }

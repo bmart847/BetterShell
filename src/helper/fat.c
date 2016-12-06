@@ -40,9 +40,9 @@ short existingDirectory(char* path)
 	strcpy(pathName, path);
 	delim = strtok(pathName, "/");
 	index = 0;
-	while (delim!= NULL && delim[0] != "\n")
+	while (delim != NULL && delim[0] != '\n')
 	{
-		*dirContents[index] = strdup(delim);
+		dirContents[index] = strdup(delim);
 		delim = strtok(NULL, "/");
 		index++;
 	}
@@ -80,7 +80,7 @@ short existingSubDir(short curFLC, char* dirName)
 	/* Initialize Fat Table */
 	for (index = 0; index < 9; index++)
 	{
-		read_sector(index + 1, fatTable[512 * index]);
+		read_sector(index + 1, &fatTable[512 * index]);
 	}
 
 
@@ -107,7 +107,7 @@ short existingSubDir(short curFLC, char* dirName)
 		/* Cycle through the 16 sectors in each cluster (FAT12 Constant Value) */
 		for (index = 0; index < 16; index++)
 		{
-			dirEntry* entry = clusterBuffer + (index * 32);
+			dirEntry* entry = (dirEntry*) (clusterBuffer + (index * 32));
 
 			if ((unsigned char) entry->name[0] == (0xE5 || 0x40 || 0x80))
 			{
