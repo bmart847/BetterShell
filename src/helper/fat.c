@@ -110,12 +110,12 @@ short existingSubDir(short curFLC, char* dirName)
 			dirEntry entry;
 			entry = loadDirEntry(clusterBuffer + (index * 32));
 			
-			if (entry->filename[0] == (0xE5 || 0x40 || 0x80))
+			if (entry.filename[0] == (0xE5 || 0x40 || 0x80))
 			{
 				/* The directory entry is currently unused (free) */
-				printf("FAT.C : %s is unused.\n", entry->filename);
+				printf("FAT.C : %s is unused.\n", entry.filename);
 			}
-			else if (entry->filename[0] == UNUSED)
+			else if (entry.filename[0] == UNUSED)
 			{
 				printf("Entry is unused!\n");
 
@@ -123,23 +123,23 @@ short existingSubDir(short curFLC, char* dirName)
 				free(clusterBuffer);
 				return -1;
 			}
-			else if (entry->filename[0] == BAD_CLUSTER)
+			else if (entry.filename[0] == BAD_CLUSTER)
 			{
 				/* BAD CLUSTER */
 				printf("Bad Cluster.\n");
 				break;
 			}
-			else if (entry->attributes == SUBDIR)
+			else if (entry.attributes == SUBDIR)
 			{
 				char* subDirName = malloc(sizeof(char) * MAX_FILENAME_LENGTH);
-				strcat(subDirName, getEntryName(*entry));
+				strcat(subDirName, getEntryName(entry));
 
 				printf("FAT.C -- Comparing : %s <---> %s\n", subDirName, dirName);
-				printf("FAT.C -- The Entry's First Logical Cluster is : %d\n", entry->firstLogicalCluster);
+				printf("FAT.C -- The Entry's First Logical Cluster is : %d\n", entry.firstLogicalCluster);
 
 				if (strcmp(subDirName, dirName) == 0)
 				{
-					return entry->firstLogicalCluster;
+					return entry.firstLogicalCluster;
 				}
 			}
 		}
