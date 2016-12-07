@@ -159,6 +159,126 @@ short existingSubDir(short curFLC, char* dirName)
 	return -1;
 }
 
+/* Check if the specified filepath exists in the fat */
+short existingFile(char* filepath);
+{
+	if (strlen(filepath) == 1)
+	{
+		/* Root is not file */
+		return -1
+	}
+
+	/* Search for the absolute filepath */
+	/* FLC starts at the root directory, 19 */
+	short flc = 19;
+	unsigned char* sector;
+	char** directories;
+	int dirDepth = 0, index = 0, count = 0, a = 0, track = 0;
+
+	// Duplicate path because it will get modified by strtok()
+	char* pathName = malloc(MAX_FILENAME_LENGTH * sizeof(char));
+	strcpy(pathName, filepath); 
+	char* delim = strtok(pathName, "/\0");
+	// Reset pathName back to path after strtok()
+	strcpy(pathName, filepath);
+	delim = strtok(pathName, "/");
+	index = 0;
+
+	while (delim != NULL && delim[0] != '\0')
+	{
+		dirContents[index] = strdup(delim);
+		delim = strtok(NULL, "/");
+		index++;
+	}
+	dirDepth = index;
+
+	if (filepath[0] == '/') // It should
+	{
+		track++;
+	}
+
+	int done = 0, curSector = 19, secRead = 0;
+	unsigned char* fat;
+	while (done != 1)
+	{
+		fat = (unsigned byte*) malloc(BYTES_PER_SECTOR * sizeof(unsigned byte));
+		read_sector(curSector, fat);
+
+		for (int i = 0; i < 16; i++)
+		{
+			if (fat[i * 32] == UNUSED)
+			{
+				done = 1;
+				break;
+			}
+		}
+		secRead++;
+		curSector++;
+
+		free(fat);
+	}
+
+	dirEntry* entry = (dirEntry*) malloc(secRead * 16 * sizeof(dirEntry));
+
+	for (index = 0; index < secRead; index++)
+	{
+		sector = (char*) malloc(BYTES_PER_SECTOR * sizeof(unsigned char));
+
+		read_sector(index + 19, sector);
+
+		for (count = (index * 16); count < (16 + (index * 16)); count++)
+		{
+			for (a = 0; a < 8; a++)
+			{
+				entry[count].filename[a] = sector[a + (count - index * 16) * 32];
+			}
+
+			entry[count].filename[8] = '\0';
+
+			for (a = 8; a < 11; a++)
+			{
+				entry[count].extension[a - 8] = sector[a + (count - index * 16) * 32];
+			}
+
+			entries[count].extension[3] = '\0';
+
+			entries[count].attributes = sector[11 + (count - index * 16) * 32]
+
+			int e = ( ( (int) sector[27 + (count - index * 16) * 32] ) << 8 ) & 0x0000ff00;
+			int l =   ( (int) sector[26 + (count - index * 16) * 32] )        & 0x000000ff;
+
+			entries[count].firstLogicalCluster = e | l;
+		}
+
+		free(sector);
+	}
+
+	for (index = 0; index < secRead * 16; index++)
+	{
+		if (depth > (track + 1))
+		{
+			int h = strlen(entry[index].filename);
+			int j = strlen(directories[track]);
+
+			if ( h > j )
+			{
+				entry[index].filename[j] = '\0';
+			}
+
+			if (strcmp(directories[track], entry[index].filename) == 0 && (SUBDIR & entry[index].attributes) != 0)
+			{
+				printf("Recursively search sub directories here.\n");
+			}
+		}
+		else
+		{
+			int value;
+		}
+	}
+
+	return flc;
+}
+
 /* Load the contents of the FAT Table into buffer and return the number of fat entries */
 int loadFatTable(unsigned char* buffer)
 {
@@ -170,7 +290,7 @@ int loadFatTable(unsigned char* buffer)
 		read_sector(index, (buffer + (index * BYTES_PER_SECTOR)));
 	}
 
-	return index;
+	return ((3 * index * BYTES_PER_SECTOR) / 2);
 }
 
 /* Create a String from the filename of a dirEntry element */
