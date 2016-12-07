@@ -22,6 +22,7 @@ FILE* FILE_SYSTEM_ID;
 extern const key_t SHM_KEY;
 
 int cat_help();
+bool isEnd(unsigned int fatEntry);
 
 int main(int argc, char *argv[])
 {
@@ -31,7 +32,11 @@ int main(int argc, char *argv[])
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
 
+	unsigned char* fatTable;
+	int numEntries = loadFatTable(fatTable);
+
 	char filePath[200] = "";
+	unsigned int nextCluster;
 	short fileFLC, success;
 	unsigned char* sectorBuffer = malloc(BYTES_PER_SECTOR * sizeof(unsigned char*));
 
@@ -71,10 +76,13 @@ int main(int argc, char *argv[])
 		// Logic for outputting contents will go here
 		printf("File Exists!\n");
 
-		success = read_sector(fileFLC, sectorBuffer);
-
-		if(success != -1)
-			
+		do
+		{
+			success = read_sector(fileFLC, sectorBuffer);
+			if(success == -1) { break; }
+			printf("%s", sectorBuffer);
+			fileFLC++;
+		} while (isEnd((unsigned int) fileFLC));
 		
 		return 0;
 	}
@@ -90,4 +98,17 @@ int main(int argc, char *argv[])
 int cat_help() {
 	printf("Help for cat command will go here.\n");
 	return(0);
+}
+
+bool isEnd(unsigned int fatEntry)
+{
+	unsigned char i;
+	while( i = LAST_CLUSTER_BEGIN; i <= LAST_CLUSTER_END; i++)
+	{
+		if(fatEntry == (unsigned int) i)
+		{
+			return true;
+		}
+	}
+	return false;
 }
