@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
 	if(argv[1] == NULL)
 	{
 		rm_help();
+		free(nullSector);
 		return 0;
 	}
 	else if(argv[1][0] == '/')
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
 
 	if (existingDirectory(filePath) != -1) {
 		printf("ERROR: Target is a directory.\n");
+		free(nullSector);
 		return 0;
 	}
 	else if ((fileFLC = existingFile(filePath)) != -1)
@@ -71,8 +73,7 @@ int main(int argc, char *argv[])
 			if(success == -1) { break; }
 			fileFLC = (short) get_fat_entry(fileFLC, fatTable);
 		} while (isEnd((unsigned int) fileFLC) != 1);
-
-		printf("\n");
+		free(nullSector);
 		return 0;
 	}
 	else
