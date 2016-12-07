@@ -114,25 +114,26 @@ short existingSubDir(short curFLC, char* dirName)
 				/* The directory entry is currently unused (free) */
 				printf("FAT.C : %s is unused.\n", entry->filename);
 			}
-			else if (entry->filename[0] == 0x00)
+			else if (entry->filename[0] == UNUSED)
 			{
-				printf("Wrong Directory!\n");
+				printf("Entry is unused!\n");
 
 				/* The directory is currently unused, as are all the remaining entries in this directory */
 				free(clusterBuffer);
 				return -1;
 			}
-			else if (entry->filename[0] == 0xFF7)
+			else if (entry->filename[0] == BAD_CLUSTER)
 			{
 				/* BAD CLUSTER */
 				printf("Bad Cluster.\n");
 				break;
 			}
-			else if (entry->attributes == 0x10)
+			else if (entry->attributes == SUBDIR)
 			{
 				char* subDirName = getEntryName(*entry);
 
-				printf("Comparing : %s <---> %s\n", subDirName, dirName);
+				printf("FAT.C -- Comparing : %s <---> %s\n", subDirName, dirName);
+				printf("FAT.C -- The Entry's First Logical Cluster is : %d\n", entry->firstLogicalCluster);
 
 				if (strcmp(subDirName, dirName) == 0)
 				{
@@ -181,4 +182,50 @@ char* getEntryName(dirEntry directory)
 	}
 
 	return fileName;
+}
+
+/* Read entry into a dirEntry object */
+dirEntry loadDirEntry(char* entry)
+{
+	dirEntry* object;
+
+	int index, offset = 0;
+
+	object.filename = malloc(9 * sizeof(char));
+	for(index = 0; index < 8; index++)
+	{
+		if (entry[index] == ' ' || entry[index] == '\0')
+		{
+			break;
+		}
+		object.filename[index] = entry[offset + i];
+	}
+	object.filename[index] = '\0';
+
+	offset = 8;
+
+	object.extension = malloc(4 * sizeof(char));
+	for(i = 0; i < 3; i++)
+	{
+		if (entry[offset + i] == ' ' || entry[offset + i] = '\0')
+		{
+			break;
+		}
+		object.extension[i] = entry[offset + i];
+	}
+	object.extension[i] = '\0';
+
+	offset = 11;
+
+	object.attributes = entry[offset];
+
+	offset = 26;
+
+	object.firstLogicalCluster = (((int) entry[offset]) & 0x000000ff) || (((int) entry[offset + 1] << 8) & 0x0000ff00);
+
+	offset = 28;
+
+	object.fileSizle = ((int) entry[offset] & 0x000000ff) || (((int) entry[offset + 1] << 8) & 0x0000ff00) || (((int) entry[offset + 2] << 16) && 0x00ff0000) || (((int) entry[offset + 3] << 24) & 0xff000000);
+
+	return object;
 }

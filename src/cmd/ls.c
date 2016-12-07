@@ -237,12 +237,12 @@ int main(int argc, char *argv[])
 			file[i].filename[0] != -27 &&
 			file[i].filename[0] != 0)
 		{
-			if ((file[i].attributes & 0x02) == 0 &&
-				(file[i].attributes & 0x04) == 0)
+			if ((file[i].attributes & HIDDEN_ATTRIBUTE) == 0 &&
+				(file[i].attributes & SYSTEM_ATTRIBUTE) == 0)
 			{
 				if (strcmp(file[i].filename, "LARGEDIR") != 0)
 				{
-					if ((file[i].attributes & 0x10) != 0)
+					if ((file[i].attributes & SUBDIR) != 0)
 					{
 						printf("%12s  %4s   %5d   %3d\n", file[i].filename,
 							"DIR",

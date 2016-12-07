@@ -53,16 +53,21 @@ typedef struct
 #define RESERVED_CLUSTER_BEGIN	0xFF0
 #define RESERVED_CLUSTER_END	0xFF6
 #define BAD_CLUSTER		0xFF7
-#define LAST_CLUSTER_BEGIN	0xFFF
+#define LAST_CLUSTER_BEGIN	0xFF8
+#define LAST_CLUSTER_END	0xFFF
 
 #define MAX_FILENAME_LENGTH 255
 
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
 
+/* FAT Navigation Functions */
 short existingDirectory(char* path);
 short existingSubDir(short curFLC, char* target);
+unsigned char* loadFatTable(); // Add arguments
 
+/* dirEntry Helpers */
 char* getEntryName(dirEntry directory);
+dirEntry loadDirEntry(char* entry);
 
 #endif
