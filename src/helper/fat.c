@@ -167,7 +167,7 @@ int loadFatTable(unsigned char* buffer)
 
 	for(index = 1; index < NUM_FAT_SECTORS; index++)
 	{
-		read_sector(i, (buffer + (index * BYTES_PER_SECTOR)));
+		read_sector(index, (buffer + (index * BYTES_PER_SECTOR)));
 	}
 
 	return index;
@@ -201,33 +201,33 @@ char* getEntryName(dirEntry directory)
 /* Read entry into a dirEntry object */
 dirEntry loadDirEntry(char* entry)
 {
-	dirEntry* object;
+	dirEntry object;
 
 	int index, offset = 0;
 
-	object.filename = malloc(9 * sizeof(char));
+	*object.filename = (char*) malloc(9 * sizeof(char));
 	for(index = 0; index < 8; index++)
 	{
 		if (entry[index] == ' ' || entry[index] == '\0')
 		{
 			break;
 		}
-		object.filename[index] = entry[offset + i];
+		object.filename[index] = entry[offset + index];
 	}
 	object.filename[index] = '\0';
 
 	offset = 8;
 
-	object.extension = malloc(4 * sizeof(char));
-	for(i = 0; i < 3; i++)
+	*object.extension = (char*) malloc(4 * sizeof(char));
+	for(index = 0; index < 3; index++)
 	{
-		if (entry[offset + i] == ' ' || entry[offset + i] = '\0')
+		if (entry[offset + index] == ' ' || entry[offset + index] == '\0')
 		{
 			break;
 		}
-		object.extension[i] = entry[offset + i];
+		object.extension[index] = entry[offset + index];
 	}
-	object.extension[i] = '\0';
+	object.extension[index] = '\0';
 
 	offset = 11;
 
@@ -239,7 +239,7 @@ dirEntry loadDirEntry(char* entry)
 
 	offset = 28;
 
-	object.fileSizle = ((int) entry[offset] & 0x000000ff) || (((int) entry[offset + 1] << 8) & 0x0000ff00) || (((int) entry[offset + 2] << 16) && 0x00ff0000) || (((int) entry[offset + 3] << 24) & 0xff000000);
+	object.fileSize = (((int) entry[offset]) & 0x000000ff) || ((((int) entry[offset + 1]) << 8) & 0x0000ff00) || ((((int) entry[offset + 2]) << 16) && 0x00ff0000) || ((((int) entry[offset + 3]) << 24) & 0xff000000);
 
 	return object;
 }

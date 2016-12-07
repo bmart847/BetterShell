@@ -74,4 +74,6 @@ int loadFatTable(unsigned char* buffer); // Return the (number of sectors loaded
 char* getEntryName(dirEntry directory);
 dirEntry loadDirEntry(char* entry);
 
+
+
 #endif
