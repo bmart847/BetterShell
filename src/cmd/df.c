@@ -31,11 +31,32 @@ int main(int argc, char *argv[])
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
 
+	char* fatTable;
+	int numEntries = loadFatTable(fatTable);
+	unsigned int freeCount = 0, fatEntry;
+
+	
+	for(int i = 0; i < numEntries; i++)
+	{
+		fatEntry = get_fat_entry(i, fatTable);
+		if(fatEntry == UNUSED)
+		{
+			freeCount++;
+		}
+		else
+		{
+			continue;
+		}
+	}
+
+	free(fatTable);
 	printf("df has been called\n");
+	printf("%d Unused Sectors\n", freeCount);
 	return 0;
 }
 
-int df_help() {
+int df_help()
+{
 	printf("Help for df command will go here.\n");
 	return(0);
 }
