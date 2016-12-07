@@ -81,9 +81,10 @@ int main(int argc, char *argv[])
 			success = read_sector(fileFLC, sectorBuffer);
 			if(success == -1) { break; }
 			printf("%s", sectorBuffer);
-			fileFLC++;
+			fileFLC = (short) get_fat_entry(fileFLC, fatTable);
 		} while (isEnd((unsigned int) fileFLC) != 1);
-		
+
+		printf("\n");
 		return 0;
 	}
 	else
