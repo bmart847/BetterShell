@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
-
+	short fileFLC;
 	char filePath[200] = "";
 
 	if(argv[1] == NULL)

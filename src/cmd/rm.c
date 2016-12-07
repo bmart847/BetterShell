@@ -22,6 +22,8 @@ FILE* FILE_SYSTEM_ID;
 extern const key_t SHM_KEY;
 
 int rm_help();
+void blankSector(char* buffer);
+int isEnd(unsigned int fatEntry);
 
 int main(int argc, char *argv[])
 {
@@ -34,7 +36,7 @@ int main(int argc, char *argv[])
 	unsigned char* fatTable;
 	int numEntries = loadFatTable(fatTable);
 	char filePath[200] = "";
-	short fileFLC, success;
+	short fileFLC, success, newFLC;
 
 	char* nullSector;
 	blankSector(nullSector);
@@ -99,5 +101,17 @@ void blankSector(char* buffer)
 {
 	buffer = malloc(BYTES_PER_SECTOR * sizeof(unsigned char));
 	memset(buffer, '\0', sizeof(unsigned char) * BYTES_PER_SECTOR);
-	return buffer;
+}
+
+int isEnd(unsigned int fatEntry)
+{
+	unsigned char i;
+	for ( i = LAST_CLUSTER_BEGIN; i <= LAST_CLUSTER_END; i++)
+	{
+		if(fatEntry == (unsigned int) i)
+		{
+			return 1;
+		}
+	}
+	return 0;
 }
