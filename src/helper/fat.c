@@ -24,12 +24,12 @@ short existingDirectory(char* path)
 
 	/* Next Step: Figure out the directory's depth from Root */
 	int depth = 0;
-	char* delim = strtok(pathName, '/\0');
+	char* delim = strtok(pathName, "/\0");
 
 	/* Count the number of directories from Root to pathName */
 	while(delim != NULL)
 	{
-		delim = strtok(NULL, '/');
+		delim = strtok(NULL, "/");
 		depth++;
 	}
 
@@ -38,20 +38,19 @@ short existingDirectory(char* path)
 	*dirContents = malloc(depth * sizeof(char*));
 	// Reset pathName back to path after strtok()
 	strcpy(pathName, path);
-	delim = strtok(pathName, '/');
+	delim = strtok(pathName, "/");
 	index = 0;
 
 	while (delim != NULL && delim[0] != '\0')
 	{
 		dirContents[index] = strdup(delim);
-		delim = strtok(NULL, '/');
+		delim = strtok(NULL, "/");
 		index++;
 	}
 
 	/* Check if the path exists as a directory */
 	for (index = 0; index < depth; index++)
 	{
-		printf("Searching for : %s\n", dirContents[index]);
 		firstLogicalCluster = existingSubDir(firstLogicalCluster, dirContents[index]);
 
 		if (firstLogicalCluster == -1)
@@ -70,8 +69,6 @@ short existingDirectory(char* path)
 /* Does the dirName exist inside the directory beginning at curFLC */
 short existingSubDir(short curFLC, char* dirName)
 {
-	printf("existingSubDir() called with arguments, curFLC = %d and dirName = %s\n", curFLC, dirName);
-
 	/* Declare Variables */
 	// clusterBuffer needs memory allocated to hold BytesPerSector (512) char's
 	unsigned char* clusterBuffer = malloc(512 * sizeof(char*));
@@ -152,7 +149,7 @@ short existingSubDir(short curFLC, char* dirName)
 		}
 		else
 		{
-			printf("Did not find %s in the cluster after FLC = %s.\n", dirName, curFLC);
+			printf("Did not find %s in the cluster after FLC = %i.\n", dirName, curFLC);
 			return -1;
 		}
 	}

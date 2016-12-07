@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
 
 				h = (((int) image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				l = ( (int) image[26 + (i - s * 16) * 32])       & 0x000000ff;
-				file[i].firstLogicalCluster = h | l;
+				file[i].firstLogicalCluster = (h | l) + 19;
 
 				h = (((int) image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
 				l = (((int) image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
 
 				h = (((int) image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				l = ( (int) image[26 + (i - s * 16) * 32])       & 0x000000ff;
-				file[i].firstLogicalCluster = h | l;
+				file[i].firstLogicalCluster = (h | l) + 31; // 31 might be 32 or even 33?
 
 				h = (((int) image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
 				l = (((int) image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
