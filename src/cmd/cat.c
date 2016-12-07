@@ -22,7 +22,7 @@ FILE* FILE_SYSTEM_ID;
 extern const key_t SHM_KEY;
 
 int cat_help();
-bool isEnd(unsigned int fatEntry);
+int isEnd(unsigned int fatEntry);
 
 int main(int argc, char *argv[])
 {
@@ -100,7 +100,7 @@ int cat_help() {
 	return(0);
 }
 
-bool isEnd(unsigned int fatEntry)
+int isEnd(unsigned int fatEntry)
 {
 	unsigned char i;
 	while( i = LAST_CLUSTER_BEGIN; i <= LAST_CLUSTER_END; i++)
