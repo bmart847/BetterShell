@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 			if(success == -1) { break; }
 			printf("%s", sectorBuffer);
 			fileFLC++;
-		} while (isEnd((unsigned int) fileFLC));
+		} while (isEnd((unsigned int) fileFLC) != 1);
 		
 		return 0;
 	}
@@ -103,12 +103,12 @@ int cat_help() {
 int isEnd(unsigned int fatEntry)
 {
 	unsigned char i;
-	while( i = LAST_CLUSTER_BEGIN; i <= LAST_CLUSTER_END; i++)
+	for ( i = LAST_CLUSTER_BEGIN; i <= LAST_CLUSTER_END; i++)
 	{
 		if(fatEntry == (unsigned int) i)
 		{
-			return true;
+			return 1;
 		}
 	}
-	return false;
+	return 0;
 }
