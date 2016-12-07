@@ -22,6 +22,8 @@ FILE* FILE_SYSTEM_ID;
 extern const key_t SHM_KEY;
 
 int rm_help();
+void blankSector(char* buffer);
+int isEnd(unsigned int fatEntry);
 
 int main(int argc, char *argv[])
 {
@@ -31,11 +33,18 @@ int main(int argc, char *argv[])
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
 
+	unsigned char* fatTable;
+	int numEntries = loadFatTable(fatTable);
 	char filePath[200] = "";
+	short fileFLC, success, newFLC;
+
+	char* nullSector;
+	blankSector(nullSector);
 
 	if(argv[1] == NULL)
 	{
 		rm_help();
+		free(nullSector);
 		return 0;
 	}
 	else if(argv[1][0] == '/')
@@ -49,6 +58,36 @@ int main(int argc, char *argv[])
 	}
 	
 	printf("Rm will target file -> %s\n", filePath);
+
+	if (existingDirectory(filePath) != -1) {
+		printf("ERROR: Target is a directory.\n");
+		free(nullSector);
+		return 0;
+	}
+	else if ((fileFLC = existingFile(filePath)) != -1)
+	{
+		// Logic for outputting contents will go here
+		printf("File Exists!\n");
+
+		do
+		{
+			success = write_sector(fileFLC, nullSector);
+			if(success == -1) { break; }
+			newFLC = (short) get_fat_entry(fileFLC, fatTable);
+			set_fat_entry(fileFLC, (int) UNUSED, fatTable);
+			fileFLC = newFLC;
+		} while (isEnd((unsigned int) fileFLC) != 1);
+		
+		free(nullSector);
+
+		return 0;
+	}
+	else
+	{
+		printf("ERROR: Target does not exist on the disk.\n");
+	}
+	
+	free(nullSector);
 	return 0;
 }
 
@@ -56,4 +95,23 @@ int rm_help()
 {
 	printf("Help for rm command will go here.\n");
 	return(0);
+}
+
+void blankSector(char* buffer)
+{
+	buffer = malloc(BYTES_PER_SECTOR * sizeof(unsigned char));
+	memset(buffer, '\0', sizeof(unsigned char) * BYTES_PER_SECTOR);
+}
+
+int isEnd(unsigned int fatEntry)
+{
+	unsigned char i;
+	for ( i = LAST_CLUSTER_BEGIN; i <= LAST_CLUSTER_END; i++)
+	{
+		if(fatEntry == (unsigned int) i)
+		{
+			return 1;
+		}
+	}
+	return 0;
 }

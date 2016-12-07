@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
-
+	short fileFLC;
 	char filePath[200] = "";
 
 	if(argv[1] == NULL)
@@ -49,6 +49,23 @@ int main(int argc, char *argv[])
 	}
 	
 	printf("rmdir will target folder -> %s\n", filePath);
+
+	if (existingFile(filePath) != -1) {
+		printf("ERROR: Target is a file.\n");
+		return 0;
+	}
+	
+	else if ((fileFLC = existingDirectory(filePath)) != -1)
+	{
+		// Logic for directory deletion will go here.
+		printf("Directory Exists!\n");
+		return 0;
+	}
+	else
+	{
+		printf("ERROR: Target does not exist on the disk.\n");
+	}
+
 	return 0;
 }
 
