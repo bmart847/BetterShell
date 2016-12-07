@@ -66,7 +66,7 @@ extern int BYTES_PER_SECTOR;
 short existingDirectory(char* path);
 short existingSubDir(short curFLC, char* target);
 
-short existingFile(char* filepath);
+short existingFile(char* filepath, short FLC);
 
 int loadFatTable(unsigned char* buffer); // Return the (number of sectors loaded * BYTES_PER_SECTOR ) / 1.5
 
