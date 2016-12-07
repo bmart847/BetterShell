@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		printf("ERROR: Target is a directory.\n");
 		return 0;
 	}
-	else if ((fileFLC = existingFile(filePath)) != -1)
+	else if ((fileFLC = existingFile(filePath, 19)) != -1)
 	{
 		// Logic for outputting contents will go here
 		printf("File Exists!\n");

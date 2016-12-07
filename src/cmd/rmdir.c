@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 	
 	printf("rmdir will target folder -> %s\n", filePath);
 
-	if (existingFile(filePath) != -1) {
+	if (existingFile(filePath, 19) != -1) {
 		printf("ERROR: Target is a file.\n");
 		return 0;
 	}

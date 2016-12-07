@@ -160,12 +160,12 @@ short existingSubDir(short curFLC, char* dirName)
 }
 
 /* Check if the specified filepath exists in the fat */
-short existingFile(char* filepath, int FLC)
+short existingFile(char* filepath, short FLC)
 {
 	if (strlen(filepath) == 1)
 	{
 		/* Root is not file */
-		return -1
+		return -1;
 	}
 
 	unsigned char* image = (unsigned char*) malloc(BYTES_PER_SECTOR * NUM_FAT_SECTORS);
@@ -204,7 +204,7 @@ short existingFile(char* filepath, int FLC)
 			char* testPath = malloc(BYTES_PER_SECTOR * sizeof(char));
 			strcpy(testPath, &filepath);
 			
-			char* token = strtok(input, "/");
+			char* token = strtok(testPath, "/");
 			while (token != NULL)
 			{
 				token = strtok(NULL, "/");
