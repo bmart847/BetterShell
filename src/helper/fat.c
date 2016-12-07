@@ -162,15 +162,15 @@ short existingSubDir(short curFLC, char* dirName)
 /* Load the contents of the FAT Table into buffer and return the number of fat entries */
 int loadFatTable(unsigned char* buffer)
 {
-	int index; 
+	int index;
 	// index will count the number of fat entries 
 
 	for(index = 1; index < NUM_FAT_SECTORS; index++)
 	{
-		read_sector(index, (buffer + (index * BYTES_PER_SECTOR)));
+		read_sector(index, buffer + ((index - 1) * BYTES_PER_SECTOR));
 	}
 
-	return index;
+	return 2880;
 }
 
 /* Create a String from the filename of a dirEntry element */

@@ -31,12 +31,12 @@ int main(int argc, char *argv[])
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
 
-	unsigned char* fatTable;
+	unsigned char* fatTable = malloc((BYTES_PER_SECTOR * NUM_FAT_SECTORS) * sizeof(unsigned char*));
 	int numEntries = loadFatTable(fatTable);
 	unsigned int freeCount = 0, fatEntry;
 
 	
-	for(int i = 0; i < numEntries; i++)
+	for(int i = 32; i < numEntries; i++)
 	{
 		fatEntry = get_fat_entry(i, fatTable);
 		if(fatEntry == UNUSED)
@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
 	}
 
 	free(fatTable);
-	printf("df has been called\n");
 	printf("%d Unused Sectors\n", freeCount);
+	printf("Total Space: %d Bytes\n", freeCount * BYTES_PER_SECTOR);
 	return 0;
 }
 
