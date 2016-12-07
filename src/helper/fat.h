@@ -40,13 +40,20 @@ typedef struct
 } dirEntry;
 
 
-/* File Attribut Constants */
+/* File Attribute Constants */
 #define READ_ONLY_ATTRIBUTE 0x01 
 #define HIDDEN_ATTRIBUTE    0x02
 #define SYSTEM_ATTRIBUTE    0x04
 #define VOLUME_LABEL	    0x08
 #define SUBDIR		    0x10
 #define ARCHIVE		    0x20
+
+/* Cluster Constants */
+#define UNUSED			0x00
+#define RESERVED_CLUSTER_BEGIN	0xFF0
+#define RESERVED_CLUSTER_END	0xFF6
+#define BAD_CLUSTER		0xFF7
+#define LAST_CLUSTER_BEGIN	0xFFF
 
 #define MAX_FILENAME_LENGTH 255
 
