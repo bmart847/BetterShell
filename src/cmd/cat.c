@@ -5,7 +5,7 @@
 	Date Assigned: 6 September 2016
 	Due Date: 6 December 2016
 	
-	Description:  Catconates the arguments.
+	Description:  Outputs the contents of a file.
 	
 	Certification of Authenticity:
 	I certify that this assignment is entirely my own work.
@@ -32,8 +32,15 @@ int main(int argc, char *argv[])
 	FILE_SYSTEM_ID = fopen(filename, "r+");
 
 	char filePath[200] = "";
+	short fileFLC, success;
+	unsigned char* sectorBuffer = malloc(BYTES_PER_SECTOR * sizeof(unsigned char*));
 
-	if(argv[1] == NULL)
+	if (argc > 2)
+	{
+		printf("ERROR: Too many arguments.\n");
+		return 0;
+	}
+	else if(argv[1] == NULL)
 	{
 		cat_help();
 		return 0;
@@ -45,10 +52,38 @@ int main(int argc, char *argv[])
 	else
 	{
 		strcat(filePath, share->wdPath);
+		if(share->wdSize != 1)
+		{
+			filePath[strlen(filePath)] = '/';
+			filePath[strlen(filePath)] = '\0';
+		}
 		strcat(filePath, argv[1]);
 	}
 	
 	printf("cat will target file -> %s\n", filePath);
+
+	if (existingDirectory(filePath) != -1) {
+		printf("ERROR: Target is a directory.\n");
+		return 0;
+	}
+	else if ((fileFLC = existingFile(filePath)) != -1)
+	{
+		// Logic for outputting contents will go here
+		printf("File Exists!\n");
+
+		success = read_sector(fileFLC, sectorBuffer);
+
+		if(success != -1)
+			
+		
+		return 0;
+	}
+	else
+	{
+		printf("ERROR: Target does not exist on the disk.\n");
+	}
+
+	free(sectorBuffer);
 	return 0;
 }
 
