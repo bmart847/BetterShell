@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
 
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
-
-	unsigned char* fatTable;
+	
+	unsigned char* fatTable = malloc((BYTES_PER_SECTOR * NUM_FAT_SECTORS) * sizeof(unsigned char*));
 	int numEntries = loadFatTable(fatTable);
 
 	char filePath[200] = "";

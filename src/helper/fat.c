@@ -107,8 +107,9 @@ short existingSubDir(short curFLC, char* dirName)
 		/* Cycle through the 16 sectors in each cluster (FAT12 Constant Value) */
 		for (index = 0; index < 16; index++)
 		{
-			dirEntry* entry = (dirEntry*) (clusterBuffer + (index * 32));
-
+			dirEntry entry;
+			entry = loadDirEntry(clusterBuffer + (index * 32));
+			
 			if (entry->filename[0] == (0xE5 || 0x40 || 0x80))
 			{
 				/* The directory entry is currently unused (free) */
@@ -130,7 +131,8 @@ short existingSubDir(short curFLC, char* dirName)
 			}
 			else if (entry->attributes == SUBDIR)
 			{
-				char* subDirName = getEntryName(*entry);
+				char* subDirName = malloc(sizeof(char) * MAX_FILENAME_LENGTH);
+				strcat(subDirName, getEntryName(*entry));
 
 				printf("FAT.C -- Comparing : %s <---> %s\n", subDirName, dirName);
 				printf("FAT.C -- The Entry's First Logical Cluster is : %d\n", entry->firstLogicalCluster);
@@ -140,8 +142,6 @@ short existingSubDir(short curFLC, char* dirName)
 					return entry->firstLogicalCluster;
 				}
 			}
-
-			free(entry);
 		}
 
 		if ((fakeCluster != 0x00) || (fakeCluster != 0xFF0))
