@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
 
-	char* fatTable;
+	unsigned char* fatTable;
 	int numEntries = loadFatTable(fatTable);
 	unsigned int freeCount = 0, fatEntry;
 
