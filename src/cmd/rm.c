@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
 
 	unsigned char* fatTable;
 	int numEntries = loadFatTable(fatTable);
-	
 	char filePath[200] = "";
+	short fileFLC, success;
 
 	char* nullSector;
 	blankSector(nullSector);
@@ -71,9 +71,13 @@ int main(int argc, char *argv[])
 		{
 			success = write_sector(fileFLC, nullSector);
 			if(success == -1) { break; }
-			fileFLC = (short) get_fat_entry(fileFLC, fatTable);
+			newFLC = (short) get_fat_entry(fileFLC, fatTable);
+			set_fat_entry(fileFLC, (int) UNUSED, fatTable);
+			fileFLC = newFLC;
 		} while (isEnd((unsigned int) fileFLC) != 1);
+		
 		free(nullSector);
+
 		return 0;
 	}
 	else

@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 		printf("ERROR: Target is a file.\n");
 		return 0;
 	}
+	
 	else if ((fileFLC = existingDirectory(filePath)) != -1)
 	{
 		// Logic for directory deletion will go here.
