@@ -57,6 +57,7 @@ typedef struct
 #define LAST_CLUSTER_END	0xFFF
 
 #define MAX_FILENAME_LENGTH 255
+#define NUM_FAT_SECTORS 9
 
 extern char* WORKING_DIRECTORY;
 extern int BYTES_PER_SECTOR;
@@ -64,7 +65,10 @@ extern int BYTES_PER_SECTOR;
 /* FAT Navigation Functions */
 short existingDirectory(char* path);
 short existingSubDir(short curFLC, char* target);
-unsigned char* loadFatTable(); // Add arguments
+
+short existingFile(char* filepath);
+
+int loadFatTable(unsigned char* buffer); // Return the (number of sectors loaded * BYTES_PER_SECTOR ) / 1.5
 
 /* dirEntry Helpers */
 char* getEntryName(dirEntry directory);
