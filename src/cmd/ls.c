@@ -4,9 +4,9 @@
 	Assignment: Semester Project
 	Date Assigned: 6 September 2016
 	Due Date: 6 December 2016
-	
+
 	Description:  Lists the entries in the directory or the file/directory entry contents.
-	
+
 	Certification of Authenticity:
 	I certify that this assignment is entirely my own work.
 */
@@ -19,122 +19,96 @@
 #include "../helper/shared.h"
 
 FILE* FILE_SYSTEM_ID;
+extern const key_t SHM_KEY;
 
 int ls_help();
 
 int main(int argc, char *argv[])
 {
+	// TODO: Add second argument to print subdirectory contents 
+	/* Validate Arguments */
+	if (argc > 2)
+	{
+		ls_help();
+	}
+
+	/* Access Shared Memory */
 	shm_id = shmget(1234, 250 * sizeof(char*), 0666);
-	
-	dirEntry directory;
-	short FLC;;
+	sharedMemory* share = shmat(shm_id, 0, 0);
+
+	char* filename = filenameGet();
+	FILE_SYSTEM_ID = fopen(filename, "r+");
+
+	if (FILE_SYSTEM_ID == NULL)
+	{
+		/* Something went wrong */
+		printf("Something went wrong. Shared memory was unable to be initialized from ls\n");
+		return -1;
+	}
+
+	/* Declare Variables */
+	int sectorsPerCluster = 9;
+	short FLC = flcGet();
 	int length = 1;
 	unsigned char* image;
 	char temp[40];
 	int* entries;
-	int i, h, l, j, k, s;
-	
-	int bytesPerSector = 62;
+	int i, h, l, j, k, s, done;
 
-	fileEntry* files = (fileEntry*)malloc(length * 16 * sizeof(fileEntry));
-
-	FLC = existingDirectory(dirGet());
 	if (FLC == -1)
 	{
-		printf("No such directory found");
-		return;
+		/* Directory does not exist, how did you get here? */
+		printf("No such directory found.\n");
+		return 0;
 	}
 
-	if (FLC != 0)
+	/* If FLC is not the Root Directory, read in the directory at FLC */
+	if (FLC != 19)
 	{
-		unsigned char* fatTable = malloc(9 * 512);
+		unsigned char* fatTable = malloc(BYTES_PER_SECTOR * sectorsPerCluster);
 		for (i = 0; i < 9; i++)
 		{
-			read_sector(i + 1, &fatTable[i * 512]);
+			read_sector(i + 1, &fatTable[i * BYTES_PER_SECTOR]);
 		}
 
-		entries = (int*)malloc(10 * sizeof(int));
-		int currentEntry = FLC;
-		int end = 0;
-		entries[0] = currentEntry + 31;
+		/* Read entries from the directory starting at FLC */
+		entries = (int*) malloc(10 * sizeof(int*));
+ 		short curEntry = FLC;
+		done = 0;
+		entries[0] = curEntry + 31;
 
-		while (!end && length <= 10)
+		while (!done && length <= 10)
 		{
-			currentEntry = get_fat_entry(currentEntry, image);
-			if (currentEntry < 0xFF8)
+			curEntry = get_fat_entry(curEntry, fatTable);
+
+			if (curEntry < 0xFF8)
 			{
-				entries[length] = currentEntry + 31;
+				entries[length] = curEntry + 31;
 				length++;
 			}
 			else
 			{
-				end = 1;
+				done = 1;
 			}
 		}
 
 		free(fatTable);
-
-		for (s = 0; s < length; s++)
-		{
-			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char));
-			read_sector(entries[s], image);
-
-			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
-			{
-				for (j = 0; j < 8; j++)
-				{
-					files[i].Filename[j] = image[j + (i - s * 16) * 32];
-				}
-				files[i].Filename[8] = '0';
-
-				for (j = 0; j < 3; j++)
-				{
-					files[i].Type[j] = image[j + 8 + (i - s * 16) * 32];
-				}
-
-				files[i].Type[3] = '\0';
-
-				files[i].Attributes = image[11 + (i - s * 16) * 32];
-
-				files[i].CreationTime[0] = image[14 + (i - s * 16) * 32];
-				files[i].CreationTime[1] = image[15 + (i - s * 16) * 32];
-
-				files[i].CreationDate[0] = image[16 + (i - s * 16) * 32];
-				files[i].CreationDate[1] = image[17 + (i - s * 16) * 32];
-
-				files[i].LastAccessDate[0] = image[18 + (i - s * 16) * 32];
-				files[i].LastAccessDate[1] = image[19 + (i - s * 16) * 32];
-
-				files[i].LastWriteTime[0] = image[22 + (i - s * 16) * 32];
-				files[i].LastWriteTime[1] = image[23 + (i - s * 16) * 32];
-
-				files[i].LastWriteDate[0] = image[24 + (i - s * 16) * 32];
-				files[i].LastWriteDate[1] = image[25 + (i - s * 16) * 32];
-
-				h = (((int)image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
-				l = ((int)image[26 + (i - s * 16) * 32]) & 0x000000ff;
-				files[i].FirstLogicalCluster = h | l;
-
-				h = (((int)image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
-				l = (((int)image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
-				j = (((int)image[29 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
-				k = ((int)image[28 + (i - s * 16) * 32]) & 0x000000ff;
-				files[i].FileSize = h | l | j | k;
-			}
-			free(image);
-		}
 	}
-	else
+
+	/* Allocate a new dirEntry object array to read in the directory contents */
+	dirEntry* file = (dirEntry*) malloc(length * sizeof(dirEntry));
+
+	if (FLC == 19)
 	{
 		/* Read in Root sectors */
 		int rootSectors = 0;
 		int currentSector = 19;
 		int sectorsRead = 0;
-		int done = 0;
+		done = 0;
 
 		while (done != 1)
 		{
-			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char));
+			image = (unsigned char*) malloc(BYTES_PER_SECTOR * sizeof(unsigned char*));
 			read_sector(currentSector, image);
 
 			for (i = 0; i < 16; i++)
@@ -146,120 +120,166 @@ int main(int argc, char *argv[])
 				}
 			}
 
-			sectorsRead++;
 			currentSector++;
+			sectorsRead++;
 
 			free(image);
 		}
 
 		for (s = 0; s < sectorsRead; s++)
 		{
-			image = (unsigned char*)malloc(bytesPerSector * sizeof(unsigned char));
+			image = (unsigned char*) malloc(BYTES_PER_SECTOR * sizeof(char*));
 			read_sector(s + 19, image);
 
 			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
 			{
 				for (j = 0; j < 8; j++)
 				{
-					files[i].Filename[j] = image[j + (i - s * 16) * 32];
+					file[i].filename[j] = image[j + (i - s * 16) * 32];
 				}
-				files[i].Filename[8] = '\0';
+				file[i].filename[8] = '\0';
 
 				for (j = 0; j < 3; j++)
 				{
-					files[i].Type[j] = image[j + 8 + (i - s * 16) * 32];
+					file[i].extension[j] = image[j + 8 + (i - s * 16) * 32];
 				}
-				files[i].Type[3] = '\0';
+				file[i].extension[3] = '\0';
 
-				files[i].Attributes = image[11 + (i - s * 16) * 32];
+				file[i].attributes = image[11 + (i - s * 16) * 32];
 
-				files[i].CreationTime[0] = image[14 + (i - s * 16) * 32];
-				files[i].CreationTime[1] = image[15 + (i - s * 16) * 32];
+				file[i].creationTime[0] = image[14 + (i - s * 16) * 32];
+				file[i].creationTime[1] = image[15 + (i - s * 16) * 32];
 
-				files[i].CreationDate[0] = image[16 + (i - s * 16) * 32];
-				files[i].CreationDate[1] = image[17 + (i - s * 16) * 32];
+				file[i].creationDate[0] = image[16 + (i - s * 16) * 32];
+				file[i].creationDate[1] = image[17 + (i - s * 16) * 32];
 
-				files[i].LastAccessDate[0] = image[18 + (i - s * 16) * 32];
-				files[i].LastAccessDate[1] = image[19 + (i - s * 16) * 32];
+				file[i].lastAccessDate[0] = image[18 + (i - s * 16) * 32];
+				file[i].lastAccessDate[1] = image[19 + (i - s * 16) * 32];
 
-				files[i].LastWriteTime[0] = image[22 + (i - s * 16) * 32];
-				files[i].LastWriteTime[1] = image[23 + (i - s * 16) * 32];
+				file[i].lastWriteTime[0] = image[22 + (i - s * 16) * 32];
+				file[i].lastWriteTime[1] = image[23 + (i - s * 16) * 32];
 
-				files[i].LastWriteDate[0] = image[24 + (i - s * 16) * 32];
-				files[i].LastWriteDate[1] = image[25 + (i - s * 16) * 32];
+				file[i].lastWriteDate[0] = image[24 + (i - s * 16) * 32];
+				file[i].lastWriteDate[1] = image[25 + (i - s * 16) * 32];
 
-				h = (((int)image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
-				l = ((int)image[26 + (i - s * 16) * 32]) & 0x000000ff;
-				files[i].FirstLogicalCluster = h | l;
+				h = (((int) image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
+				l = ( (int) image[26 + (i - s * 16) * 32])       & 0x000000ff;
+				file[i].firstLogicalCluster = (h | l) + 19;
 
-				h = (((int)image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
-				l = (((int)image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
-				j = (((int)image[29 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
-				k = ((int)image[28 + (i - s * 16) * 32]) & 0x000000ff;
-				files[i].FileSize = h | l | j | k;
+				h = (((int) image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
+				l = (((int) image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
+				j = (((int) image[29 + (i - s * 16) * 32]) << 8)  & 0x0000ff00;
+				k = ( (int) image[28 + (i - s * 16) * 32])        & 0x000000ff;
+				file[i].fileSize = h | l | j | k;
 			}
+		}
+	}
+	else
+	{
+		for (s = 0; s < length; s++)
+		{
+			image = (unsigned char*) malloc(BYTES_PER_SECTOR * sizeof(unsigned char*));
+			read_sector(entries[s], image);
 
-			free(image);
+			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
+			{
+				for (j = 0; j < 8; j++)
+				{
+					file[i].filename[j] = image[j + (i - s * 16) * 32];
+				}
+				file[i].filename[8] = '0';
+
+				for (j = 0; j < 3; j++)
+				{
+					file[i].extension[j] = image[j + 8 + (i - s * 16) * 32];
+				}
+
+				file[i].extension[3] = '\0';
+
+				file[i].attributes = image[11 + (i - s * 16) * 32];
+
+				file[i].creationTime[0] = image[14 + (i - s * 16) * 32];
+				file[i].creationTime[1] = image[15 + (i - s * 16) * 32];
+
+				file[i].creationDate[0] = image[16 + (i - s * 16) * 32];
+				file[i].creationDate[1] = image[17 + (i - s * 16) * 32];
+
+				file[i].lastAccessDate[0] = image[18 + (i - s * 16) * 32];
+				file[i].lastAccessDate[1] = image[19 + (i - s * 16) * 32];
+
+				file[i].lastWriteTime[0] = image[22 + (i - s * 16) * 32];
+				file[i].lastWriteTime[1] = image[23 + (i - s * 16) * 32];
+
+				file[i].lastWriteDate[0] = image[24 + (i - s * 16) * 32];
+				file[i].lastWriteDate[1] = image[25 + (i - s * 16) * 32];
+
+				h = (((int) image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
+				l = ( (int) image[26 + (i - s * 16) * 32])       & 0x000000ff;
+				file[i].firstLogicalCluster = (h | l) + 31; // 31 might be 32 or even 33?
+
+				h = (((int) image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
+				l = (((int) image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
+				j = (((int) image[29 + (i - s * 16) * 32]) << 8)  & 0x0000ff00;
+				k = ( (int) image[28 + (i - s * 16) * 32])        & 0x000000ff;
+				file[i].fileSize = h | l | j | k;
+			}
 		}
 	}
 
 	/* Print the list */
-	printf("  NAME        TYPE     SIZE  FLC\n");
+	printf("    NAME       TYPE    SIZE   FLC\n");
+	printf("------------  ------  ------  ---\n");
 
 	for (i = 0; i < length * 16; i++)
 	{
-		if (files[i].Filename[0] != '\xe5' &&
-			files[i].Filename[0] != '\x0f' &&
-			files[i].Filename[0] != -27 &&
-			files[i].Filename[0] != 0)
+		if (file[i].filename[0] != '\xe5' &&
+			file[i].filename[0] != '\x0f' &&
+			file[i].filename[0] != -27 &&
+			file[i].filename[0] != 0)
 		{
-			if ((files[i].Attributes & 0x02) == 0 &&
-				(files[i].Attributes & 0x04) == 0)
+			if ((file[i].attributes & HIDDEN_ATTRIBUTE) == 0 &&
+				(file[i].attributes & SYSTEM_ATTRIBUTE) == 0)
 			{
-				char* type;
-				if (strcmp(files[i].Filename, "LARGEDIR") != 0)
+				if (strcmp(file[i].filename, "LARGEDIR") != 0)
 				{
-					if ((files[i].Attributes & 0x10) != 0)
+					if ((file[i].attributes & SUBDIR) != 0)
 					{
-						printf("%12s  %4s   %5d   %3d\n", files[i].Filename,
+						printf("%12s  %4s   %5d   %3d\n", file[i].filename,
 							"DIR",
-							files[i].FileSize,
-							files[i].FirstLogicalCluster);
+							file[i].fileSize,
+							file[i].firstLogicalCluster);
 					}
 					else
 					{
-						char* tmp;
-						strcpy(tmp, "");
+						strcpy(temp, "");
 						for (j = 0; j < 8; j++)
 						{
-							if (files[i].Filename[j] == ' ')
+							if (file[i].filename[j] == ' ')
 							{
-								files[i].Filename[j] = '\0';
+								file[i].filename[j] = '\0';
 							}
 						}
 
 						for (j = 0; j < 3; j++)
 						{
-							if (files[i].Type[j] == ' ')
+							if (file[i].extension[j] == ' ')
 							{
-								files[i].Type[j] - '\0';
+								file[i].extension[j] = '\0';
 							}
 						}
 
-						strcat(tmp, files[i].Filename);
-						strcat(tmp, ".");
-						strcat(tmp, files[i].Type);
-						printf("%12s  %4s   %4d   %3d\n", tmp,
+						strcat(temp, file[i].filename);
+						strcat(temp, ".");
+						strcat(temp, file[i].extension);
+						printf("%12s  %4s   %4d   %3d\n", temp,
 							"FILE",
-							files[i].FileSize,
-							files[i].FirstLogicalCluster);
+							file[i].fileSize,
+							file[i].firstLogicalCluster);
 					}
 				}
 			}
 		}
 	}
-	free(files);
-	
 	return 0;
 }
 

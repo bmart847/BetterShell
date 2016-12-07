@@ -25,30 +25,60 @@ int cd_help();
 
 int main(int argc, char *argv[])
 {
+	printf("CD called.\n");
+	short newFLC = 1;
 	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), 0666);
 	sharedMemory* share = shmat(shm_id, 0, 0);
 
 	char* filename = filenameGet();
 	FILE_SYSTEM_ID = fopen(filename, "r+");
-	
+
 	if (argc == 1)
 	{
 		// Change the working directory to root
 		dirSet("/");
-		filenameSet("");
-		flcSet(0);
+		flcSet(19);
 	}
 	else if (argc == 2)
 	{
-		// CD to the given path name
-		dirAdd(argv[1]);
+		if (strcmp(argv[1], "..") == 0)
+		{
+			/* Move up one directory level */
+			dirRemove();
+			newFLC = existingDirectory(dirGet());
+			flcSet(newFLC);
+		}
+		else
+		{
+			/* CD to the given path name */
+			dirAdd(argv[1]);
+
+			printf("Search directory for : %s\n", dirGet());
+			newFLC = existingDirectory(dirGet());
+
+			printf("CD : newFLC = %i\n", newFLC);
+
+			/* Check that the new directory actually exists before moving into it */
+			if (newFLC != -1)
+			{
+				flcSet(newFLC);
+			}
+			else
+			{
+				printf("The specified directory does not exist\n");
+				dirRemove();
+				return -1;
+			}
+		}
 	}
 	else
 	{
 		// Too many args
 		cd_help();
 	}
-	
+
+	printf("Directory : %s\n", dirGet());
+
 	return 0;
 }
 
