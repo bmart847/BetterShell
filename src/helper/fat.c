@@ -72,7 +72,7 @@ short existingSubDir(short curFLC, char* dirName)
 	/* Declare Variables */
 	// clusterBuffer needs memory allocated to hold BytesPerSector (512) char's
 	unsigned char* clusterBuffer = malloc(512 * sizeof(char*));
-	int realCluster, fakeCluster;
+	int realCluster, nextCluster;
 	int index, done = 0;
 	short flc = curFLC;
 	// fatTable needs to be able to hold the size of the fat table, BytesPerSector * SectorsPerFat (512 * 9)
@@ -87,19 +87,9 @@ short existingSubDir(short curFLC, char* dirName)
 	while (!done)
 	{
 		/* Read the next fat entry */
-		fakeCluster = get_fat_entry(flc, fatTable);
+		nextCluster = get_fat_entry(flc, fatTable);
 
-		/* Where da real cluster doe? */
-		if (flc == 19 || flc == 0)
-		{
-			/* We are in the root directory */
-			realCluster = 19;
-		}
-		else
-		{
-			/* Set Real Cluster to curFLC + Root_Offset (32) */
-			realCluster = flc + 32 - 1;
-		}
+		realCLuster = flc;
 
 		/* Read realCluster's sector */
 		read_sector(realCluster, clusterBuffer);
@@ -144,9 +134,9 @@ short existingSubDir(short curFLC, char* dirName)
 			}
 		}
 
-		if ((fakeCluster != 0x00) || (fakeCluster != 0xFF0))
+		if ((nextCluster != 0x00) || (nextCluster != 0xFF0))
 		{
-			flc = fakeCluster;
+			flc = nextCluster;
 		}
 		else
 		{
