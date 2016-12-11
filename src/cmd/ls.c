@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 		entries = (int*) malloc(10 * sizeof(int*));
  		short curEntry = FLC;
 		done = 0;
-		entries[0] = curEntry + 31;
+		entries[0] = curEntry;
 
 		while (!done && length <= 10)
 		{
