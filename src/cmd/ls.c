@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* If FLC is not the Root Directory, read in the directory at FLC */
-	if (FLC != 19)
+	if (FLC != 0)
 	{
 		unsigned char* fatTable = malloc(BYTES_PER_SECTOR * sectorsPerCluster);
 		for (i = 0; i < 9; i++)
@@ -98,11 +98,11 @@ int main(int argc, char *argv[])
 	/* Allocate a new dirEntry object array to read in the directory contents */
 	dirEntry* file = (dirEntry*) malloc(length * sizeof(dirEntry));
 
-	if (FLC == 19)
+	if (FLC == 0)
 	{
 		/* Read in Root sectors */
 		int rootSectors = 0;
-		int currentSector = 19;
+		int currentSector = 0;
 		int sectorsRead = 0;
 		done = 0;
 
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 		for (s = 0; s < sectorsRead; s++)
 		{
 			image = (unsigned char*) malloc(BYTES_PER_SECTOR * sizeof(char*));
-			read_sector(s + 19, image);
+			read_sector(s, image);
 
 			for (i = 0 + (s * 16); i < 16 + (s * 16); i++)
 			{
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
 
 				h = (((int) image[27 + (i - s * 16) * 32]) << 8) & 0x0000ff00;
 				l = ( (int) image[26 + (i - s * 16) * 32])       & 0x000000ff;
-				file[i].firstLogicalCluster = (h | l) + 31; // 31 might be 32 or even 33?
+				file[i].firstLogicalCluster = (h | l);
 
 				h = (((int) image[31 + (i - s * 16) * 32]) << 24) & 0xff000000;
 				l = (((int) image[30 + (i - s * 16) * 32]) << 16) & 0x00ff0000;
