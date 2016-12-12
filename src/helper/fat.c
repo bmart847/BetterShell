@@ -8,7 +8,7 @@ short existingDirectory(char* path)
 	{
 		/* Path is the Root Directory */
 		/* Return the First Logical Cluster of the Root Directory (19) */
-		return 19;
+		return 0;
 	}
 
 	/* Path is not the Root Directory, time to dig deeper */
@@ -39,6 +39,9 @@ short existingDirectory(char* path)
 	// Reset pathName back to path after strtok()
 	strcpy(pathName, path);
 	delim = strtok(pathName, "/");
+
+	printf("first subdir = %s\n", delim);
+
 	index = 0;
 
 	while (delim != NULL && delim[0] != '\0')
@@ -52,7 +55,6 @@ short existingDirectory(char* path)
 	for (index = 0; index < depth; index++)
 	{
 		firstLogicalCluster = existingSubDir(firstLogicalCluster, dirContents[index]);
-
 		if (firstLogicalCluster == -1)
 		{
 			/* Directory does not exist */
@@ -61,8 +63,15 @@ short existingDirectory(char* path)
 		}
 	}
 	
-	/* Directory path does exist */
 	free(dirContents);
+
+	if(firstLogicalCluster == 0)
+	{
+		/* Pathname specified did not belong to root! */
+		return -1;
+	}
+
+	/* Directory path does exist */
 	return firstLogicalCluster;
 }
 
@@ -76,20 +85,17 @@ short existingSubDir(short curFLC, char* dirName)
 	int index, done = 0;
 	short flc = curFLC;
 	// fatTable needs to be able to hold the size of the fat table, BytesPerSector * SectorsPerFat (512 * 9)
-	unsigned char* fatTable = malloc(512 * 9);
+	unsigned char* fatTable = malloc(BYTES_PER_SECTOR * 512 * 9);
 
-	/* Initialize Fat Table */
-	for (index = 0; index < 9; index++)
-	{
-		read_sector(index + 1, &fatTable[512 * index]);
-	}
+	loadFatTable(fatTable);
 
 	while (!done)
 	{
+		printf("Begin reading fat entries starting at FLC = %i\n", flc);
 		/* Read the next fat entry */
 		nextCluster = get_fat_entry(flc, fatTable);
 
-		realCLuster = flc;
+		realCluster = flc;
 
 		/* Read realCluster's sector */
 		read_sector(realCluster, clusterBuffer);
@@ -121,15 +127,25 @@ short existingSubDir(short curFLC, char* dirName)
 			}
 			else if (entry.attributes == SUBDIR)
 			{
-				char* subDirName = malloc(sizeof(char) * MAX_FILENAME_LENGTH);
-				strcat(subDirName, getEntryName(entry));
+				char* subDirName = strdup(getEntryName(entry));
+
+				short flCluster;
+				if (entry.firstLogicalCluster == 0 || entry.firstLogicalCluster == 19)
+				{
+					flCluster = entry.firstLogicalCluster + 19;
+				}
+				else
+				{
+					flCluster = entry.firstLogicalCluster + 31;
+				}
 
 				printf("FAT.C -- Comparing : %s <---> %s\n", subDirName, dirName);
 				printf("FAT.C -- The Entry's First Logical Cluster is : %d\n", entry.firstLogicalCluster);
+				printf("FAT.c -- The entry's real FLC is : %d\n", flCluster);
 
 				if (strcmp(subDirName, dirName) == 0)
 				{
-					return entry.firstLogicalCluster;
+					return flCluster;
 				}
 			}
 		}
@@ -169,17 +185,7 @@ short existingFile(char* filepath, short FLC)
 		sector = get_fat_entry(FLC, image);
 		unsigned char* cluster = malloc(BYTES_PER_SECTOR * sizeof(char));
 
-		int curSector;
-
-
-		if (FLC == 19 || FLC == 0)
-		{
-			curSector = 19;
-		}
-		else
-		{
-			curSector = FLC + 33 - 2;
-		}
+		int curSector = FLC;
 
 		int count = read_sector(curSector, cluster);
 
@@ -205,6 +211,7 @@ short existingFile(char* filepath, short FLC)
 			{
 				if (strcasecmp(entry.filename, filepath) == 0)
 				{
+					// We found it!
 					matching = 0;
 				}
 			}
@@ -312,11 +319,11 @@ dirEntry loadDirEntry(char* entry)
 
 	offset = 26;
 
-	object.firstLogicalCluster = (((int) entry[offset]) & 0x000000ff) || (((int) entry[offset + 1] << 8) & 0x0000ff00);
+	object.firstLogicalCluster = (((int) entry[offset]) & 0x000000ff) | (((int) entry[offset + 1] << 8) & 0x0000ff00);
 
 	offset = 28;
 
-	object.fileSize = (((int) entry[offset]) & 0x000000ff) || ((((int) entry[offset + 1]) << 8) & 0x0000ff00) || ((((int) entry[offset + 2]) << 16) && 0x00ff0000) || ((((int) entry[offset + 3]) << 24) & 0xff000000);
+	object.fileSize = (((int) entry[offset]) & 0x000000ff) | ((((int) entry[offset + 1]) << 8) & 0x0000ff00) | ((((int) entry[offset + 2]) << 16) && 0x00ff0000) | ((((int) entry[offset + 3]) << 24) & 0xff000000);
 
 	return object;
 }
