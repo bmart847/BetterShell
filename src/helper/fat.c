@@ -218,7 +218,7 @@ short existingFile(char* filepath, short FLC)
 
 			if (matching == 0)
 			{
-				if((entry.attributes & SUBDIR) == SUBDIR)
+				if((entry.attributes && SUBDIR) == SUBDIR)
 				{
 					/* filepath is a directory */
 					done = 1;
