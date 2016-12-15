@@ -257,7 +257,7 @@ int loadFatTable(unsigned char* buffer)
 
 	for(index = 1; index < NUM_FAT_SECTORS; index++)
 	{
-		read_sector(index, buffer + ((index - 1) * BYTES_PER_SECTOR));
+		read_sector(index, buffer[(index - 1) * BYTES_PER_SECTOR]);
 	}
 
 	return 2880;
