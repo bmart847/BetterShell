@@ -196,7 +196,7 @@ short existingFile(char* filepath, short FLC)
 			int offset = index * 32;
 			entry = loadDirEntry(cluster + offset);
 
-			int matching = 1, count = 0;
+			int matching = 1, count = 0, tmpFLC;
 			char* testPath = malloc(BYTES_PER_SECTOR * sizeof(char));
 			strcpy(testPath, &filepath);
 			
@@ -220,12 +220,18 @@ short existingFile(char* filepath, short FLC)
 			{
 				if((entry.attributes && SUBDIR) == SUBDIR)
 				{
-					/* filepath is a directory */
-					done = 1;
-					break;
+					/* filepath is a directory, search the contents */
+					tmpFLC = existingFile(filepath,  entry.firstLogicalCluster);
+					if(tmpFLC != 0)
+					{
+						return tmpFLC;
+					}
 				}
-				/* Else, we found our target! */
-				return entry.firstLogicalCluster;
+				else
+				{
+					/* Else, we found our target! */
+					return entry.firstLogicalCluster;
+				}
 			}
 		}
 
