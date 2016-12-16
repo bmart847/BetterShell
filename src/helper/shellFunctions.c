@@ -1,185 +1,128 @@
-#include "shellFunctions.h"
-#include "shared.h"
+/* Chris Bendel, Julien Gilbert */
+
+#include <stdio.h>
 #include <unistd.h>
-#include <strings.h>
+#include <string.h>
+#include <stdlib.h>
 
-extern const key_t SHM_KEY;
-
-// Initializes the shared memory space used to store the working directory
-void initWorkingDir(char *filename)
-{
-	sharedMemory *init;
-	shm_id = shmget(SHM_KEY, 250 * sizeof(char*), IPC_CREAT | 0666);
-	unsigned int i;
-
-	if (shm_id < 0)
-	{
-		printf("shmget Error\n");
-		exit(1);
-	}
-	printf("Shared memory initialized!\n");
-	init = shmat(shm_id, 0, 0);
-	init->wdPath[0] = '/';
-	init->wdPath[1] = '\0';
-	init->wdSize = 1;
-
-	for (i = 0; filename[i] != '\0'; i++)
-	{
-		init->fName[i] = filename[i];
-	}
-	
-	init->fSize = i;
-
-	init->FLC = 19;
-	
-	shmdt(init);
+int main(int argc, char **argv) {
+    char *line;    // input pre-parse
+    char **input;       // input parsed
+    int status;
+    
+    do
+    {
+        printf("bettershell --> ");
+        line = readInput();
+        input = parseInput(line);
+        status = cmdExecute(input);
+        /* free allocated memory */
+        free(line);
+	    free(input);
+    } while(status == 0);
+    
+	return EXIT_SUCCESS;
 }
 
-/* Obtains input from the user */
-char *get_line()
+/* parses the user input */
+char ** parseInput(char *input)
 {
-	/* Initialize Variables */
-	char *input = NULL;
-	ssize_t bufsize = 0;
-
-	/* Get the line */
-	if (getline(&input, &bufsize, stdin) == -1)
-	{
-		perror("Error_Getting_Line");
-	}
-
-	/* Return the char array */
-	return input;
+    /* Initialize Variables */
+    int pos = 0;
+    char **letters = malloc(128 * sizeof(char));
+    char *letter;
+ 
+    /* Traverse Input */
+    letter = strtok(input, " \t\r\n\a");
+ 
+    while(letter != NULL)
+    {
+        letters[pos] = letter;
+        pos ++;
+        letter = strtok(NULL, " \t\r\n\a");
+    }
+ 
+    /* Add Null Terminator */
+    letters[pos] = NULL;
+ 
+    /* Return array of char arrays */
+    return letters;
 }
 
-/* Parses the user input */
-char **parseInput(char *input)
+/* reads and returns line from user */
+char * readInput(void)
 {
-	/* Initialize Variables */
-	int pos = 0;
-	char **letters = malloc(128);
-	char *letter;
-
-	/* Traverse Input */
-	letter = strtok(input, " \t\r\n\a");
-
-	while(letter != NULL)
+    char *line = NULL;
+    ssize_t bufsize = 0; // allocates a buffer
+    printf("bettershell ---> ");
+    if (getline(&input, &bufsize, stdin) == -1)
 	{
-		letters[pos] = letter;
-		pos ++;
-		letter = strtok(NULL, " \t\r\n\a");
+		perror("Error: getLine");
 	}
-
-	/* Add Null Terminator */
-	letters[pos] = NULL;
-
-	/* Return array of char arrays */
-	return letters;
+    return line;
 }
 
-/* Forks a process for the given command */
-int cmdLaunch(char *input, char **args)
+/* creates process for command */
+int cmdLaunch(char *cmd, char **args)
 {
-	/* Initialize Variables */
-	pid_t pid, wpid;
-	int stat;
-	
-	/* Fork Process */
-	pid = fork();
+    pid_t pid, wpid;
+    int stats;
+    
+    pid = fork();       // child made
+    /* error checking */
+    if (pid == 0) {
+        if (execvp(cmd, args) == -1)
+        {
+             perror("Error: fork");
+        }
+        return 1;
+    }
+    else if (pid < 0) {
+        perror("lsh");
+        return 2;
+    }
+    else {
 
-	/* Error Handlings */
-	if(pid == 0)
-	{
-		if(execvp(input, args) == -1)
-		{
-			perror("Error_Launching_Process");
-		}
-		return 1;
-	}
-	else if (pid < 0)
-	{
-		perror("Error_Launching_Process");
-		return 2;
-	}
-	else
-	{
-		/* Wait for child process to complete */
-		do 
-		{
-			wpid = waitpid(pid, &stat, WUNTRACED);
-		} while (!WIFEXITED(stat) && !WIFSIGNALED(stat));
+    /* parent waits till child is done*/
+    do {
+      wpid = waitpid(pid, &status, WUNTRACED);
+    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+  }
 
-	}
-
-	return 0;
+  return 0;
 }
 
-/* Determines the command and performs neccessary actiions */
+/* determines command and executes it */
 int cmdExecute(char **input)
 {
-	/* Initialize Variables */
-	char *leadCmd = input[0];
-	int index = 1;
-
-	/* Determine command and take action */
-	if(leadCmd == NULL)
+    int i;
+    
+    if(leadCmd == NULL)
 	{
-		return 0;
+		return 1;
 	}
-	else if (strcmp(leadCmd, "cat") == 0)
+	else if( strcmp(input[0], "groups") == 0)
 	{
-		cmdLaunch("bin/cat", input);
-	}
-	else if (strcmp(leadCmd, "cd") == 0)
-	{
-		cmdLaunch("bin/cd", input);
-	}
-	else if (strcmp(leadCmd, "df") == 0)
-	{
-		cmdLaunch("bin/df", input);
-	}
-	else if (strcmp(leadCmd, "help") == 0)
-	{
-        	printf("To-Do\n");
-	}
-	else if (strcmp(leadCmd, "ls") == 0)
-	{
-		cmdLaunch("bin/ls", input);
-	}
-	else if (strcmp(leadCmd, "mkdir") == 0)
-	{
-		cmdLaunch("bin/mkdir", input);
-	}
-	else if (strcmp(leadCmd, "pbs") == 0)
-	{
-		cmdLaunch("bin/pbs", input);
-	}
-	else if (strcmp(leadCmd, "pfe") == 0)
-	{
-		cmdLaunch("bin/pfe", input);
-	}
-	else if (strcmp(leadCmd, "pwd") == 0)
-	{
-		cmdLaunch("bin/pwd", input);
-	}
-	else if (strcmp(leadCmd, "rm") == 0)
-	{
-        	cmdLaunch("bin/rm", input);
-	}
-	else if (strcmp(leadCmd, "rmdir") == 0)
-	{
-        	cmdLaunch("bin/rmdir", input);
-	}
-	else if (strcmp(leadCmd, "touch") == 0)
-	{
-        	cmdLaunch("bin/touch", input);
-	}
-	else if ((strcmp(leadCmd, "exit") == 0) || (strcmp(leadCmd, "quit") == 0))
-	{
-		printf("Quitting\n");
-		return; 
-	} else {
-		printf("Command not recognized\n");
-	}
-	return 0;
+        cmdLaunch("./groups", input);
+    }
+    else if(strcmp(input[0], "ls") == 0) 
+    {
+        cmdLaunch("./ls", input);
+    }
+    else if(strcmp(input[0], "cp") == 0)
+    {
+        cmdLaunch("./cp", input);
+    }
+    else if(input[0] == "cd") 
+    {
+        cmdLaunch("./cd", input);
+    }
+    else if(strcmp(input[0], "exit") == 0)
+    {
+        return;
+    }
+    else {
+        system(line);
+    }
+    return 0;
 }
